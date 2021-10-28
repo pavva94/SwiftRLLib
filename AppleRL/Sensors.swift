@@ -7,23 +7,41 @@
 
 import Foundation
 import UIKit
+import SensorKit
+
+
+//public class Orientation: Sensor<Bool> {
+//
+//    public override func preprocessing<Bool>(value: Bool) -> Float {
+//        if value as! Bool {
+//            return 0
+//        } else {
+//            return 1
+//        }
+//    }
+//
+//
+//    public override func read() -> Float {
+//        let sensor = UIDevice.current.orientation.isLandscape
+//        return preprocessing(value: sensor)
+//
+//    }
+//}
 
 
 public class Orientation: Sensor {
-    
-    var sensor: Bool
-    
-    required public init() {
-        
-        sensor = UIDevice.current.orientation.isLandscape
+    public func read() -> Any {
+        return preprocessing(value: UIDevice.current.orientation.isLandscape)
     }
     
-    public func read() -> Int {
-        sensor = UIDevice.current.orientation.isLandscape
-        if sensor {
+    public func preprocessing(value: Any) -> Any {
+        if value as! Bool {
             return 0
         } else {
             return 1
         }
     }
+    
+    
+    
 }

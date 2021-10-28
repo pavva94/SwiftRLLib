@@ -7,10 +7,26 @@
 
 import Foundation
 
+
+//protocol BaseSensor {
+//
+//}
+//
+//public class Sensor<T>: BaseSensor {
+//
+//    func read() -> Float {
+//        fatalError("read() has not been implemented")
+//    }
+//
+//    func preprocessing<T>(value: T) -> Float {
+//        fatalError("preprocessing() has not been implemented")
+//    }
+//
+//}
+
 public protocol Sensor {
     
-    init()
-    
-    func read() -> Int
+    func read() -> Any
+    func preprocessing(value: Any) -> Any 
     
 }
