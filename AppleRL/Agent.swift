@@ -8,13 +8,18 @@
 import Foundation
 
 public protocol Agent {
+    
+    init(env: Env)
+    
     func act(state: Int) -> Int
     
     func update(tuple: sarTuple)
     
-    func batchUpdate(batchSize: Int)
+    func startListen(interval: Int)
     
-    func startTrain()
+    func stopListen()
+    
+    func startTrain(interval: Int)
     
     func stopTrain()
     

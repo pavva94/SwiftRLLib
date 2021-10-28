@@ -8,7 +8,18 @@
 import Foundation
 
 
-public class QLearn: Agent {
+public class QLearningOrientation: Agent {
+    
+    let environment: Env
+    
+    required public init(env: Env) {
+        environment = env
+    }
+    var timerListen : Timer? = nil {
+            willSet {
+                timerListen?.invalidate()
+            }
+        }
     
     var timerTrain : Timer? = nil {
             willSet {
@@ -75,10 +86,30 @@ public class QLearn: Agent {
         buffer = []
     }
     
-    public func startTrain() {
+    @objc public func listen() {
+        let state = environment.read()[0]
+        let action = self.act(state: state as! Int)
+        let reward = environment.act(s: state, a: action)
+        //let next_state = result.1
+        self.store(s: state as! Int, a: action, r: reward)
+    }
+    
+    public func startListen(interval: Int) {
+        stopListen()
+        guard self.timerListen == nil else { return }
+        self.timerListen = Timer.scheduledTimer(timeInterval: TimeInterval(interval), target: self, selector: #selector(self.listen), userInfo: nil, repeats: true)
+    }
+
+    public func stopListen() {
+        guard timerListen != nil else { return }
+        timerListen?.invalidate()
+        timerListen = nil
+    }
+    
+    public func startTrain(interval: Int) {
         stopTrain()
         guard self.timerTrain == nil else { return }
-        self.timerTrain = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(self.batchUpdate), userInfo: nil, repeats: true)
+        self.timerTrain = Timer.scheduledTimer(timeInterval: TimeInterval(interval), target: self, selector: #selector(self.batchUpdate), userInfo: nil, repeats: true)
     }
 
     public func stopTrain() {
@@ -90,4 +121,3 @@ public class QLearn: Agent {
     
 }
 
-let QLearning = QLearn()
