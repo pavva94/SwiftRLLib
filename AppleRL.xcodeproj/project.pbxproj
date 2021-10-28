@@ -16,7 +16,7 @@
 		73411018272062B1000950E7 /* Sensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73411017272062B1000950E7 /* Sensors.swift */; };
 		7341101F27206AB6000950E7 /* QLearning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7341101E27206AB6000950E7 /* QLearning.swift */; };
 		7341102327206B0B000950E7 /* Buffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7341102227206B0B000950E7 /* Buffer.swift */; };
-		73411027272164BF000950E7 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73411026272164BF000950E7 /* main.swift */; };
+		7357D30727285F930074D188 /* OrientationEnv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7357D30627285F930074D188 /* OrientationEnv.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,7 +42,7 @@
 		73411017272062B1000950E7 /* Sensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sensors.swift; sourceTree = "<group>"; };
 		7341101E27206AB6000950E7 /* QLearning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QLearning.swift; sourceTree = "<group>"; };
 		7341102227206B0B000950E7 /* Buffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Buffer.swift; sourceTree = "<group>"; };
-		73411026272164BF000950E7 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		7357D30627285F930074D188 /* OrientationEnv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrientationEnv.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,14 +86,14 @@
 			isa = PBXGroup;
 			children = (
 				73410FEC2720619F000950E7 /* AppleRL.h */,
-				73410FED2720619F000950E7 /* Info.plist */,
 				734110052720620B000950E7 /* Env.swift */,
-				734110092720621C000950E7 /* Agent.swift */,
 				7341100D27206228000950E7 /* Sensor.swift */,
+				73410FED2720619F000950E7 /* Info.plist */,
+				734110092720621C000950E7 /* Agent.swift */,
 				73411017272062B1000950E7 /* Sensors.swift */,
 				7341101E27206AB6000950E7 /* QLearning.swift */,
 				7341102227206B0B000950E7 /* Buffer.swift */,
-				73411026272164BF000950E7 /* main.swift */,
+				7357D30627285F930074D188 /* OrientationEnv.swift */,
 			);
 			path = AppleRL;
 			sourceTree = "<group>";
@@ -217,10 +217,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				7341101F27206AB6000950E7 /* QLearning.swift in Sources */,
-				73411027272164BF000950E7 /* main.swift in Sources */,
 				734110062720620B000950E7 /* Env.swift in Sources */,
 				73411018272062B1000950E7 /* Sensors.swift in Sources */,
 				7341100E27206228000950E7 /* Sensor.swift in Sources */,
+				7357D30727285F930074D188 /* OrientationEnv.swift in Sources */,
 				7341100A2720621C000950E7 /* Agent.swift in Sources */,
 				7341102327206B0B000950E7 /* Buffer.swift in Sources */,
 			);
