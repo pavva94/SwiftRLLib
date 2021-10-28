@@ -23,17 +23,12 @@ let admittedSensors = [
 ]
 
 public class Env {
-    var timerListen : Timer? = nil {
-            willSet {
-                timerListen?.invalidate()
-            }
-        }
     
-    // save the sensors to read, defined by the user
     var sensors: [Sensor] = []
-    init(s: [String]) {
+    
+    init(sens: [String]) {
         // TODO check the sensors with a list of selected/usable sensors
-        for st in s {
+        for st in sens {
             switch st {
             case "battery":
                 assert(UIDevice.current.isBatteryMonitoringEnabled)
@@ -54,9 +49,12 @@ public class Env {
         }
     }
     
-    // expose a read function over all the sensors
-    func read() -> [Int] {
-        var data: [Int] = []
+    func addSensor(s: Sensor) {
+        sensors.append(s)
+    }
+    
+    func read() -> [Any] {
+        var data: [Any] = []
         
         for s in sensors {
             data.append(s.read())
@@ -65,29 +63,15 @@ public class Env {
         return data
     }
     
-    func reward(fun: @escaping () -> Int) -> Int{
-        return fun()
+    func act(s: Any, a: Any) -> Int { // return the reward that is always int?
+        // here define the action, selected by the id number
+        // Be sure to se an id to each action
+        fatalError("init() has not been implemented")
     }
     
-    func act(fun: @escaping () -> Void) {
-        fun()
+    func reward(s: Any, a: Any) -> Int {
+        fatalError("init() has not been implemented")
     }
     
-    @objc func store(storeFun: @escaping () -> Void) {
-        
-    }
-    
-    
-    func startListen(interval: Int) {
-        stopListen()
-        guard self.timerListen == nil else { return }
-        self.timerListen = Timer.scheduledTimer(timeInterval: TimeInterval(interval), target: self, selector: #selector(self.store), userInfo: nil, repeats: true)
-    }
-
-    func stopListen() {
-        guard timerListen != nil else { return }
-        timerListen?.invalidate()
-        timerListen = nil
-    }
     
 }
