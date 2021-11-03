@@ -83,7 +83,13 @@ public class QLearningOrientation: Agent {
         // s: 0=Land, 1=Port
         // a: 0=Land, 1=Port
         // r: +1 if match, -1 otherwise
-        qTable[s][a] = qTable[s][a] + lr * (Float(r) + gamma * [qTable[0].max()!, qTable[1].max()!].max()! - qTable[s][a])
+        
+        var maxQtable: [Float] = []
+        for i in 0...self.environment.get_state_size() {
+            maxQtable.append(self.qTable[i].max()!)
+        }
+        
+        qTable[s][a] = qTable[s][a] + lr * (Float(r) + gamma * maxQtable.max()! - qTable[s][a])
         print(qTable)
     }
     
