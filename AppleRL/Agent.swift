@@ -9,7 +9,7 @@ import Foundation
 
 public protocol Agent {
     
-    init(env: Env)
+    init(env: Env, parameters: Dictionary<String, Any>)
     
     func act(state: Int) -> Int
     
@@ -22,5 +22,9 @@ public protocol Agent {
     func startTrain(interval: Int)
     
     func stopTrain()
+    
+    func save()
+    
+    func load()
     
 }

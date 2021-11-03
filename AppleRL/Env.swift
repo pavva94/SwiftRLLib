@@ -24,9 +24,16 @@ let admittedSensors = [
 
 public class Env {
     
-    var sensors: [Sensor] = []
+    private var sensors: [Sensor]
+    private var action_size: Int
+    private var state_size: Int
     
-    init(sens: [String]) {
+    init(sens: [String], action_size: Int, state_size: Int) {
+        
+        self.action_size = action_size
+        self.state_size = state_size
+        self.sensors = []
+        
         // TODO check the sensors with a list of selected/usable sensors
         for st in sens {
             switch st {
@@ -47,6 +54,14 @@ public class Env {
             }
             
         }
+    }
+    
+    func get_action_size() -> Int {
+        return self.action_size
+    }
+    
+    func get_state_size() -> Int {
+        return self.state_size
     }
     
     func addSensor(s: Sensor) {
