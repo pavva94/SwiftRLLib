@@ -12,9 +12,6 @@ public class QLearningOrientation: Agent {
     
     let environment: Env
     
-    required public init(env: Env) {
-        environment = env
-    }
     var timerListen : Timer? = nil {
             willSet {
                 timerListen?.invalidate()
@@ -27,15 +24,33 @@ public class QLearningOrientation: Agent {
             }
         }
     
-    var qTable: [[Float]] = [
-        [0.0, 0.0, 0.0],   // state Landscape: visualizzoLand, visualPort
-        [0.0, 0.0, 0.0]    // state Portrait: visualizzoLand, visualPort
-    ]
-    var epsilon: Float = 0.8
-    var lr: Float = 0.1
-    var gamma: Float = 0.5
+    var qTable: [[Float]]
+    var epsilon: Float
+    var lr: Float
+    var gamma: Float
     
     var buffer: [sarTuple] = []
+    
+    var path: URL
+    
+    required public init(env: Env, parameters: Dictionary<String, Any>) {
+        environment = env
+        
+        self.epsilon = (parameters["epsilon"] as? Float)!
+        self.lr = (parameters["learning_rate"] as? Float)!
+        self.gamma = (parameters["gamma"] as? Float)!
+        var temp: [[Float]] = []
+        for i in 0...env.get_state_size() {
+            temp.append([])
+            for _ in 0...env.get_action_size() {
+                temp[i].append(0.0)
+            }
+        }
+        self.qTable = temp
+        print(temp)
+        
+        self.path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("QLearningOrientation.plist")
+    }
     
     func store(s:Int, a:Int, r:Int) {
         let tuple = sarTuple(s, a, r)
@@ -88,6 +103,7 @@ public class QLearningOrientation: Agent {
     
     @objc public func listen() {
         let state = environment.read()[0]
+        print(state)
         let action = self.act(state: state as! Int)
         let reward = environment.act(s: state, a: action)
         //let next_state = result.1
@@ -118,6 +134,19 @@ public class QLearningOrientation: Agent {
         timerTrain = nil
     }
     
+    public func save() {
+        print("Save")
+        // Save to file
+        (self.qTable as NSArray).write(to: path, atomically: true)
+    }
+    
+    public func load() {
+        print("Load")
+        // Read from file
+        let savedArray = NSArray(contentsOf: path)  as! [[Float]]
+        print(savedArray)
+        self.qTable = savedArray
+    }
     
 }
 
