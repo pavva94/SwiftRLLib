@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		73293E5427342C6400C33FB5 /* BrightnessEnv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73293E5327342C6400C33FB5 /* BrightnessEnv.swift */; };
 		73410FF3272061A0000950E7 /* AppleRL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73410FE92720619F000950E7 /* AppleRL.framework */; };
 		73410FF8272061A0000950E7 /* AppleRLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73410FF7272061A0000950E7 /* AppleRLTests.swift */; };
 		73410FFA272061A0000950E7 /* AppleRL.h in Headers */ = {isa = PBXBuildFile; fileRef = 73410FEC2720619F000950E7 /* AppleRL.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -17,6 +18,12 @@
 		7341101F27206AB6000950E7 /* QLearning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7341101E27206AB6000950E7 /* QLearning.swift */; };
 		7341102327206B0B000950E7 /* Buffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7341102227206B0B000950E7 /* Buffer.swift */; };
 		7357D30727285F930074D188 /* OrientationEnv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7357D30627285F930074D188 /* OrientationEnv.swift */; };
+		73A0A84A272D7A770082E9AB /* CreateModel.py in Resources */ = {isa = PBXBuildFile; fileRef = 73A0A849272D7A770082E9AB /* CreateModel.py */; };
+		73A0A84E273185430082E9AB /* DQN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A0A84D273185430082E9AB /* DQN.swift */; };
+		73A140F9273FD67800DF98F7 /* MLModel.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 73A140F8273FD67800DF98F7 /* MLModel.mlpackage */; };
+		73EC365E273EB517009BC2DF /* ModelUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73EC365D273EB517009BC2DF /* ModelUpdater.swift */; };
+		73EC3660273EB5EC009BC2DF /* MLModelExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73EC365F273EB5EC009BC2DF /* MLModelExt.swift */; };
+		73EC3662273EBCE3009BC2DF /* SarsaTuple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73EC3661273EBCE3009BC2DF /* SarsaTuple.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		73293E5327342C6400C33FB5 /* BrightnessEnv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessEnv.swift; sourceTree = "<group>"; };
 		73410FE92720619F000950E7 /* AppleRL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AppleRL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		73410FEC2720619F000950E7 /* AppleRL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppleRL.h; sourceTree = "<group>"; };
 		73410FED2720619F000950E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -43,6 +51,12 @@
 		7341101E27206AB6000950E7 /* QLearning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QLearning.swift; sourceTree = "<group>"; };
 		7341102227206B0B000950E7 /* Buffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Buffer.swift; sourceTree = "<group>"; };
 		7357D30627285F930074D188 /* OrientationEnv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrientationEnv.swift; sourceTree = "<group>"; };
+		73A0A849272D7A770082E9AB /* CreateModel.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = CreateModel.py; sourceTree = "<group>"; };
+		73A0A84D273185430082E9AB /* DQN.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DQN.swift; sourceTree = "<group>"; };
+		73A140F8273FD67800DF98F7 /* MLModel.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; name = MLModel.mlpackage; path = AppleRL/MLModel.mlpackage; sourceTree = SOURCE_ROOT; };
+		73EC365D273EB517009BC2DF /* ModelUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelUpdater.swift; sourceTree = "<group>"; };
+		73EC365F273EB5EC009BC2DF /* MLModelExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelExt.swift; sourceTree = "<group>"; };
+		73EC3661273EBCE3009BC2DF /* SarsaTuple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SarsaTuple.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +99,7 @@
 		73410FEB2720619F000950E7 /* AppleRL */ = {
 			isa = PBXGroup;
 			children = (
+				73A0A847272AA99F0082E9AB /* Models */,
 				73410FEC2720619F000950E7 /* AppleRL.h */,
 				734110052720620B000950E7 /* Env.swift */,
 				7341100D27206228000950E7 /* Sensor.swift */,
@@ -92,8 +107,14 @@
 				734110092720621C000950E7 /* Agent.swift */,
 				73411017272062B1000950E7 /* Sensors.swift */,
 				7341101E27206AB6000950E7 /* QLearning.swift */,
+				73A0A849272D7A770082E9AB /* CreateModel.py */,
 				7341102227206B0B000950E7 /* Buffer.swift */,
 				7357D30627285F930074D188 /* OrientationEnv.swift */,
+				73A0A84D273185430082E9AB /* DQN.swift */,
+				73293E5327342C6400C33FB5 /* BrightnessEnv.swift */,
+				73EC365D273EB517009BC2DF /* ModelUpdater.swift */,
+				73EC365F273EB5EC009BC2DF /* MLModelExt.swift */,
+				73EC3661273EBCE3009BC2DF /* SarsaTuple.swift */,
 			);
 			path = AppleRL;
 			sourceTree = "<group>";
@@ -105,6 +126,14 @@
 				73410FF9272061A0000950E7 /* Info.plist */,
 			);
 			path = AppleRLTests;
+			sourceTree = "<group>";
+		};
+		73A0A847272AA99F0082E9AB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				73A140F8273FD67800DF98F7 /* MLModel.mlpackage */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,6 +228,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73A0A84A272D7A770082E9AB /* CreateModel.py in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,11 +246,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73EC365E273EB517009BC2DF /* ModelUpdater.swift in Sources */,
 				7341101F27206AB6000950E7 /* QLearning.swift in Sources */,
+				73EC3660273EB5EC009BC2DF /* MLModelExt.swift in Sources */,
 				734110062720620B000950E7 /* Env.swift in Sources */,
+				73A140F9273FD67800DF98F7 /* MLModel.mlpackage in Sources */,
+				73A0A84E273185430082E9AB /* DQN.swift in Sources */,
 				73411018272062B1000950E7 /* Sensors.swift in Sources */,
+				73293E5427342C6400C33FB5 /* BrightnessEnv.swift in Sources */,
 				7341100E27206228000950E7 /* Sensor.swift in Sources */,
 				7357D30727285F930074D188 /* OrientationEnv.swift in Sources */,
+				73EC3662273EBCE3009BC2DF /* SarsaTuple.swift in Sources */,
 				7341100A2720621C000950E7 /* Agent.swift in Sources */,
 				7341102327206B0B000950E7 /* Buffer.swift in Sources */,
 			);
