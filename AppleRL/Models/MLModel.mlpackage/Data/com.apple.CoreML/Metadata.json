@@ -1,0 +1,10 @@
+{
+  "MLModelVersionStringKey" : "0.1",
+  "MLModelDescriptionKey" : "Simple DQN",
+  "MLModelCreatorDefinedKey" : {
+    "com.github.apple.coremltools.version" : "5.0",
+    "com.github.apple.coremltools.source" : "tensorflow==2.6.1"
+  },
+  "MLModelAuthorKey" : "Alessandro Pavesi",
+  "MLModelLicenseKey" : "--"
+}
