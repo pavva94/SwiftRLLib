@@ -10,6 +10,8 @@ import Foundation
 
 public class QLearningOrientation: Agent {
     
+    public var buffer: ExperienceReplayBuffer = ExperienceReplayBuffer()
+    
     let environment: Env
     
     var timerListen : Timer? = nil {
@@ -28,8 +30,6 @@ public class QLearningOrientation: Agent {
     var epsilon: Float
     var lr: Float
     var gamma: Float
-    
-    var buffer: [sarTuple] = []
     
     var path: URL
     
@@ -53,8 +53,8 @@ public class QLearningOrientation: Agent {
     }
     
     func store(s:Int, a:Int, r:Int) {
-        let tuple = sarTuple(s, a, r)
-        buffer.append(tuple)
+        let tuple = SarsaTuple(s: s, a: a, r: r)
+        buffer.addData(tuple)
     }
     
     func getQValue() -> [[Float]] {
@@ -64,7 +64,7 @@ public class QLearningOrientation: Agent {
     func epsilonGreedy(state: Int) -> Int {
         if Float.random(in: 0..<1) < epsilon {
             // epsilon choice
-            return Int.random(in: 0..<3)
+            return Int.random(in: 0..<self.environment.get_action_size()+1)
         }
         else {
             return qTable[state].argmax()!
@@ -76,35 +76,60 @@ public class QLearningOrientation: Agent {
         return epsilonGreedy(state:state)
     }
     
-    public func update(tuple: sarTuple) {
+    public func update() {
         
-        let s:Int = tuple.state, a:Int = tuple.action, r:Int = tuple.reward
-        
-        // s: 0=Land, 1=Port
-        // a: 0=Land, 1=Port
-        // r: +1 if match, -1 otherwise
-        
-        var maxQtable: [Float] = []
-        for i in 0...self.environment.get_state_size() {
-            maxQtable.append(self.qTable[i].max()!)
+        let data = buffer.featureBatchProvider
+
+        var i = 0
+        while i < data.count {
+            let tuple: SarsaTuple = data.features(at: i) as! SarsaTuple
+            print(tuple)
+            let s:Int = tuple.getState(), a:Int = tuple.getAction(), r:Int = tuple.getReward()
+
+            var maxQtable: [Float] = []
+            for i in 0...self.environment.get_state_size() {
+                maxQtable.append(self.qTable[i].max()!)
+            }
+            
+            qTable[s][a] = qTable[s][a] + lr * (Float(r) + gamma * maxQtable.max()! - qTable[s][a])
+            print(qTable)
+            i += 1
         }
+        buffer.reset()
         
-        qTable[s][a] = qTable[s][a] + lr * (Float(r) + gamma * maxQtable.max()! - qTable[s][a])
-        print(qTable)
+        
+//        let s:Int = tuple.state, a:Int = tuple.action, r:Int = tuple.reward
+//
+//        var maxQtable: [Float] = []
+//        for i in 0...self.environment.get_state_size() {
+//            maxQtable.append(self.qTable[i].max()!)
+//        }
+//
+//        qTable[s][a] = qTable[s][a] + lr * (Float(r) + gamma * maxQtable.max()! - qTable[s][a])
+//        print(qTable)
     }
     
     @objc public func batchUpdate(batchSize: Int = 32) {
         
         // TODO this isn't a batchupdate
-        print("TIME TO TRAIIINNNNN!!!!")
+        let data = buffer.featureBatchProvider
+
         var i = 0
-        while i < buffer.count {
-            let data: sarTuple = buffer[i]
-            print(data)
-            update(tuple: data)
+        while i < data.count {
+            let tuple: SarsaTuple = data.features(at: i) as! SarsaTuple
+            print(tuple)
+            let s:Int = tuple.getState(), a:Int = tuple.getAction(), r:Int = tuple.getReward()
+
+            var maxQtable: [Float] = []
+            for i in 0...self.environment.get_state_size() {
+                maxQtable.append(self.qTable[i].max()!)
+            }
+            
+            qTable[s][a] = qTable[s][a] + lr * (Float(r) + gamma * maxQtable.max()! - qTable[s][a])
+            print(qTable)
             i += 1
         }
-        buffer = []
+        buffer.reset()
     }
     
     @objc public func listen() {
