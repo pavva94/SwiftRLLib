@@ -9,11 +9,13 @@ import Foundation
 
 public protocol Agent {
     
+    var buffer: ExperienceReplayBuffer { get }
+    
     init(env: Env, parameters: Dictionary<String, Any>)
     
     func act(state: Int) -> Int
     
-    func update(tuple: sarTuple)
+    func update()
     
     func startListen(interval: Int)
     
