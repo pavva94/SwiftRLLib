@@ -31,13 +31,13 @@ extension Array {
     }
 }
 
-public typealias sarTuple = (state: Int, action: Int, reward: Int)
+// public typealias sarTuple = (state: Int, action: Int, reward: Int)
 
 import SwiftUI
 import CoreML
 
 /// - Tag: LabeledDrawingCollection
-struct ExperienceReplayBuffer {
+public struct ExperienceReplayBuffer {
     
     /// The desired number of drawings to update the model
     private let requiredDataCount = 3
@@ -50,6 +50,10 @@ struct ExperienceReplayBuffer {
     
     init() {
         
+    }
+    
+    var count: Int {
+        return trainingData.count
     }
     
    /// Creates a batch provider of training data given the contents of `trainingData`.
@@ -80,5 +84,9 @@ struct ExperienceReplayBuffer {
         if trainingData.count < requiredDataCount {
             trainingData.append(data)
         }
+    }
+    
+    mutating func reset() {
+        self.trainingData = [SarsaTuple]()
     }
 }
