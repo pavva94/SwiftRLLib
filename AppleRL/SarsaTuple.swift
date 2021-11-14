@@ -33,4 +33,21 @@ struct SarsaTuple {
         next_state = 0
         featureValue = try! MLFeatureValue(multiArray: MLMultiArray([state, action, reward, next_state]))
     }
+    
+    func getState() -> Int {
+        return self.state
+    }
+    
+    func getAction() -> Int {
+        return self.action
+    }
+    
+    func getReward() -> Int {
+        return self.reward
+    }
+    
+    func getNextState() -> Int {
+        return self.next_state
+    }
 }
+
