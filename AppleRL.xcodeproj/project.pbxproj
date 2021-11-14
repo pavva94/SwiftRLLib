@@ -20,7 +20,7 @@
 		7357D30727285F930074D188 /* OrientationEnv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7357D30627285F930074D188 /* OrientationEnv.swift */; };
 		73A0A84A272D7A770082E9AB /* CreateModel.py in Resources */ = {isa = PBXBuildFile; fileRef = 73A0A849272D7A770082E9AB /* CreateModel.py */; };
 		73A0A84E273185430082E9AB /* DQN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A0A84D273185430082E9AB /* DQN.swift */; };
-		73A140F9273FD67800DF98F7 /* MLModel.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 73A140F8273FD67800DF98F7 /* MLModel.mlpackage */; };
+		73A140FB27400A2600DF98F7 /* MLModel.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 73A140FA27400A2600DF98F7 /* MLModel.mlpackage */; };
 		73EC365E273EB517009BC2DF /* ModelUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73EC365D273EB517009BC2DF /* ModelUpdater.swift */; };
 		73EC3660273EB5EC009BC2DF /* MLModelExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73EC365F273EB5EC009BC2DF /* MLModelExt.swift */; };
 		73EC3662273EBCE3009BC2DF /* SarsaTuple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73EC3661273EBCE3009BC2DF /* SarsaTuple.swift */; };
@@ -53,7 +53,7 @@
 		7357D30627285F930074D188 /* OrientationEnv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrientationEnv.swift; sourceTree = "<group>"; };
 		73A0A849272D7A770082E9AB /* CreateModel.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = CreateModel.py; sourceTree = "<group>"; };
 		73A0A84D273185430082E9AB /* DQN.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DQN.swift; sourceTree = "<group>"; };
-		73A140F8273FD67800DF98F7 /* MLModel.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; name = MLModel.mlpackage; path = AppleRL/MLModel.mlpackage; sourceTree = SOURCE_ROOT; };
+		73A140FA27400A2600DF98F7 /* MLModel.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = MLModel.mlpackage; sourceTree = "<group>"; };
 		73EC365D273EB517009BC2DF /* ModelUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelUpdater.swift; sourceTree = "<group>"; };
 		73EC365F273EB5EC009BC2DF /* MLModelExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelExt.swift; sourceTree = "<group>"; };
 		73EC3661273EBCE3009BC2DF /* SarsaTuple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SarsaTuple.swift; sourceTree = "<group>"; };
@@ -131,7 +131,7 @@
 		73A0A847272AA99F0082E9AB /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				73A140F8273FD67800DF98F7 /* MLModel.mlpackage */,
+				73A140FA27400A2600DF98F7 /* MLModel.mlpackage */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -250,10 +250,10 @@
 				7341101F27206AB6000950E7 /* QLearning.swift in Sources */,
 				73EC3660273EB5EC009BC2DF /* MLModelExt.swift in Sources */,
 				734110062720620B000950E7 /* Env.swift in Sources */,
-				73A140F9273FD67800DF98F7 /* MLModel.mlpackage in Sources */,
 				73A0A84E273185430082E9AB /* DQN.swift in Sources */,
 				73411018272062B1000950E7 /* Sensors.swift in Sources */,
 				73293E5427342C6400C33FB5 /* BrightnessEnv.swift in Sources */,
+				73A140FB27400A2600DF98F7 /* MLModel.mlpackage in Sources */,
 				7341100E27206228000950E7 /* Sensor.swift in Sources */,
 				7357D30727285F930074D188 /* OrientationEnv.swift in Sources */,
 				73EC3662273EBCE3009BC2DF /* SarsaTuple.swift in Sources */,
