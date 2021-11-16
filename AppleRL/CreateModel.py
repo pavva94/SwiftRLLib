@@ -1,13 +1,12 @@
-import keras
-import tensorflow as tf
 import coremltools as ct
+from keras.models import Sequential
+from keras.layers import Dense, Flatten, Conv2D
+from coremltools.converters import keras as keras_converter
+from coremltools.models.neural_network import datatypes
 
-def convert_model_to_mlmodel(model):
-    # Pass in `tf.keras.Model` to the Unified Conversion API
-    mlmodel = ct.convert(model, respect_trainable=True)
-    mlmodel.save("MLModel")
-    
-    coreml_model_path = "MLModel.mlmodel"
+def convert_model_to_mlmodel(model, updatable_layers, output_shape):
+  
+    coreml_model_path = "AppleRLModel.mlmodel"
 
     spec = ct.utils.load_spec(coreml_model_path)
     builder = ct.models.neural_network.NeuralNetworkBuilder(spec=spec)
@@ -20,13 +19,21 @@ def convert_model_to_mlmodel(model):
     neuralnetwork_spec.description.metadata.shortDescription = (
             'Personalized Keras DQN Model')
     
-    model_spec = builder.spec
-    builder.make_updatable(['sequential/dense_1/Tensordot/MatMul', 'sequential/input_dense/Tensordot/MatMul', 'sequential/output_dense'])
-    builder.set_categorical_cross_entropy_loss(name='lossLayer', input='output')
+    builder.make_updatable(updatable_layers)
+    builder.set_mean_squared_error_loss(name='lossLayer', input_feature=('actions', datatypes.Array(output_shape, 1)))
 
-    from coremltools.models.neural_network import Adam
-    builder.set_sgd_optimizer(Adam(lr=0.01, batch=32))
-    builder.set_epochs(10)
+    from coremltools.models.neural_network import AdamParams
+    adam_params = AdamParams(lr=0.001, batch=8, beta1=0.9, beta2=0.999, eps=1e-8)
+    adam_params.set_batch(8, [1, 2, 8, 16])
+    builder.set_adam_optimizer(adam_params)
+    builder.set_epochs(10, [1, 10, 50])
+    
+    ct.utils.save_spec(builder.spec, coreml_model_path)
+    
+    print("Updatable Model Created:")
+    builder.inspect_optimizer()
+    builder.inspect_loss_layers()
+    builder.inspect_updatable_layers()
 
 #    # or save the keras model in SavedModel directory format and then convert
 #    tf_keras_model.save('tf_keras_model')
@@ -46,25 +53,34 @@ def create_dqn(layers, unit_per_layer, input_shape):
     """
     @param: layer            = list of string with names of layer (e.g. ["dense", "dropout", "dense", "dense"])
     @param: unit_per_layer   = list of int meaning the units for each layer (e.g. [64, 0, 32, 2])
-    @param: input_shape      = tuple with shape of input (e.g. (None, 32, 32))
+    @param: input_shape      = tuple with shape of input (e.g. (32, 32, 1))
     """
+    updatable_layers = ["dense_1",]
+    q_net = Sequential()
+    print(len(layers))
+    
+    q_net.add(Dense(unit_per_layer[0], input_shape=input_shape, activation='relu'))
 
-    q_net = keras.models.Sequential()
-
-    q_net.add(keras.layers.Dense(unit_per_layer[0], input_shape=input_shape, activation='relu', name="input_dense"))
-
-    for i in range(1, len(layers)-1):
+    for i in range(1, len(layers)):
         l = layers[i].lower()
         upl = unit_per_layer[i]
         if l ==  "dense":
-                q_net.add(keras.layers.Dense(upl, activation='relu', name="dense_"+str(i)))
+            layer_name = "dense_" + str(i+1)
+            q_net.add(Dense(upl, activation='relu', name=layer_name))
+            updatable_layers.append(layer_name)
         else:
             print("Only Dense layer please")
+    
+    layer_name = "dense_" + str(len(layers)+1)
+    q_net.add(Dense(unit_per_layer[-1], activation='linear', name=layer_name))
+    updatable_layers.append(layer_name)
+    mlmodel = keras_converter.convert(q_net, input_names=['data'],
+                                      output_names=['actions'],
+                                      #class_labels=class_labels,
+                                      predicted_feature_name='action')
 
-    q_net.add(keras.layers.Dense(unit_per_layer[-1], activation='linear', name="output_dense"))
-    q_net.compile(optimizer=tf.optimizers.SGD(learning_rate=0.001), loss='mse')
-    q_net.summary()
-    return q_net
+    mlmodel.save('AppleRLModel.mlmodel')
+    return q_net, updatable_layers
 
 def create_ppo(layers, unit_per_layer, input_shape):
     pass
@@ -77,16 +93,16 @@ def create_ac(layers, unit_per_layer, input_shape):
 def create_model(type, layers, unit_per_layer, input_shape):
     print("Type selected: " + type)
     if type == "DQN":
-            mlmodel = create_dqn(layers, unit_per_layer, input_shape)
+            mlmodel, updatable_layers = create_dqn(layers, unit_per_layer, input_shape)
     elif type == "PPO":
-            mlmodel =  create_ppo(layers, unit_per_layer, input_shape)
+            mlmodel, updatable_layers =  create_ppo(layers, unit_per_layer, input_shape)
     elif type == "A2C":
-            mlmodel =  create_ac(layers, unit_per_layer, input_shape)
+            mlmodel, updatable_layers =  create_ac(layers, unit_per_layer, input_shape)
     else:
             print("Wrong Type. Admitted: DQN, PPO, A2C")
             return
     
-    convert_model_to_mlmodel(mlmodel)
+    convert_model_to_mlmodel(mlmodel, updatable_layers, unit_per_layer[-1])
     print("Model Created")
 
 
@@ -94,3 +110,4 @@ def create_model(type, layers, unit_per_layer, input_shape):
 if __name__ == "__main__":
     print("Create NN")
     create_model("DQN", ["dense", "dense", "dense"], [64, 32, 2], (None, 1))
+    print("End")
