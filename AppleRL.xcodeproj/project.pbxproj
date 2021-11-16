@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		730298D427429E4400D28FC4 /* test.py in Resources */ = {isa = PBXBuildFile; fileRef = 730298D327429E4400D28FC4 /* test.py */; };
+		730298E22743C31500D28FC4 /* AppleRLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 730298E12743C31500D28FC4 /* AppleRLModel.mlmodel */; };
 		73293E5427342C6400C33FB5 /* BrightnessEnv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73293E5327342C6400C33FB5 /* BrightnessEnv.swift */; };
 		73410FF3272061A0000950E7 /* AppleRL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73410FE92720619F000950E7 /* AppleRL.framework */; };
 		73410FF8272061A0000950E7 /* AppleRLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73410FF7272061A0000950E7 /* AppleRLTests.swift */; };
@@ -20,7 +22,6 @@
 		7357D30727285F930074D188 /* OrientationEnv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7357D30627285F930074D188 /* OrientationEnv.swift */; };
 		73A0A84A272D7A770082E9AB /* CreateModel.py in Resources */ = {isa = PBXBuildFile; fileRef = 73A0A849272D7A770082E9AB /* CreateModel.py */; };
 		73A0A84E273185430082E9AB /* DQN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A0A84D273185430082E9AB /* DQN.swift */; };
-		73A140FB27400A2600DF98F7 /* MLModel.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 73A140FA27400A2600DF98F7 /* MLModel.mlpackage */; };
 		73EC365E273EB517009BC2DF /* ModelUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73EC365D273EB517009BC2DF /* ModelUpdater.swift */; };
 		73EC3660273EB5EC009BC2DF /* MLModelExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73EC365F273EB5EC009BC2DF /* MLModelExt.swift */; };
 		73EC3662273EBCE3009BC2DF /* SarsaTuple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73EC3661273EBCE3009BC2DF /* SarsaTuple.swift */; };
@@ -37,6 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		730298D327429E4400D28FC4 /* test.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = test.py; sourceTree = "<group>"; };
+		730298E12743C31500D28FC4 /* AppleRLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = AppleRLModel.mlmodel; path = AppleRL/AppleRLModel.mlmodel; sourceTree = SOURCE_ROOT; };
 		73293E5327342C6400C33FB5 /* BrightnessEnv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessEnv.swift; sourceTree = "<group>"; };
 		73410FE92720619F000950E7 /* AppleRL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AppleRL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		73410FEC2720619F000950E7 /* AppleRL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppleRL.h; sourceTree = "<group>"; };
@@ -53,7 +56,6 @@
 		7357D30627285F930074D188 /* OrientationEnv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrientationEnv.swift; sourceTree = "<group>"; };
 		73A0A849272D7A770082E9AB /* CreateModel.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = CreateModel.py; sourceTree = "<group>"; };
 		73A0A84D273185430082E9AB /* DQN.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DQN.swift; sourceTree = "<group>"; };
-		73A140FA27400A2600DF98F7 /* MLModel.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = MLModel.mlpackage; sourceTree = "<group>"; };
 		73EC365D273EB517009BC2DF /* ModelUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelUpdater.swift; sourceTree = "<group>"; };
 		73EC365F273EB5EC009BC2DF /* MLModelExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLModelExt.swift; sourceTree = "<group>"; };
 		73EC3661273EBCE3009BC2DF /* SarsaTuple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SarsaTuple.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 				73EC365D273EB517009BC2DF /* ModelUpdater.swift */,
 				73EC365F273EB5EC009BC2DF /* MLModelExt.swift */,
 				73EC3661273EBCE3009BC2DF /* SarsaTuple.swift */,
+				730298D327429E4400D28FC4 /* test.py */,
 			);
 			path = AppleRL;
 			sourceTree = "<group>";
@@ -131,7 +134,7 @@
 		73A0A847272AA99F0082E9AB /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				73A140FA27400A2600DF98F7 /* MLModel.mlpackage */,
+				730298E12743C31500D28FC4 /* AppleRLModel.mlmodel */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -228,6 +231,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				730298D427429E4400D28FC4 /* test.py in Resources */,
 				73A0A84A272D7A770082E9AB /* CreateModel.py in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -253,7 +257,7 @@
 				73A0A84E273185430082E9AB /* DQN.swift in Sources */,
 				73411018272062B1000950E7 /* Sensors.swift in Sources */,
 				73293E5427342C6400C33FB5 /* BrightnessEnv.swift in Sources */,
-				73A140FB27400A2600DF98F7 /* MLModel.mlpackage in Sources */,
+				730298E22743C31500D28FC4 /* AppleRLModel.mlmodel in Sources */,
 				7341100E27206228000950E7 /* Sensor.swift in Sources */,
 				7357D30727285F930074D188 /* OrientationEnv.swift in Sources */,
 				73EC3662273EBCE3009BC2DF /* SarsaTuple.swift in Sources */,
