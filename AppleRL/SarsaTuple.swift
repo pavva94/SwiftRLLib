@@ -18,20 +18,20 @@ struct SarsaTuple {
     private var next_state: Int
     var featureValue: MLFeatureValue
     
-    init(s:Int, a:Int, r:Int, ns: Int) {
-        state = s
-        action = a
-        reward = r
-        next_state = ns
-        featureValue = try! MLFeatureValue(multiArray: MLMultiArray([state, action, reward, next_state]))
+    init(state:Int, action:Int, reward:Int, nextState: Int) {
+        self.state = state
+        self.action = action
+        self.reward = reward
+        self.next_state = nextState
+        self.featureValue = try! MLFeatureValue(multiArray: MLMultiArray([state, action, reward, next_state]))
     }
     
-    init(s:Int, a:Int, r:Int) {
-        state = s
-        action = a
-        reward = r
-        next_state = 0
-        featureValue = try! MLFeatureValue(multiArray: MLMultiArray([state, action, reward, next_state]))
+    init(state:Int, action:Int, reward:Int) {
+        self.state = state
+        self.action = action
+        self.reward = reward
+        self.next_state = 0
+        self.featureValue = try! MLFeatureValue(multiArray: MLMultiArray([state, action, reward, next_state]))
     }
     
     func getState() -> Int {
