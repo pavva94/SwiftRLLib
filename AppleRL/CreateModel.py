@@ -27,6 +27,7 @@ def convert_model_to_mlmodel(model, updatable_layers, output_shape):
     adam_params.set_batch(8, [1, 2, 8, 16])
     builder.set_adam_optimizer(adam_params)
     builder.set_epochs(10, [1, 10, 50])
+    print(builder.spec.description.trainingInput)
     
     ct.utils.save_spec(builder.spec, coreml_model_path)
     
@@ -109,5 +110,5 @@ def create_model(type, layers, unit_per_layer, input_shape):
 
 if __name__ == "__main__":
     print("Create NN")
-    create_model("DQN", ["dense", "dense", "dense"], [64, 32, 2], (None, 1))
+    create_model("DQN", ["dense", "dense", "dense"], [64, 32, 5], (1, 1))
     print("End")
