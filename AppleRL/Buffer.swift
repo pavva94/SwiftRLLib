@@ -46,7 +46,7 @@ public struct ExperienceReplayBuffer {
     private var trainingData = [SarsaTuple]()
     
     /// A Boolean that indicates whether the instance has all the required drawings.
-    var isReadyForTraining: Bool { trainingData.count == requiredDataCount }
+    var isReadyForTraining: Bool { trainingData.count >= requiredDataCount }
     
     init() {
         
@@ -56,13 +56,15 @@ public struct ExperienceReplayBuffer {
         return trainingData.count
     }
     
+    var batchProvider: [SarsaTuple] {return trainingData}
+    
    /// Creates a batch provider of training data given the contents of `trainingData`.
    /// - Tag: DrawingBatchProvider
     var featureBatchProvider: MLBatchProvider {
         var featureProviders = [MLFeatureProvider]()
 
         let inputName = "data"
-        let outputName = "label"
+        let outputName = "actions"
                 
         for data in trainingData {
             let inputValue = data.featureValue
@@ -77,13 +79,13 @@ public struct ExperienceReplayBuffer {
         }
         
        return MLArrayBatchProvider(array: featureProviders)
-   }
+    }
            
     /// Adds a drawing to the private array, but only if the type requires more.
     mutating func addData(_ data: SarsaTuple) {
-        if trainingData.count < requiredDataCount {
-            trainingData.append(data)
-        }
+//        if trainingData.count < requiredDataCount {
+        trainingData.append(data)
+//        }
     }
     
     mutating func reset() {
