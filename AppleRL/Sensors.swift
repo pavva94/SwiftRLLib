@@ -41,7 +41,4 @@ public class Orientation: Sensor {
             return 1
         }
     }
-    
-    
-    
 }

@@ -11,8 +11,8 @@ public class OrientationEnv: Env {
     
     override  func act(s: Any, a: Any) -> Int { // return the reward that is always int?
         // here define the action, selected by the id number
-        // Be sure to se an id to each action
-        print(s)
+        // Be sure to set an id to each action
+        print(s) // action
         return self.reward(s: s, a: a)
     }
     

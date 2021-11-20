@@ -53,7 +53,7 @@ public class QLearningOrientation: Agent {
     }
     
     func store(s:Int, a:Int, r:Int) {
-        let tuple = SarsaTuple(s: s, a: a, r: r)
+        let tuple = SarsaTuple(state: s, action: a, reward: r)
         buffer.addData(tuple)
     }
     
