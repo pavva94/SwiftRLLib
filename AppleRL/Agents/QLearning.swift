@@ -8,9 +8,10 @@
 import Foundation
 
 
-public class QLearningOrientation: Agent {
+public class QLearningOrientation: Agent {   
     
-    public var buffer: ExperienceReplayBuffer = ExperienceReplayBuffer()
+    public var buffer: ExperienceReplayBuffer = ExperienceReplayBuffer<Int, Int, Int>()
+    private typealias SarTuple = SarsaTuple<Int, Int, Int>
     
     let environment: Env
     
@@ -71,9 +72,9 @@ public class QLearningOrientation: Agent {
         }
     }
     
-    public func act(state: Int) -> Int {
+    public func act(state: Any) -> Int {
         
-        return epsilonGreedy(state:state)
+        return epsilonGreedy(state:state as! Int)
     }
     
     public func update() {
@@ -82,7 +83,7 @@ public class QLearningOrientation: Agent {
 
         var i = 0
         while i < data.count {
-            let tuple: SarsaTuple = data.features(at: i) as! SarsaTuple
+            let tuple: SarsaTuple = data.features(at: i) as! SarTuple
             print(tuple)
             let s:Int = tuple.getState(), a:Int = tuple.getAction(), r:Int = tuple.getReward()
 
@@ -116,7 +117,7 @@ public class QLearningOrientation: Agent {
 
         var i = 0
         while i < data.count {
-            let tuple: SarsaTuple = data.features(at: i) as! SarsaTuple
+            let tuple: SarsaTuple = data.features(at: i) as! SarTuple
             print(tuple)
             let s:Int = tuple.getState(), a:Int = tuple.getAction(), r:Int = tuple.getReward()
 

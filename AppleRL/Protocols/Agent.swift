@@ -9,11 +9,11 @@ import Foundation
 
 public protocol Agent {
     
-    var buffer: ExperienceReplayBuffer { get }
+//    var buffer: ExperienceReplayBuffer<> { get }
     
     init(env: Env, parameters: Dictionary<String, Any>)
     
-    func act(state: Int) -> Int
+    func act(state: Any) -> Int
     
     func update()
     

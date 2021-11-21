@@ -8,8 +8,8 @@
 import CoreML
 
 
-public class DeepQNetwork: Agent {
-    public var buffer: ExperienceReplayBuffer
+public class DeepQNetwork<S, A, R>: Agent {
+    public var buffer: ExperienceReplayBuffer<S, A, R>
     
     let environment: Env
     
@@ -86,12 +86,12 @@ public class DeepQNetwork: Agent {
             
     }
     
-    func store(state:Int, action:Int, reward:Int, nextState: Int) {
+    func store(state: S, action: A, reward: R, nextState: S) {
         let tuple = SarsaTuple(state: state, action: action, reward: reward, nextState: nextState)
         buffer.addData(tuple)
     }
     
-    func epsilonGreedy(state: Int) -> Int {
+    func epsilonGreedy(state: S) -> Int {
         if Float.random(in: 0..<1) < epsilon {
             // epsilon choice
             print("Epsilon dimerda")
@@ -114,9 +114,9 @@ public class DeepQNetwork: Agent {
         }
     }
     
-    public func act(state: Int) -> Int {
+    public func act(state: S) -> Int {
         
-        return epsilonGreedy(state:state)
+        return epsilonGreedy(state:(state as! CGFloat).swf)
     }
     
     func convertToArray(from mlMultiArray: MLMultiArray) -> [Double] {
@@ -155,6 +155,7 @@ public class DeepQNetwork: Agent {
             //let stateValue = MLFeatureValue(int64: Int64(state))
             var featureMultiArray: MLMultiArray
             do {
+                // cannot do it generic because MLMultiArray doesn't take Generic value
                 featureMultiArray = try MLMultiArray([state])
             } catch {
                 print("MEGAERRORE2")

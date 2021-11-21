@@ -37,13 +37,13 @@ import SwiftUI
 import CoreML
 
 /// - Tag: LabeledDrawingCollection
-public struct ExperienceReplayBuffer {
+public struct ExperienceReplayBuffer<S, A, R> {
     
     /// The desired number of drawings to update the model
     private let requiredDataCount = 3
     
     /// Collection of the training drawings
-    private var trainingData = [SarsaTuple]()
+    private var trainingData = [SarsaTuple<S, A, R>]()
     
     /// A Boolean that indicates whether the instance has all the required drawings.
     var isReadyForTraining: Bool { trainingData.count >= requiredDataCount }
@@ -56,7 +56,7 @@ public struct ExperienceReplayBuffer {
         return trainingData.count
     }
     
-    var batchProvider: [SarsaTuple] {return trainingData}
+    var batchProvider: [SarsaTuple<S, A, R>] {return trainingData}
     
    /// Creates a batch provider of training data given the contents of `trainingData`.
    /// - Tag: DrawingBatchProvider
@@ -82,13 +82,13 @@ public struct ExperienceReplayBuffer {
     }
            
     /// Adds a drawing to the private array, but only if the type requires more.
-    mutating func addData(_ data: SarsaTuple) {
+    mutating func addData(_ data: SarsaTuple<S, A, R>) {
 //        if trainingData.count < requiredDataCount {
         trainingData.append(data)
 //        }
     }
     
     mutating func reset() {
-        self.trainingData = [SarsaTuple]()
+        self.trainingData = [SarsaTuple<S, A, R>]()
     }
 }
