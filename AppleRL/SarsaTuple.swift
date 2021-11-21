@@ -12,13 +12,13 @@ import CoreImage
 /// along with the `CGRect` in which it was drawn on the `PKCanvasView`
 /// - Tag: Drawing
 struct SarsaTupleGeneric<S, A, R> {
-    private var state: S
+    private var state: MLMultiArray
     private var action: A
     private var reward: R
-    private var next_state: S
+    private var next_state: MLMultiArray
 //    var featureValue: MLFeatureValue
     
-    init(state: S, action: A, reward: R, nextState: S) {
+    init(state: MLMultiArray, action: A, reward: R, nextState: MLMultiArray) {
         self.state = state
         self.action = action
         self.reward = reward
@@ -26,15 +26,15 @@ struct SarsaTupleGeneric<S, A, R> {
 //        self.featureValue = try! MLFeatureValue(multiArray: MLMultiArray([state as Any, action as Any, reward as Any, nextState as Any]))
     }
     
-    init(state: S, action: A, reward: R) {
+    init(state: MLMultiArray, action: A, reward: R) {
         self.state = state
         self.action = action
         self.reward = reward
-        self.next_state = 0 as! S
+        self.next_state = state //?? { fatalError("SarsaTuple cannot be created")}
 //        self.featureValue = try! MLFeatureValue(multiArray: MLMultiArray([state, action, reward, 0]))
     }
     
-    func getState() -> S {
+    func getState() -> MLMultiArray {
         return self.state
     }
     
@@ -46,7 +46,7 @@ struct SarsaTupleGeneric<S, A, R> {
         return self.reward
     }
     
-    func getNextState() -> S {
+    func getNextState() -> MLMultiArray {
         return self.next_state
     }
 }

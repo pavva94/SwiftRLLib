@@ -20,7 +20,7 @@ def convert_model_to_mlmodel(model, updatable_layers, output_shape):
             'Personalized Keras DQN Model')
     
     builder.make_updatable(updatable_layers)
-    builder.set_mean_squared_error_loss(name='lossLayer', input_feature=('actions', datatypes.Array(output_shape, 1)))
+    builder.set_mean_squared_error_loss(name='lossLayer', input_feature=('actions', datatypes.Array(output_shape, )))
 
     from coremltools.models.neural_network import AdamParams
     adam_params = AdamParams(lr=0.001, batch=8, beta1=0.9, beta2=0.999, eps=1e-8)
@@ -110,5 +110,5 @@ def create_model(type, layers, unit_per_layer, input_shape):
 
 if __name__ == "__main__":
     print("Create NN")
-    create_model("DQN", ["dense", "dense", "dense"], [64, 32, 5], (1, 1))
+    create_model("DQN", ["dense", "dense", "dense"], [64, 32, 5], (1, ))
     print("End")

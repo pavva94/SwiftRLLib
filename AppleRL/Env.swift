@@ -19,7 +19,6 @@ let admittedSensors = [
     "gyroscope",
     "barometer",
     "brightness"
-    
 ]
 
 public class Env<S, A, R> {
@@ -78,7 +77,7 @@ public class Env<S, A, R> {
         var data: [S] = []
         
         for s in sensors {
-            data.append(s.read() as! S)
+            data.append(s.read())
         }
         
         return data

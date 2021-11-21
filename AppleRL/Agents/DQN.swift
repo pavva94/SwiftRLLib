@@ -9,9 +9,13 @@ import CoreML
 
 
 public class DeepQNetwork<S, A, R: BinaryInteger> {
+    // S: type of sensors
+    // A: type of actions
+    // R: type of reward
+    // the <S, A, R> types are inherited by the Environment
         
-    public var buffer: ExperienceReplayBuffer<[S], A, R>
-    private typealias SarsaTuple = SarsaTupleGeneric<[S], A, R>
+    public var buffer: ExperienceReplayBuffer<S, A, R>
+    private typealias SarsaTuple = SarsaTupleGeneric<S, A, R>
     
     let environment: Env<S, A, R>
     
@@ -88,26 +92,19 @@ public class DeepQNetwork<S, A, R: BinaryInteger> {
             
     }
     
-    func store(state: [S], action: A, reward: R, nextState: [S]) {
+    func store(state: MLMultiArray, action: A, reward: R, nextState: MLMultiArray) {
         let tuple = SarsaTuple(state: state, action: action, reward: reward, nextState: nextState)
         buffer.addData(tuple)
     }
     
-    func epsilonGreedy(state: [S]) -> A {
+    func epsilonGreedy(state: MLMultiArray) -> A {
         if Double.random(in: 0..<1) < epsilon {
             // epsilon choice
             print("Epsilon dimerda")
             return Int.random(in: 0..<self.environment.get_action_size()+1) as! A
         }
         else {
-            let featureMultiArray: MLMultiArray
-            do {
-                featureMultiArray = try MLMultiArray(state as! [Float])
-            } catch {
-                print("MEGAERRORE")
-                return -1 as! A
-            }
-            let stateValue = MLFeatureValue(multiArray: featureMultiArray)
+            let stateValue = MLFeatureValue(multiArray: state)
             // predict value
             let stateTarget = liveModel.predictFor(stateValue)
             print("PredictFor ACT")
@@ -116,7 +113,7 @@ public class DeepQNetwork<S, A, R: BinaryInteger> {
         }
     }
     
-    public func act(state: [S]) -> A {
+    public func act(state: MLMultiArray) -> A {
         
         return epsilonGreedy(state: state)
     }
@@ -137,6 +134,19 @@ public class DeepQNetwork<S, A, R: BinaryInteger> {
         return array
     }
     
+    func convertToMLMultiArrayFloat(from singleArray: [S]) -> MLMultiArray{
+        var featureMultiArray: MLMultiArray
+        do {
+            featureMultiArray = try MLMultiArray(shape: [NSNumber(value: singleArray.count)], dataType: MLMultiArrayDataType.float)
+            for index in 0..<singleArray.count {
+                featureMultiArray[index] = NSNumber(value: singleArray[index] as! Float)
+            }
+        } catch {
+            fatalError("Error converting in MLMultiArrayFloat")
+        }
+        return featureMultiArray
+    }
+    
     private func createUpdateFeatures() -> MLArrayBatchProvider {
         // firstly we need to create and update the target
         
@@ -154,27 +164,12 @@ public class DeepQNetwork<S, A, R: BinaryInteger> {
             let reward = d.getReward()
             let nextState = d.getNextState()
             
-            //let stateValue = MLFeatureValue(int64: Int64(state))
-            var featureMultiArray: MLMultiArray
-            do {
-                // cannot do it generic because MLMultiArray doesn't take Generic value
-                featureMultiArray = try MLMultiArray(state as! [Float])
-            } catch {
-                print("MEGAERRORE2")
-                return MLArrayBatchProvider()
-            }
-            let stateValue = MLFeatureValue(multiArray: featureMultiArray)
+            let stateValue = MLFeatureValue(multiArray: state)
             // predict value
             let stateTarget = liveModel.predictFor(stateValue)!.actions
             print("PredictFor Update livemodel \(stateTarget)")
             
-            do {
-                featureMultiArray = try MLMultiArray(nextState as! [Float])
-            } catch {
-                print("MEGAERRORE3")
-                return MLArrayBatchProvider()
-            }
-            let nextStateValue = MLFeatureValue(multiArray: featureMultiArray)
+            let nextStateValue = MLFeatureValue(multiArray: nextState)
             
             //let nextStateValue = MLFeatureValue(int64: Int64(nextState))
             // take value for next state
@@ -186,16 +181,16 @@ public class DeepQNetwork<S, A, R: BinaryInteger> {
             stateTarget[action as! Int] = NSNumber(value: Double(reward) + self.gamma * nextStateTarget.max()!)
 //            let targetValue = convertToArray(from: stateTarget)
             print("target Updated \(stateTarget)")
-            do {
-                featureMultiArray = try MLMultiArray(shape: [environment.get_action_size() as! NSNumber, 1], dataType: MLMultiArrayDataType.double)
-                for index in 0..<stateTarget.count {
-                    featureMultiArray[index] = NSNumber(value: Double(truncating: stateTarget[index]))
-                }
-            } catch {
-                print("MEGAERRORE4")
-                return MLArrayBatchProvider()
-            }
-            target = MLFeatureValue(multiArray: featureMultiArray)
+//            do {
+//                featureMultiArray = try MLMultiArray(shape: [environment.get_action_size() as! NSNumber, 1], dataType: MLMultiArrayDataType.double)
+//                for index in 0..<stateTarget.count {
+//                    featureMultiArray[index] = NSNumber(value: Double(truncating: stateTarget[index]))
+//                }
+//            } catch {
+//                print("MEGAERRORE4")
+//                return MLArrayBatchProvider()
+//            }
+            target = MLFeatureValue(multiArray: stateTarget)
 //            target = MLFeatureValue(multiArray: stateTarget)
 //        }
 //            print("Batch created")
@@ -299,7 +294,7 @@ public class DeepQNetwork<S, A, R: BinaryInteger> {
         case .epochEnd:
             let epochIndex = context.metrics[.epochIndex] as! Int
             let trainLoss = context.metrics[.lossValue] as! Double
-            print(trainLoss)
+            print("Epoch \(epochIndex) Loss \(trainLoss)")
         default:
             print("Unknown event")
         }
@@ -308,34 +303,69 @@ public class DeepQNetwork<S, A, R: BinaryInteger> {
     @objc public func batchUpdate(batchSize: Int = 32) {
         
         // Convert the drawings into a batch provider as the update input.
-//        let trainingData = buffer.featureBatchProvider
-//
-//        let parameters: [MLParameterKey: Any] = [
-//            .epochs: self.epochs,
-//            //.seed: 1234,
-//            .miniBatchSize: batchSize,
-//            .learningRate: self.learningRate,
-//            //.shuffle: false,
-//        ]
-//
-//        let config = MLModelConfiguration()
-//        config.computeUnits = .all
-//        config.parameters = parameters
+        let trainingData = createUpdateFeatures()
+        print(trainingData.array)
         
-        // Update the Drawing Classifier with the drawings.
+        // This is how we can change the hyperparameters before training. If you
+        // don't do this, the defaults as defined in the mlmodel file are used.
+        // Note that the values you choose here must match what is allowed in the
+        // mlmodel file, or else Core ML throws an exception.
+        let parameters: [MLParameterKey: Any] = [
+            .epochs: self.epochs,
+            //.seed: 1234,
+            .miniBatchSize: 2,
+            .learningRate: self.learningRate,
+            //.shuffle: false,
+        ]
+
+        let config = MLModelConfiguration()
+        config.computeUnits = .all
+        config.parameters = parameters
+        
+//        // Update the Drawing Classifier with the drawings.
 //        DispatchQueue.global(qos: .userInitiated).async {
 //            ModelUpdater.updateWith(trainingData: drawingTrainingData, parameters: config) {
 //                DispatchQueue.main.async { print("Trained") }
 //            }
-//        }
+//        } REPLACED BY ->
+        /// The URL of the currently active Model.
+        let usingUpdatedModel = updatedModel != nil
+        let currentModelURL = usingUpdatedModel ? updatedModelURL : defaultModelURL
+        
+        /// The closure an MLUpdateTask calls when it finishes updating the model.
+        func updateModelCompletionHandler(updateContext: MLUpdateContext) {
+            if updateContext.task.state == .failed {
+                print("Failed")
+                print(updateContext.task.error)
+                return
+              }
+            // Save the updated model to the file system.
+            //saveUpdatedModel(updateContext)
+            
+            // Begin using the saved updated model.
+            loadUpdatedModel()
+            
+            // Inform the calling View Controller when the update is complete
+            DispatchQueue.main.async { print("Trained") }
+        }
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            AppleRLModel.updateModel(at: currentModelURL,
+                                       with: trainingData,
+                                     parameters: config,
+                                     progressHandler: self.progressHandler,
+                                       completionHandler: updateModelCompletionHandler)
+        }
     }
     
     @objc public func listen() {
         let state = environment.read()
+        let newState = convertToMLMultiArrayFloat(from:state)
         print(state)
-        let action = self.act(state: state)
+        let action = self.act(state: newState)
         let (next_state, reward) = environment.act(s: state, a: action)
-        self.store(state: state, action: action, reward: reward, nextState: next_state)
+        let newNextState = convertToMLMultiArrayFloat(from:next_state)
+        self.store(state: newState, action: action, reward: reward, nextState: newNextState)
     }
     
     public func startListen(interval: Int) {
