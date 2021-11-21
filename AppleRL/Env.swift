@@ -18,13 +18,13 @@ let admittedSensors = [
     "light",
     "gyroscope",
     "barometer",
-
+    "brightness"
     
 ]
 
-public class Env {
+public class Env<S, A, R> {
     
-    private var sensors: [Sensor]
+    private var sensors: [Sensor<S>]
     private var action_size: Int
     private var state_size: Int
     
@@ -36,6 +36,10 @@ public class Env {
         
         // TODO check the sensors with a list of selected/usable sensors
         for st in sens {
+            if !admittedSensors.contains(st) {
+                print("Sensor not allowed: \(st)")
+                continue
+            }
             switch st {
             case "battery":
                 assert(UIDevice.current.isBatteryMonitoringEnabled)
@@ -48,7 +52,9 @@ public class Env {
                 }
                 // AVAudioSession.sharedInstance().outputVolume
             case "orientation":
-                sensors.append(Orientation())
+                sensors.append(Orientation<S>())
+            case "brightness":
+                sensors.append(Brightness<S>())
             default:
                 print("Sensor not valid: " + String(st))
             }
@@ -64,28 +70,28 @@ public class Env {
         return self.state_size
     }
     
-    func addSensor(s: Sensor) {
+    func addSensor(s: Sensor<S>) {
         sensors.append(s)
     }
     
-    func read() -> [Any] {
-        var data: [Any] = []
+    func read() -> [S] {
+        var data: [S] = []
         
         for s in sensors {
-            data.append(s.read())
+            data.append(s.read() as! S)
         }
         
         return data
     }
     
-    func act(s: Any, a: Any) -> Int { // return the reward that is always int?
+    func act(s: [S], a: A) -> ([S], R) { // return the reward that is always int?
         // here define the action, selected by the id number
         // Be sure to se an id to each action
-        fatalError("init() has not been implemented")
+        fatalError("act() has not been implemented")
     }
     
-    func reward(s: Any, a: Any) -> Int {
-        fatalError("init() has not been implemented")
+    func reward(s: [S], a: A) -> R {
+        fatalError("reward() has not been implemented")
     }
     
     

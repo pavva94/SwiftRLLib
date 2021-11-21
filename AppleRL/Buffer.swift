@@ -43,7 +43,7 @@ public struct ExperienceReplayBuffer<S, A, R> {
     private let requiredDataCount = 3
     
     /// Collection of the training drawings
-    private var trainingData = [SarsaTuple<S, A, R>]()
+    private var trainingData = [SarsaTupleGeneric<S, A, R>]()
     
     /// A Boolean that indicates whether the instance has all the required drawings.
     var isReadyForTraining: Bool { trainingData.count >= requiredDataCount }
@@ -56,39 +56,39 @@ public struct ExperienceReplayBuffer<S, A, R> {
         return trainingData.count
     }
     
-    var batchProvider: [SarsaTuple<S, A, R>] {return trainingData}
+    var batchProvider: [SarsaTupleGeneric<S, A, R>] {return trainingData}
     
    /// Creates a batch provider of training data given the contents of `trainingData`.
    /// - Tag: DrawingBatchProvider
-    var featureBatchProvider: MLBatchProvider {
-        var featureProviders = [MLFeatureProvider]()
-
-        let inputName = "data"
-        let outputName = "actions"
-                
-        for data in trainingData {
-            let inputValue = data.featureValue
-            let outputValue = MLFeatureValue(int64: 0) // TODO the output value needs to be modified
-            
-            let dataPointFeatures: [String: MLFeatureValue] = [inputName: inputValue,
-                                                               outputName: outputValue]
-            
-            if let provider = try? MLDictionaryFeatureProvider(dictionary: dataPointFeatures) {
-                featureProviders.append(provider)
-            }
-        }
-        
-       return MLArrayBatchProvider(array: featureProviders)
-    }
+//    var featureBatchProvider: MLBatchProvider {
+//        var featureProviders = [MLFeatureProvider]()
+//
+//        let inputName = "data"
+//        let outputName = "actions"
+//                
+//        for data in trainingData {
+//            let inputValue = data.featureValue
+//            let outputValue = MLFeatureValue(int64: 0) // TODO the output value needs to be modified
+//            
+//            let dataPointFeatures: [String: MLFeatureValue] = [inputName: inputValue,
+//                                                               outputName: outputValue]
+//            
+//            if let provider = try? MLDictionaryFeatureProvider(dictionary: dataPointFeatures) {
+//                featureProviders.append(provider)
+//            }
+//        }
+//        
+//       return MLArrayBatchProvider(array: featureProviders)
+//    }
            
     /// Adds a drawing to the private array, but only if the type requires more.
-    mutating func addData(_ data: SarsaTuple<S, A, R>) {
+    mutating func addData(_ data: SarsaTupleGeneric<S, A, R>) {
 //        if trainingData.count < requiredDataCount {
         trainingData.append(data)
 //        }
     }
     
     mutating func reset() {
-        self.trainingData = [SarsaTuple<S, A, R>]()
+        self.trainingData = [SarsaTupleGeneric<S, A, R>]()
     }
 }

@@ -11,7 +11,7 @@ import CoreImage
 /// Convenience structure that stores a drawing's `CGImage`
 /// along with the `CGRect` in which it was drawn on the `PKCanvasView`
 /// - Tag: Drawing
-struct SarsaTuple<S, A, R> {
+struct SarsaTupleGeneric<S, A, R> {
     private var state: S
     private var action: A
     private var reward: R

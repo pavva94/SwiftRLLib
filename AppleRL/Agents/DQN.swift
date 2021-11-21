@@ -8,10 +8,12 @@
 import CoreML
 
 
-public class DeepQNetwork<S, A, R>: Agent {
-    public var buffer: ExperienceReplayBuffer<S, A, R>
+public class DeepQNetwork<S, A, R: BinaryInteger> {
+        
+    public var buffer: ExperienceReplayBuffer<[S], A, R>
+    private typealias SarsaTuple = SarsaTupleGeneric<[S], A, R>
     
-    let environment: Env
+    let environment: Env<S, A, R>
     
     var timerListen : Timer? = nil {
             willSet {
@@ -25,10 +27,10 @@ public class DeepQNetwork<S, A, R>: Agent {
             }
         }
     
-    var learningRate: Float
-    var epochs: Float
-    var epsilon: Float
-    var gamma: Float
+    var learningRate: Double
+    var epochs: Double
+    var epsilon: Double
+    var gamma: Double
     
     // MARK: - Private Type Properties
     /// The updated Model model.
@@ -71,7 +73,7 @@ public class DeepQNetwork<S, A, R>: Agent {
     private var tempUpdatedTargetModelURL: URL
     
     
-    required public init(env: Env, parameters: Dictionary<String, Any>) {
+    required public init(env: Env<S, A, R>, parameters: Dictionary<String, Any>) {
         environment = env
         self.updatedModelURL = appDirectory.appendingPathComponent("personalized.mlmodelc")
         self.tempUpdatedModelURL = appDirectory.appendingPathComponent("personalized_tmp.mlmodelc")
@@ -79,44 +81,44 @@ public class DeepQNetwork<S, A, R>: Agent {
         self.tempUpdatedTargetModelURL = appDirectory.appendingPathComponent("personalizedTarget_tmp.mlmodelc")
         
         self.buffer = ExperienceReplayBuffer()
-        self.epsilon = (parameters["epsilon"] as? Float)!
-        self.gamma = (parameters["gamma"] as? Float)!
+        self.epsilon = (parameters["epsilon"] as? Double)!
+        self.gamma = (parameters["gamma"] as? Double)!
         self.epochs = 10 //(parameters["epochs"] as? Float)!
-        self.learningRate = (parameters["learning_rate"] as? Float)!
+        self.learningRate = (parameters["learning_rate"] as? Double)!
             
     }
     
-    func store(state: S, action: A, reward: R, nextState: S) {
+    func store(state: [S], action: A, reward: R, nextState: [S]) {
         let tuple = SarsaTuple(state: state, action: action, reward: reward, nextState: nextState)
         buffer.addData(tuple)
     }
     
-    func epsilonGreedy(state: S) -> Int {
-        if Float.random(in: 0..<1) < epsilon {
+    func epsilonGreedy(state: [S]) -> A {
+        if Double.random(in: 0..<1) < epsilon {
             // epsilon choice
             print("Epsilon dimerda")
-            return Int.random(in: 0..<self.environment.get_action_size()+1)
+            return Int.random(in: 0..<self.environment.get_action_size()+1) as! A
         }
         else {
             let featureMultiArray: MLMultiArray
             do {
-                featureMultiArray = try MLMultiArray([state])
+                featureMultiArray = try MLMultiArray(state as! [Float])
             } catch {
                 print("MEGAERRORE")
-                return -1
+                return -1 as! A
             }
             let stateValue = MLFeatureValue(multiArray: featureMultiArray)
             // predict value
             let stateTarget = liveModel.predictFor(stateValue)
             print("PredictFor ACT")
             print(stateTarget!.actions)
-            return 0 //stateTarget
+            return 0  as! A//stateTarget
         }
     }
     
-    public func act(state: S) -> Int {
+    public func act(state: [S]) -> A {
         
-        return epsilonGreedy(state:(state as! CGFloat).swf)
+        return epsilonGreedy(state: state)
     }
     
     func convertToArray(from mlMultiArray: MLMultiArray) -> [Double] {
@@ -147,16 +149,16 @@ public class DeepQNetwork<S, A, R>: Agent {
         print("START creating batch")
         for d in data {
             print(d)
-            let state = Double(d.getState())
+            let state = d.getState()
             let action = d.getAction()
             let reward = d.getReward()
-            let nextState = Double(d.getNextState())
+            let nextState = d.getNextState()
             
             //let stateValue = MLFeatureValue(int64: Int64(state))
             var featureMultiArray: MLMultiArray
             do {
                 // cannot do it generic because MLMultiArray doesn't take Generic value
-                featureMultiArray = try MLMultiArray([state])
+                featureMultiArray = try MLMultiArray(state as! [Float])
             } catch {
                 print("MEGAERRORE2")
                 return MLArrayBatchProvider()
@@ -167,7 +169,7 @@ public class DeepQNetwork<S, A, R>: Agent {
             print("PredictFor Update livemodel \(stateTarget)")
             
             do {
-                featureMultiArray = try MLMultiArray([nextState])
+                featureMultiArray = try MLMultiArray(nextState as! [Float])
             } catch {
                 print("MEGAERRORE3")
                 return MLArrayBatchProvider()
@@ -178,14 +180,14 @@ public class DeepQNetwork<S, A, R>: Agent {
             // take value for next state
             let nextStateActions = self.targetModel.predictFor(nextStateValue)!.actions
             let nextStateTarget = convertToArray(from: nextStateActions)
-            print("PredictFor Update targetmodel \(nextStateTarget)")
+            print("PredictFor Update nextState TargetModel \(nextStateTarget)")
             // update the taget with the max q-value of next state
             // using a greedy policy
-            stateTarget[action] = NSNumber(value: Double(reward) + Double(self.gamma) * nextStateTarget.max()!)
+            stateTarget[action as! Int] = NSNumber(value: Double(reward) + self.gamma * nextStateTarget.max()!)
 //            let targetValue = convertToArray(from: stateTarget)
             print("target Updated \(stateTarget)")
             do {
-                featureMultiArray = try MLMultiArray(shape: [5,1], dataType: MLMultiArrayDataType.double)
+                featureMultiArray = try MLMultiArray(shape: [environment.get_action_size() as! NSNumber, 1], dataType: MLMultiArrayDataType.double)
                 for index in 0..<stateTarget.count {
                     featureMultiArray[index] = NSNumber(value: Double(truncating: stateTarget[index]))
                 }
@@ -292,7 +294,7 @@ public class DeepQNetwork<S, A, R>: Agent {
         case .miniBatchEnd:
             let batchIndex = context.metrics[.miniBatchIndex] as! Int
             let batchLoss = context.metrics[.lossValue] as! Double
-            print("Mini batch \(batchIndex), loss: \(batchLoss)")
+//            print("Mini batch \(batchIndex), loss: \(batchLoss)")
 
         case .epochEnd:
             let epochIndex = context.metrics[.epochIndex] as! Int
@@ -329,12 +331,11 @@ public class DeepQNetwork<S, A, R>: Agent {
     }
     
     @objc public func listen() {
-        let state = environment.read()[0]
+        let state = environment.read()
         print(state)
-        let action = self.act(state: state as! Int)
-        let reward = environment.act(s: state, a: action)
-        let next_state = 1
-        self.store(state: state as! Int, action: action, reward: reward, nextState: next_state)
+        let action = self.act(state: state)
+        let (next_state, reward) = environment.act(s: state, a: action)
+        self.store(state: state, action: action, reward: reward, nextState: next_state)
     }
     
     public func startListen(interval: Int) {
