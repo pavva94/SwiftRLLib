@@ -36,7 +36,6 @@ public class DeepQNetwork<S, A, R: BinaryInteger> {
     var epsilon: Double
     var gamma: Double
     
-    // MARK: - Private Type Properties
     /// The updated Model model.
     private var updatedModel: AppleRLModel?
     /// The default Model model.
@@ -78,6 +77,7 @@ public class DeepQNetwork<S, A, R: BinaryInteger> {
     
     
     required public init(env: Env<S, A, R>, parameters: Dictionary<String, Any>) {
+        /// Initialize every variable
         environment = env
         self.updatedModelURL = appDirectory.appendingPathComponent("personalized.mlmodelc")
         self.tempUpdatedModelURL = appDirectory.appendingPathComponent("personalized_tmp.mlmodelc")
@@ -93,11 +93,13 @@ public class DeepQNetwork<S, A, R: BinaryInteger> {
     }
     
     func store(state: MLMultiArray, action: A, reward: R, nextState: MLMultiArray) {
+        /// Create and store SarsaTuple into the buffer
         let tuple = SarsaTuple(state: state, action: action, reward: reward, nextState: nextState)
         buffer.addData(tuple)
     }
     
     func epsilonGreedy(state: MLMultiArray) -> A {
+        /// Epsilon Greedy policy based on class parameters
         if Double.random(in: 0..<1) < epsilon {
             // epsilon choice
             let choice = Int.random(in: 0..<self.environment.get_action_size()+1)
@@ -106,47 +108,16 @@ public class DeepQNetwork<S, A, R: BinaryInteger> {
         }
         else {
             let stateValue = MLFeatureValue(multiArray: state)
-            // predict value
+            // predict value from model
             let stateTarget = liveModel.predictFor(stateValue)
-//            print("PredictFor ACT")
-//            print(stateTarget!.actions)
             print("Model Choice " + String(convertToArray(from: stateTarget!.actions).argmax()!))
             return convertToArray(from: stateTarget!.actions).argmax() as! A
         }
     }
     
     public func act(state: MLMultiArray) -> A {
-        
+        /// Public function to make a choice about what action do
         return epsilonGreedy(state: state)
-    }
-    
-    func convertToArray(from mlMultiArray: MLMultiArray) -> [Double] {
-        
-        // Init our output array
-        var array: [Double] = []
-        
-        // Get length
-        let length = mlMultiArray.count
-        
-        // Set content of multi array to our out put array
-        for i in 0...length - 1 {
-            array.append(Double(truncating: mlMultiArray[i]))
-        }
-        
-        return array
-    }
-    
-    func convertToMLMultiArrayFloat(from singleArray: [S]) -> MLMultiArray{
-        var featureMultiArray: MLMultiArray
-        do {
-            featureMultiArray = try MLMultiArray(shape: [NSNumber(value: singleArray.count)], dataType: MLMultiArrayDataType.float)
-            for index in 0..<singleArray.count {
-                featureMultiArray[index] = NSNumber(value: singleArray[index] as! Float)
-            }
-        } catch {
-            fatalError("Error converting in MLMultiArrayFloat")
-        }
-        return featureMultiArray
     }
     
     private func createUpdateFeatures() -> MLArrayBatchProvider {
