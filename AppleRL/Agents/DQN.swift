@@ -100,16 +100,18 @@ public class DeepQNetwork<S, A, R: BinaryInteger> {
     func epsilonGreedy(state: MLMultiArray) -> A {
         if Double.random(in: 0..<1) < epsilon {
             // epsilon choice
-            print("Epsilon dimerda")
-            return Int.random(in: 0..<self.environment.get_action_size()+1) as! A
+            let choice = Int.random(in: 0..<self.environment.get_action_size()+1)
+            print("Epsilon Choice \(choice)")
+            return choice as! A
         }
         else {
             let stateValue = MLFeatureValue(multiArray: state)
             // predict value
             let stateTarget = liveModel.predictFor(stateValue)
-            print("PredictFor ACT")
-            print(stateTarget!.actions)
-            return 0  as! A//stateTarget
+//            print("PredictFor ACT")
+//            print(stateTarget!.actions)
+            print("Model Choice " + String(convertToArray(from: stateTarget!.actions).argmax()!))
+            return convertToArray(from: stateTarget!.actions).argmax() as! A
         }
     }
     
