@@ -43,7 +43,7 @@ import Foundation
 //        var temp: [[S]] = []
 //        for i in 0...env.get_state_size() {
 //            temp.append([])
-//            for _ in 0...env.get_action_size() {
+//            for _ in 0...env.getActionSize() {
 //                temp[i].append(0.0 as! S)
 //            }
 //        }
@@ -65,7 +65,7 @@ import Foundation
 //    func epsilonGreedy(state: S) -> A {
 //        if Float.random(in: 0..<1) < epsilon {
 //            // epsilon choice
-//            return Int.random(in: 0..<self.environment.get_action_size()+1) as! A
+//            return Int.random(in: 0..<self.environment.getActionSize()+1) as! A
 //        }
 //        else {
 //            return qTable[state as! Int].argmax()! as! A

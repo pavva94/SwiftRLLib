@@ -11,10 +11,10 @@ import UIKit
 
 public class BrightnessEnv: Env<Float, Int, Int> {
     
-    override func act(s: [Float], a: Int) -> ([Float], Int) { // return the reward that is always int?
+    override func act(state: [Float], action: Int) -> ([Float], Int) { // return the reward that is always int?
         // here define the action, selected by the id number
         // Be sure to set an id to each action
-        let action = a as! Int
+        let action = action as! Int
         let actualBrightness = UIScreen.main.brightness //as! Float
         print("actualBrightness")
         print(actualBrightness)
@@ -33,13 +33,13 @@ public class BrightnessEnv: Env<Float, Int, Int> {
             // decrese brightness slightly
             UIScreen.main.brightness = actualBrightness+CGFloat(0.3)
         }
-        return (s, self.reward(s: s, a: a))
+        return (state, self.reward(state: state, action: action))
     }
     
-    override func reward(s: [Float], a: Int) -> Int {
+    override func reward(state: [Float], action: Int) -> Int {
         var r: Int = 0
-        let st = s[0]
-        let at = a
+        let st = state[0]
+        let at = action
         if st <= 0.3 && at >= 3 {
             r = 1
         } else if st >= 0.3 && at >= 3 {

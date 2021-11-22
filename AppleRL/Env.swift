@@ -13,24 +13,25 @@ let admittedSensors = [
     "battery",
     "volume",
     "orientation",
+    "brightness",
     // not implemented yet
     "proximity",
     "light",
     "gyroscope",
     "barometer",
-    "brightness"
+    
 ]
 
 public class Env<S, A, R> {
     
     private var sensors: [Sensor<S>]
-    private var action_size: Int
-    private var state_size: Int
+    private var actionSize: Int
+    private var stateSize: Int
     
-    init(sens: [String], action_size: Int, state_size: Int) {
+    init(sens: [String], actionSize: Int, stateSize: Int) {
         
-        self.action_size = action_size
-        self.state_size = state_size
+        self.actionSize = actionSize
+        self.stateSize = stateSize
         self.sensors = []
         
         // TODO check the sensors with a list of selected/usable sensors
@@ -61,12 +62,12 @@ public class Env<S, A, R> {
         }
     }
     
-    func get_action_size() -> Int {
-        return self.action_size
+    func getActionSize() -> Int {
+        return self.actionSize
     }
     
-    func get_state_size() -> Int {
-        return self.state_size
+    func getStateSize() -> Int {
+        return self.stateSize
     }
     
     func addSensor(s: Sensor<S>) {
@@ -83,13 +84,13 @@ public class Env<S, A, R> {
         return data
     }
     
-    func act(s: [S], a: A) -> ([S], R) { // return the reward that is always int?
+    func act(state: [S], action: A) -> ([S], R) { // return the reward that is always int?
         // here define the action, selected by the id number
         // Be sure to se an id to each action
         fatalError("act() has not been implemented")
     }
     
-    func reward(s: [S], a: A) -> R {
+    func reward(state: [S], action: A) -> R {
         fatalError("reward() has not been implemented")
     }
     

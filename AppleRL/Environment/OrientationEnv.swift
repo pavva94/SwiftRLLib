@@ -9,19 +9,19 @@ import Foundation
 
 public class OrientationEnv: Env<Int, Int, Int> {
     
-    override  func act(s: [Int], a: Int) -> ([Int], Int) { // return the reward that is always int?
+    override  func act(state: [Int], action: Int) -> ([Int], Int) { // return the reward that is always int?
         // here define the action, selected by the id number
         // Be sure to set an id to each action
-        print(s) // action
-        return (s, self.reward(s: s, a: a))
+        print(state) // action
+        return (state, self.reward(state: state, action: action))
     }
     
-    override func reward(s: [Int], a: Int) -> Int {
+    override func reward(state: [Int], action: Int) -> Int {
         var r: Int = 0
-        let sa = s[0]
-        if a == 1 {
+        let sa = state[0]
+        if action == 1 {
             r = 0
-        } else if a == sa {
+        } else if action == sa {
             r = 1
         } else {
             r = -1

@@ -112,7 +112,7 @@ public class DeepQNetwork<S, A, R> {
     func epsilonGreedy(state: MLMultiArray) -> A {
         if Double.random(in: 0..<1) < epsilon {
             // epsilon choice
-            let choice = Int.random(in: 0..<self.environment.get_action_size()+1)
+            let choice = Int.random(in: 0..<self.environment.getActionSize()+1)
             print("Epsilon Choice \(choice)")
             return choice as! A
         }
@@ -313,7 +313,7 @@ public class DeepQNetwork<S, A, R> {
         let newState = convertToMLMultiArrayFloat(from:state)
         print(state)
         let action = self.act(state: newState)
-        let (next_state, reward) = environment.act(s: state, a: action)
+        let (next_state, reward) = environment.act(state: state, action: action)
         let newNextState = convertToMLMultiArrayFloat(from:next_state)
         self.store(state: newState, action: action, reward: reward, nextState: newNextState)
     }
@@ -420,7 +420,7 @@ public class DeepQNetwork<S, A, R> {
 //
 //[0.05088436603546143,0.05092423409223557,0.03019963018596172,-0.5132191777229309,-0.04031703621149063]
 //
-//[0.03314311802387238,0.03358393907546997,0.02671210467815399,-0.9411672949790955,-0.3377813994884491] after 5/6 training iT CHANGE!! IT TRAIN!
+//[0.03314311802387238,0.03358393907546997,0.02671210467815399,-0.9411672949790955,-0.3377813994884491] after 5/6 training iT CHANGEs!! IT TRAINs!
 
 // a bit different on the next run after reload the app but it's ok
 //[0.03375066816806793,0.03317856043577194,0.02958793565630913,-0.9496716260910034,-0.4104157686233521]
