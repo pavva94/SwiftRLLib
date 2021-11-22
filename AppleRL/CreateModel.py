@@ -27,11 +27,13 @@ def convert_model_to_mlmodel(model, updatable_layers, output_shape):
     adam_params.set_batch(8, [1, 2, 8, 16])
     builder.set_adam_optimizer(adam_params)
     builder.set_epochs(10, [1, 10, 50])
+    builder.set_shuffle(False)
     print(builder.spec.description.trainingInput)
     
     ct.utils.save_spec(builder.spec, coreml_model_path)
     
     print("Updatable Model Created:")
+    builder.inspect_layers()
     builder.inspect_optimizer()
     builder.inspect_loss_layers()
     builder.inspect_updatable_layers()
