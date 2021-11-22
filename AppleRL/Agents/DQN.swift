@@ -8,7 +8,7 @@
 import CoreML
 
 
-public class DeepQNetwork<S, A, R: BinaryInteger> {
+public class DeepQNetwork<S, A, R> {
     /// S: type of sensors
     /// A: type of actions
     /// R: type of reward
@@ -147,7 +147,7 @@ public class DeepQNetwork<S, A, R: BinaryInteger> {
             print("__________\(d.getAction())___________")
             let state = d.getState()
             let action = d.getAction()
-            let reward = d.getReward()
+            let reward = d.getReward() as! Double
             let nextState = d.getNextState()
             
             // Create a MLFeatureValue as input for the model
