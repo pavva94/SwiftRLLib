@@ -14,7 +14,7 @@ public class BrightnessEnv: Env<Float, Int, Int> {
     override func act(state: [Float], action: Int) -> ([Float], Int) { // return the reward that is always int?
         // here define the action, selected by the id number
         // Be sure to set an id to each action
-        let action = action as! Int
+        let action = action
         let actualBrightness = UIScreen.main.brightness //as! Float
         print("actualBrightness")
         print(actualBrightness)
