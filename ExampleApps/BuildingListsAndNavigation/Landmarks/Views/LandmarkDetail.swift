@@ -58,21 +58,34 @@ struct LandmarkDetail: View {
                     spacing: 10
                 ) {
                     Text("Action")
-                    Text("State -> Brightness")
-                    Text("State -> Battery")
-                    Text("State -> Ambient Light")
-                }
+                    Text(String(landmark.action))
+                }.font(.subheadline)
+                .foregroundColor(.secondary)
+                
                 HStack (
                     alignment: .top,
                     spacing: 10
                 ) {
-                    Text(String(landmark.action))
-//                    Text(landmark.state.description)
+                    Text("State -> Brightness")
                     Text(String(format: "%.1f", landmark.state[0]))
+                }.font(.subheadline)
+                .foregroundColor(.secondary)
+                
+                HStack (
+                    alignment: .top,
+                    spacing: 10
+                ) {
+                    Text("State -> Battery")
                     Text(String(format: "%.1f", landmark.state[1]))
+                }.font(.subheadline)
+                .foregroundColor(.secondary)
+                HStack (
+                    alignment: .top,
+                    spacing: 10
+                ) {
+                    Text("State -> Ambient Light")
                     Text(String(format: "%.1f", landmark.state[2]))
-                }
-                .font(.subheadline)
+                }.font(.subheadline)
                 .foregroundColor(.secondary)
 
                 Divider()
@@ -80,10 +93,14 @@ struct LandmarkDetail: View {
 //                Text("About \(landmark.description)")
 //                    .font(.title2)
 //                Text(String(format: "%.1f", landmark.state))
-                
-                Button("+1", action: a)
-                Button("0", action: b)
-                Button("-1", action: c)
+                HStack (
+                    alignment: .top,
+                    spacing: 10
+                ) {
+                    Button("+1", action: a)
+                    Button("0", action: b)
+                    Button("-1", action: c)
+                }
             }
             .padding()
         }

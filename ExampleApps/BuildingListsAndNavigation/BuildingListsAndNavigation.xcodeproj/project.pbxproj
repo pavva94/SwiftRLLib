@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		734D21B4274F8F4A003629B4 /* FilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734D21B3274F8F4A003629B4 /* FilesManager.swift */; };
-		734D21BA274FB635003629B4 /* AppleRL in Frameworks */ = {isa = PBXBuildFile; productRef = 734D21B9274FB635003629B4 /* AppleRL */; };
+		734D21BD274FB8C5003629B4 /* AppleRL in Frameworks */ = {isa = PBXBuildFile; productRef = 734D21BC274FB8C5003629B4 /* AppleRL */; };
 		73C52DCB274E3C02008D1D90 /* AppEnv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73C52DCA274E3C02008D1D90 /* AppEnv.swift */; };
 		73C52DD5274E5AEA008D1D90 /* database.json in Resources */ = {isa = PBXBuildFile; fileRef = 73C52DD4274E5AEA008D1D90 /* database.json */; };
 		73C52DDD274E9C2B008D1D90 /* AppleRLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 73C52DDC274E9C2B008D1D90 /* AppleRLModel.mlmodel */; };
@@ -29,7 +29,7 @@
 /* Begin PBXFileReference section */
 		32C0591524A7452A1B7C1DE3 /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		734D21B3274F8F4A003629B4 /* FilesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesManager.swift; sourceTree = "<group>"; };
-		734D21B8274FB618003629B4 /* AppleRL */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AppleRL; path = ../../../Package/AppleRL; sourceTree = "<group>"; };
+		734D21BB274FB8C0003629B4 /* AppleRL */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AppleRL; path = ../../Package/AppleRL; sourceTree = "<group>"; };
 		73C52DCA274E3C02008D1D90 /* AppEnv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnv.swift; sourceTree = "<group>"; };
 		73C52DD4274E5AEA008D1D90 /* database.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = database.json; sourceTree = "<group>"; };
 		73C52DDC274E9C2B008D1D90 /* AppleRLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = AppleRLModel.mlmodel; sourceTree = "<group>"; };
@@ -56,7 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				734D21BA274FB635003629B4 /* AppleRL in Frameworks */,
+				734D21BD274FB8C5003629B4 /* AppleRL in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,7 +82,7 @@
 		73C52DC8274E3BBA008D1D90 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				734D21B8274FB618003629B4 /* AppleRL */,
+				734D21BB274FB8C0003629B4 /* AppleRL */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -188,7 +188,7 @@
 			);
 			name = Landmarks;
 			packageProductDependencies = (
-				734D21B9274FB635003629B4 /* AppleRL */,
+				734D21BC274FB8C5003629B4 /* AppleRL */,
 			);
 			productName = Landmarks;
 			productReference = C20D77EA24B665D7002E7AEA /* Landmarks.app */;
@@ -456,7 +456,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		734D21B9274FB635003629B4 /* AppleRL */ = {
+		734D21BC274FB8C5003629B4 /* AppleRL */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppleRL;
 		};
