@@ -43,7 +43,6 @@ struct LandmarkList: View {
                 }
             }
             .navigationTitle("Agent's Actions Preview")
-            .onAppear { initializeEnv()}
         }
     }
 }

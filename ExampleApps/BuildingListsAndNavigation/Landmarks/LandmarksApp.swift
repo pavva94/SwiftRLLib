@@ -6,10 +6,11 @@ The top-level definition of the Landmarks app.
 */
 
 import SwiftUI
-import AppleRL
 
 @main
 struct LandmarksApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

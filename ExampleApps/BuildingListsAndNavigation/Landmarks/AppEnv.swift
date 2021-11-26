@@ -9,6 +9,8 @@
 import Foundation
 import AppleRL
 
+
+
 public class AppEnv: Env<Double, Int, Double> {
     let defaults = UserDefaults.standard
     var idCounter: Int = 0
@@ -27,6 +29,9 @@ public class AppEnv: Env<Double, Int, Double> {
         idCounter += 1
         defaults.set(idCounter, forKey: "idCounter")
         
+
+        a.exec()
+        
         return (state, 0)
     }
 
@@ -37,20 +42,4 @@ public class AppEnv: Env<Double, Int, Double> {
         
         return r
     }
-}
-
-let e: Env = AppEnv(sens: ["brightness", "battery", "ambientLight"], actionSize: 3, stateSize: 3)
-let params: Dictionary<String, Any> = ["epsilon": Double(0.6), "learning_rate": Double(0.1), "gamma": Double(0.8)]
-
-let qnet: DeepQNetwork = DeepQNetwork(env: e, parameters: params)
-
-public func initializeEnv() {
-//    resetDatabase()
-//        DeepQNetwork<[Float], Int, Double>(env: nil, parameters: params)
-    print("DQN created")
-//        var a = qnet.act(state: 2.0)
-//        print("ActDone")
-//        print(a)
-//    qnet.startListen(interval: 10)
-    qnet.startTrain(interval: 50)
 }
