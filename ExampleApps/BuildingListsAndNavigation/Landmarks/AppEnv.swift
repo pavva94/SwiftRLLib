@@ -30,7 +30,7 @@ public class AppEnv: Env<Double, Int, Double> {
         defaults.set(idCounter, forKey: "idCounter")
         
 
-        a.exec()
+//        a.exec()
         
         return (state, 0)
     }
