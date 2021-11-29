@@ -9,21 +9,19 @@ import Foundation
 import UIKit
 import AVKit
 
-let admittedSensors = [
-    "battery",
-    "volume",
-    "orientation",
-    "brightness",
-    "ambientLight",
-    // not implemented yet
-    "proximity",
-    "light",
-    "gyroscope",
-    "barometer",
-    
-]
-
-open class Env<S, A, R> {
+open class Env {
+    let admittedSensors = [
+        "battery",
+        "volume",
+        "orientation",
+        "brightness",
+        "ambientLight",
+        // not implemented yet
+        "proximity",
+        "gyroscope",
+        "barometer",
+        
+    ]
     
     private var sensors: [Sensor<S>]
     private var actionSize: Int
