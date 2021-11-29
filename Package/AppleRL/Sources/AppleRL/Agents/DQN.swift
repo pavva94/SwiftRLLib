@@ -8,22 +8,22 @@
 import CoreML
 
 
-open class DeepQNetwork<S, A, R: ValidRewardTypes> {
+open class DeepQNetwork<S> {
     /// S: type of sensors
     /// A: type of actions
     /// R: type of reward
     /// The <S, A, R> types are inherited by the Environment
     
     /// Define the buffer
-    open var buffer: ExperienceReplayBuffer<S, A, R>
+    open var buffer: ExperienceReplayBuffer
     /// Define the SarsaTuple type
-    private typealias SarsaTuple = SarsaTupleGeneric<S, A, R>
+    private typealias SarsaTuple = SarsaTupleGeneric
     
     /// Name of model's inputs
     let inputName = "data"
     let outputName = "actions_true"
     
-    let environment: Env<S, A, R>
+    let environment: Env
     
     /// Timers for ListenMode
     var timerListen : Timer? = nil { willSet { timerListen?.invalidate() }}
@@ -85,7 +85,7 @@ open class DeepQNetwork<S, A, R: ValidRewardTypes> {
     private var tempUpdatedTargetModelURL: URL
     
     /// Initialize every variables
-    required public init(env: Env<S, A, R>, parameters: Dictionary<String, Any>) {
+    required public init(env: Env, parameters: Dictionary<String, Any>) {
         environment = env
         self.updatedModelURL = appDirectory.appendingPathComponent("personalized.mlmodelc")
         self.tempUpdatedModelURL = appDirectory.appendingPathComponent("personalized_tmp.mlmodelc")
@@ -103,18 +103,18 @@ open class DeepQNetwork<S, A, R: ValidRewardTypes> {
     }
     
     /// Create and store SarsaTuple into the buffer
-    open func store(state: MLMultiArray, action: A, reward: R, nextState: MLMultiArray) {
+    open func store(state: MLMultiArray, action: Int, reward: Double, nextState: MLMultiArray) {
         let tuple = SarsaTuple(state: state, action: action, reward: reward, nextState: nextState)
         buffer.addData(tuple)
     }
     
     /// Epsilon Greedy policy based on class parameters
-    func epsilonGreedy(state: MLMultiArray) -> A {
+    func epsilonGreedy(state: MLMultiArray) -> Int {
         if Double.random(in: 0..<1) < epsilon {
             // epsilon choice
             let choice = Int.random(in: 0..<self.environment.getActionSize()+1)
             print("Epsilon Choice \(choice)")
-            return choice as! A
+            return choice
         }
         else {
             let stateValue = MLFeatureValue(multiArray: state)
@@ -122,12 +122,12 @@ open class DeepQNetwork<S, A, R: ValidRewardTypes> {
             let stateTarget = liveModel.predictFor(stateValue)
             print("Model Choice " + String(convertToArray(from: stateTarget!.actions).argmax()!))
             print("Model List \(convertToArray(from: stateTarget!.actions))")
-            return convertToArray(from: stateTarget!.actions).argmax() as! A
+            return convertToArray(from: stateTarget!.actions).argmax()!
         }
     }
     
     /// open function to make a choice about what action do
-    open func act(state: MLMultiArray) -> A {
+    open func act(state: MLMultiArray) -> Int {
         return epsilonGreedy(state: state)
     }
     
@@ -147,7 +147,7 @@ open class DeepQNetwork<S, A, R: ValidRewardTypes> {
             print("__________\(d.getAction())___________")
             let state = d.getState()
             let action = d.getAction()
-            let reward = Double(d.getReward() as! Double)
+            let reward = d.getReward()
             let nextState = d.getNextState()
             
             // Create a MLFeatureValue as input for the model
@@ -164,7 +164,7 @@ open class DeepQNetwork<S, A, R: ValidRewardTypes> {
             let nextStateTarget = convertToArray(from: nextStateActions)
             print("Predict TargetModel \(nextStateActions)")
             // Update the taget with the max q-value of next state, using a greedy policy
-            stateTarget[action as! Int] = NSNumber(value: Double(reward) + self.gamma * nextStateTarget.max()!)
+            stateTarget[action] = NSNumber(value: Double(reward) + self.gamma * nextStateTarget.max()!)
 
             print("target Updated \(stateTarget)")
             target = MLFeatureValue(multiArray: stateTarget)
@@ -322,7 +322,7 @@ open class DeepQNetwork<S, A, R: ValidRewardTypes> {
         let newState = convertToMLMultiArrayFloat(from:state)
         print(state)
         let action = self.act(state: newState)
-        let (next_state, reward) = environment.act(state: state, action: action)
+        environment.act(state: state, action: action)
         // in-App use means the user needs to give a reward using the app and only then the SarsaTuple is saved and used for training
         // here the online-use
 //        let newNextState = convertToMLMultiArrayFloat(from:next_state)

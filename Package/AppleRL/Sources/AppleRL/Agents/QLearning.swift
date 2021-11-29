@@ -11,10 +11,10 @@ import CoreML
 
 open class QLearning {
     
-    open var buffer: ExperienceReplayBuffer = ExperienceReplayBuffer<Int, Int, Int>()
-    private typealias SarsaTuple = SarsaTupleGeneric<Int, Int, Int>
+    open var buffer: ExperienceReplayBuffer = ExperienceReplayBuffer()
+    private typealias SarsaTuple = SarsaTupleGeneric
     
-    let environment: Env<Int, Int, Int>
+    let environment: Env
     
     var timerListen : Timer? = nil {
             willSet {
@@ -35,7 +35,7 @@ open class QLearning {
     
     var path: URL
     
-    required public init(env: Env<Int, Int, Int>, parameters: Dictionary<String, Any>) {
+    required public init(env: Env, parameters: Dictionary<String, Any>) {
         environment = env
         
         self.epsilon = (parameters["epsilon"] as? Double)!
@@ -54,7 +54,7 @@ open class QLearning {
         self.path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("QLearningOrientation.plist")
     }
 
-    func store(state: Int, action: Int, reward: Int) {
+    func store(state: Int, action: Int, reward: Double) {
         let tuple = SarsaTuple(state: convertToMLMultiArrayFloat(from:[state]), action: action, reward: reward)
         buffer.addData(tuple)
     }
@@ -86,7 +86,7 @@ open class QLearning {
         while i < data.count {
             let tuple: SarsaTuple = data[i]
             print(tuple)
-            let s: Int = Int(convertToArray(from: tuple.getState())[0]), a: Int = tuple.getAction(), r: Int = tuple.getReward()
+            let s: Int = Int(convertToArray(from: tuple.getState())[0]), a: Int = tuple.getAction(), r: Double = tuple.getReward()
 
             var maxQtable: [Double] = []
             for i in 0...self.environment.getStateSize() {
@@ -121,7 +121,7 @@ open class QLearning {
         while i < data.count {
             let tuple: SarsaTuple = data[i]
             print(tuple)
-            let s: Int = Int(convertToArray(from: tuple.getState())[0]), a: Int = tuple.getAction(), r: Int = tuple.getReward()
+            let s: Int = Int(convertToArray(from: tuple.getState())[0]), a: Int = tuple.getAction(), r: Double = tuple.getReward()
 
             var maxQtable: [Double] = []
             for i in 0...self.environment.getStateSize() {
@@ -138,10 +138,11 @@ open class QLearning {
     @objc open func listen() {
         let state = environment.read()[0]
         print(state)
-        let action = self.act(state: state)
-        let (_, reward) = environment.act(state: [state], action: action)
+        let action = self.act(state: Int(state))
+        environment.act(state: [state], action: action)
+        let reward = environment.reward(state: [state], action: action)
         //let next_state = result.1
-        self.store(state: state, action: action, reward: reward)
+        self.store(state: Int(state), action: action, reward: reward)
     }
 
     open func startListen(interval: Int) {
