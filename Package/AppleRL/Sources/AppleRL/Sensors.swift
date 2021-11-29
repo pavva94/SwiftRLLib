@@ -28,61 +28,71 @@ import CoreMotion
 //    }
 //}
 
-open class Battery<S>: Sensor<S> {
-    open override func read() -> S {
+open class Battery: Sensor {
+    public let name: String = "battery"
+
+    open override func read() -> Double {
         return preprocessing(value: UIDevice.current.batteryLevel * 100)
     }
     
-    open override func preprocessing(value: Any) -> S {
-        return Double(Int.random(in: 1..<100)) as! S//(value as! Float).f.swd as! S
+    public override func preprocessing(value: Any) -> Double {
+        return Double(Int.random(in: 1..<100))//(value as! Float).f.swd as! S
     }
 }
 
-open class Orientation<S>: Sensor<S> {
-    open override func read() -> S {
+open class Orientation: Sensor {
+    public let name: String = "orientation"
+    
+    open override func read() -> Double
+    {
         return preprocessing(value: UIDevice.current.orientation.isLandscape)
     }
     
-    open override func preprocessing(value: Any) -> S {
+    open override func preprocessing(value: Any) -> Double {
         if value as! Bool {
-            return 0 as! S
+            return Double(0)
         } else {
-            return 1 as! S
+            return Double(1)
         }
     }
 }
 
 
-open class Brightness<S>: Sensor<S> {
-    open override func read() -> S {
+open class Brightness: Sensor {
+    public let name: String = "brightness"
+    
+    open override func read() -> Double {
         return preprocessing(value: UIScreen.main.brightness)
     }
     
-    open override func preprocessing(value: Any) -> S {
-        return (value as! CGFloat).swd as! S
+    open override func preprocessing(value: Any) -> Double {
+        return (value as! CGFloat).swd
     }
 }
 
-open class AmbientLight<S>: Sensor<S> {
-    open override func read() -> S {
+open class AmbientLight: Sensor {
+    public let name: String = "ambientLight"
+    
+    open override func read() -> Double {
 //        var a = SRAmbientLightSample()
 //        var l = a.lux.value
-        return Double.random(in: 0..<10) as! S
+        return Double.random(in: 0..<10)
     }
     
-    open override func preprocessing(value: Any) -> S {
-        return (value as! CGFloat).swd as! S
+    open override func preprocessing(value: Any) -> Double {
+        return (value as! CGFloat).swd
     }
 }
 
-
-open class Accelerometer: Sensor<[Double]> {
+open class Accelerometer: Sensor {
+    let name: String = "accelerometer"
+    
     let motion = CMMotionManager()
     var x: Double = 0
     var y: Double = 0
     var z: Double = 0
     
-    open override func read() -> [Double] {
+    open override func read() -> Double {
         // Make sure the accelerometer hardware is available.
         if self.motion.isAccelerometerAvailable {
             if let data = self.motion.accelerometerData {
@@ -94,19 +104,21 @@ open class Accelerometer: Sensor<[Double]> {
         return preprocessing(value: [x, y, z])
     }
     
-    open override func preprocessing(value: Any) -> [Double] {
-        return value as! [Double]
+    open override func preprocessing(value: Any) -> Double {
+        return value as! Double
     }
 }
 
 
-open class Gyroscope: Sensor<[Double]> {
+open class Gyroscope: Sensor {
+    public let name: String = "gyroscope"
+        
     let motion = CMMotionManager()
     var x: Double = 0
     var y: Double = 0
     var z: Double = 0
     
-    open override func read() -> [Double] {
+    open override func read() -> Double {
         // Make sure the accelerometer hardware is available.
         if self.motion.isGyroAvailable {
             if let data = self.motion.gyroData {
@@ -118,8 +130,8 @@ open class Gyroscope: Sensor<[Double]> {
         return preprocessing(value: [x, y, z])
     }
     
-    open override func preprocessing(value: Any) -> [Double] {
-        return value as! [Double]
+    open override func preprocessing(value: Any) -> Double {
+        return value as! Double
     }
 }
 //public class Accelerometer: Sensor<[Double]> {

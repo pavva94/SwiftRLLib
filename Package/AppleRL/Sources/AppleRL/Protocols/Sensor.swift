@@ -24,13 +24,24 @@ import Foundation
 //
 //}
 
-open class Sensor<S> {
-    
-    func read() -> S {
+open class Sensor {
+//    let name: String = ""
+
+    func read() -> Double {
         fatalError("read() has not been implemented")
     }
-    func preprocessing(value: Any) -> S {
+    func preprocessing(value: Any) -> Double {
         fatalError("preprocessing() has not been implemented")
     }
-    
+
 }
+
+//public protocol Sensor {
+//    associatedtype S
+//    var name: String { get }
+//
+//    func read() -> S
+//    func preprocessing(value: Any) -> S
+//}
+
+
