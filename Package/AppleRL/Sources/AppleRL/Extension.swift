@@ -112,11 +112,3 @@ extension CGFloat {
     var swf: Float { return Float(self) }
     var swd: Double {return Double(self)}
 }
-
-
-
-public protocol ValidRewardTypes { }
-
-extension Double: ValidRewardTypes { }
-
-extension Int: ValidRewardTypes { }

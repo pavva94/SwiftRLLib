@@ -23,7 +23,7 @@ open class Env {
         
     ]
     
-    private var sensors: [Sensor<S>]
+    private var sensors: [Sensor]
     private var actionSize: Int
     private var stateSize: Int
     
@@ -42,7 +42,7 @@ open class Env {
             switch st {
             case "battery":
                 UIDevice.current.isBatteryMonitoringEnabled = true
-                sensors.append(Battery<S>())
+                sensors.append(Battery())
             case "volume":
                 do {
                     try AVAudioSession.sharedInstance().setActive(true)
@@ -51,11 +51,11 @@ open class Env {
                 }
                 // AVAudioSession.sharedInstance().outputVolume
             case "orientation":
-                sensors.append(Orientation<S>())
+                sensors.append(Orientation())
             case "brightness":
-                sensors.append(Brightness<S>())
+                sensors.append(Brightness())
             case "ambientLight":
-                sensors.append(AmbientLight<S>())
+                sensors.append(AmbientLight())
             default:
                 print("Sensor not valid: " + String(st))
             }
@@ -71,12 +71,12 @@ open class Env {
         return self.stateSize
     }
     
-    open func addSensor(s: Sensor<S>) {
+    open func addSensor(s: Sensor) {
         sensors.append(s)
     }
     
-    open func read() -> [S] {
-        var data: [S] = []
+    open func read() -> [Double] {
+        var data: [Double] = []
         
         for s in sensors {
             data.append(s.read())
@@ -85,15 +85,15 @@ open class Env {
         return data
     }
     
-    open func act(state: [S], action: A) -> ([S], R) { // return the reward that is always int?
+    open func act(state: [Double], action: Int) -> Void { // return the reward that is always int?
         // here define the action, selected by the id number
         // Be sure to se an id to each action
-        fatalError("act() has not been implemented")
+        // search action based on Id 
     }
     
-    open func reward(state: [S], action: A) -> R {
+    open func reward(state: [Double], action: Int) -> Double {
         fatalError("reward() has not been implemented")
     }
-    
+
     
 }
