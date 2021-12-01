@@ -418,6 +418,34 @@ open class DeepQNetwork {
         
     }
     
+    public func handleAppRefreshTask(task: BGAppRefreshTask) {
+        print("Handling task")
+        task.expirationHandler = {
+          task.setTaskCompleted(success: false)
+        }
+      
+      
+//    NotificationCenter.default.post(name: .newPokemonFetched,
+//                                    object: self,
+//                                    userInfo: ["pokemon": pokemon])
+        self.listen()
+        task.setTaskCompleted(success: true)
+      
+      
+        scheduleBackgroundSensorFetch()
+    }
+
+    public func scheduleBackgroundSensorFetch() {
+        print("backgroundmode activate")
+      let sensorFetchTask = BGAppRefreshTaskRequest(identifier: "com.AppleRL.backgroundListen")
+        sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: 10)
+      do {
+        try BGTaskScheduler.shared.submit(sensorFetchTask)
+        print("task scheduled")
+      } catch {
+        print("Unable to submit task: \(error.localizedDescription)")
+      }
+    }
 }
 
 // train test
