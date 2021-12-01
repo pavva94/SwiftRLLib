@@ -33,10 +33,10 @@ struct Landmark: Hashable, Codable, Identifiable {
 //        var longitude: Double
 //    }
 }
-struct DatabaseData: Hashable, Codable, Identifiable {
-    var id: Int
-    var state: [Double]
-    var action: Int
-    var reward: Double
-    
-}
+//struct DatabaseData: Hashable, Codable, Identifiable {
+//    var id: Int
+//    var state: [Double]
+//    var action: Int
+//    var reward: Double
+//    
+//}

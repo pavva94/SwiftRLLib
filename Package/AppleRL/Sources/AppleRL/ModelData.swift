@@ -7,6 +7,9 @@ Storage for model data.
 
 import Foundation
 
+
+let databasePath: String = "database.json"
+
 public func load<T: Decodable>(_ filename: String) -> T {
     var data: Data
     print(filename)
@@ -95,7 +98,7 @@ public func resetDatabase(path: String) {
 
 
 func manageDatabase(_ data: DatabaseData, path: String) {
-    var databaseData: [DatabaseData] = load(path)
+    var databaseData: [DatabaseData] = loadDatabase(path)
     
     
     databaseData.append(data)

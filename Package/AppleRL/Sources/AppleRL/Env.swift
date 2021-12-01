@@ -114,6 +114,7 @@ open class Env {
             manageDatabase(data, path: databasePath)
             self.idCounter += 1
             self.defaults.set(idCounter, forKey: "idCounter")
+            print("database saved, idCounter \(self.idCounter)")
         }
     }
     
