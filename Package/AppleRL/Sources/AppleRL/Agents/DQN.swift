@@ -120,7 +120,7 @@ open class DeepQNetwork {
     func epsilonGreedy(state: MLMultiArray) -> Int {
         if Double.random(in: 0..<1) < epsilon {
             // epsilon choice
-            let choice = Int.random(in: 0..<self.environment.getActionSize()+1)
+            let choice = Int.random(in: 0..<self.environment.getActionSize())
             print("Epsilon Choice \(choice)")
             return choice
         }
@@ -433,7 +433,7 @@ open class DeepQNetwork {
     public func handleAppRefreshTask(task: BGAppRefreshTask) {
         print("Handling task")
         task.expirationHandler = {
-          task.setTaskCompleted(success: false)
+            task.setTaskCompleted(success: false)
         }
       
       
@@ -449,14 +449,14 @@ open class DeepQNetwork {
 
     public func scheduleBackgroundSensorFetch() {
         print("backgroundmode activate")
-      let sensorFetchTask = BGAppRefreshTaskRequest(identifier: "com.AppleRL.backgroundListen")
-        sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: 10)
-      do {
-        try BGTaskScheduler.shared.submit(sensorFetchTask)
-        print("task scheduled")
-      } catch {
-        print("Unable to submit task: \(error.localizedDescription)")
-      }
+        let sensorFetchTask = BGAppRefreshTaskRequest(identifier: "com.AppleRL.backgroundListen")
+            sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: 10)
+        do {
+            try BGTaskScheduler.shared.submit(sensorFetchTask)
+            print("task scheduled")
+        } catch {
+            print("Unable to submit task: \(error.localizedDescription)")
+        }
     }
 }
 
