@@ -30,8 +30,11 @@ open class DeepQNetwork {
     var epochs: Double
     var epsilon: Double
     var gamma: Double
+    var timeIntervalBackgroundMode: Double
+    
     var countTargetUpdate: Int = 0
     let epochsAlignTarget: Int = 10
+    
     
     /// The updated Model model.
     private var updatedModel: AppleRLModel?
@@ -93,6 +96,11 @@ open class DeepQNetwork {
         self.gamma = (parameters["gamma"] as? Double)!
         self.epochs = 10 //(parameters["epochs"] as? Float)!
         self.learningRate = (parameters["learning_rate"] as? Double)!
+        if let val = parameters["timeIntervalBackgroundMode"] {
+            self.timeIntervalBackgroundMode = val as! Double
+        } else {
+            self.timeIntervalBackgroundMode = 10*60
+        }
         
         loadUpdatedModel()
             
@@ -106,14 +114,9 @@ open class DeepQNetwork {
     
     /// Create and store SarsaTuple into the buffer and delete from database
     open func storeAndDelete(id: Int, state: MLMultiArray, action: Int, reward: Double, nextState: MLMultiArray) {
-        do {
-            let tuple = SarsaTuple(state: state, action: action, reward: reward, nextState: nextState)
-            buffer.addData(tuple)
-            deleteFromDataset(id: id)
-        } catch {
-            fatalError("Can't Store and Delete file: \(error)")
-        }
-        
+        let tuple = SarsaTuple(state: state, action: action, reward: reward, nextState: nextState)
+        buffer.addData(tuple)
+        deleteFromDataset(id: id)
     }
     
     /// Epsilon Greedy policy based on class parameters
@@ -450,7 +453,7 @@ open class DeepQNetwork {
     public func scheduleBackgroundSensorFetch() {
         print("backgroundmode activate")
         let sensorFetchTask = BGAppRefreshTaskRequest(identifier: "com.AppleRL.backgroundListen")
-            sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: 10)
+        sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalBackgroundMode)
         do {
             try BGTaskScheduler.shared.submit(sensorFetchTask)
             print("task scheduled")
