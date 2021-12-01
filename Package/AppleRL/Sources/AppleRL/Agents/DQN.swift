@@ -104,6 +104,18 @@ open class DeepQNetwork {
         buffer.addData(tuple)
     }
     
+    /// Create and store SarsaTuple into the buffer and delete from database
+    open func storeAndDelete(id: Int, state: MLMultiArray, action: Int, reward: Double, nextState: MLMultiArray) {
+        do {
+            let tuple = SarsaTuple(state: state, action: action, reward: reward, nextState: nextState)
+            buffer.addData(tuple)
+            deleteFromDataset(id: id)
+        } catch {
+            fatalError("Can't Store and Delete file: \(error)")
+        }
+        
+    }
+    
     /// Epsilon Greedy policy based on class parameters
     func epsilonGreedy(state: MLMultiArray) -> Int {
         if Double.random(in: 0..<1) < epsilon {
