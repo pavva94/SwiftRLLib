@@ -7,9 +7,7 @@ Storage for model data.
 
 import Foundation
 
-var landmarks: [Landmark] = load("landmarkData.json")
-
-func load<T: Decodable>(_ filename: String) -> T {
+public func load<T: Decodable>(_ filename: String) -> T {
     var data: Data
     print(filename)
     let fileManager = FileManager.default
@@ -32,7 +30,7 @@ func load<T: Decodable>(_ filename: String) -> T {
     }
 }
 
-func loadDatabase(_ filename: String) -> [DatabaseData] {
+public func loadDatabase(_ filename: String) -> [DatabaseData] {
     var data: Data
     print(filename)
     let fileManager = FileManager.default
@@ -44,7 +42,8 @@ func loadDatabase(_ filename: String) -> [DatabaseData] {
     
         data = try Data(contentsOf: fileURL)
     } catch {
-        fatalError("Couldn't load \(filename) from main bundle:\n\(error)")
+        print("Couldn't load \(filename) from main bundle:\n\(error)")
+        return []
     }
     
     if data.count == 0 {
@@ -61,13 +60,13 @@ func loadDatabase(_ filename: String) -> [DatabaseData] {
 }
 
 
-func SaveToFile(data: [DatabaseData]){
+func SaveToFile(data: [DatabaseData], path: String){
     let fileManager = FileManager.default
 
     do {
 
         let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:true)
-        let fileURL = documentDirectory.appendingPathComponent(databasePath)
+        let fileURL = documentDirectory.appendingPathComponent(path)
     
         let encoder = JSONEncoder()
 
@@ -79,12 +78,12 @@ func SaveToFile(data: [DatabaseData]){
     print("database SAVED")
 }
 
-func resetDatabase() {
+public func resetDatabase(path: String) {
     let fileManager = FileManager.default
     let data: [DatabaseData] = []
     do {
         let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:true)
-        let fileURL = documentDirectory.appendingPathComponent(databasePath)
+        let fileURL = documentDirectory.appendingPathComponent(path)
         let encoder = JSONEncoder()
 
         let jsonData = try encoder.encode(data)
@@ -95,13 +94,13 @@ func resetDatabase() {
 }
 
 
-func manageDatabase(_ data: DatabaseData) {
-//    databaseData = load(databasePath)
+func manageDatabase(_ data: DatabaseData, path: String) {
+    var databaseData: [DatabaseData] = load(path)
     
     
     databaseData.append(data)
     
-    SaveToFile(data: databaseData)
+    SaveToFile(data: databaseData, path: path)
     
     
 //    var databaseDataCheck: [DatabaseData] = load(databasePath)

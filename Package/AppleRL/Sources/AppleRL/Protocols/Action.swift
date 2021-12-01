@@ -8,16 +8,19 @@
 import Foundation
 
 public protocol Action {
-    
+
     var id: Int { get }
     var description: String { get }
     
+    // Implement also the Init() mark it public
+
     func exec()
 }
 
-
 open class Action1: Action {
     public var id: Int = 0
+    
+    public init() {}
     
     public var description: String = "Action1"
     
@@ -29,6 +32,8 @@ open class Action1: Action {
 open class Action2: Action {
     public var id: Int = 1
     
+    public init() {}
+    
     public var description: String = "Action2"
     
     public func exec() {
@@ -38,6 +43,8 @@ open class Action2: Action {
 
 open class Action3: Action {
     public var id: Int = 2
+    
+    public init() {}
     
     public var description: String = "Action3"
     
@@ -49,6 +56,8 @@ open class Action3: Action {
 open class Action4: Action {
     public var id: Int = 3
     
+    public init() {}
+    
     public var description: String = "Action4"
     
     public func exec() {
@@ -58,6 +67,8 @@ open class Action4: Action {
 
 open class Action5: Action {
     public var id: Int = 4
+    
+    public init() {}
     
     public var description: String = "Action5"
     

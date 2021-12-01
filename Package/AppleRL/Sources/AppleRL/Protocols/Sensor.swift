@@ -25,7 +25,11 @@ import Foundation
 //}
 
 open class Sensor {
-//    let name: String = ""
+    var name: String
+    
+    init(name : String = "Sensor") {
+        self.name = name;
+    }
 
     func read() -> Double {
         fatalError("read() has not been implemented")

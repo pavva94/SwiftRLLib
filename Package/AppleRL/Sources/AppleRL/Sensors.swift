@@ -29,7 +29,9 @@ import CoreMotion
 //}
 
 open class Battery: Sensor {
-    public let name: String = "battery"
+    init() {
+        super.init(name: "battery")
+    }
 
     open override func read() -> Double {
         return preprocessing(value: UIDevice.current.batteryLevel * 100)
@@ -41,7 +43,9 @@ open class Battery: Sensor {
 }
 
 open class Orientation: Sensor {
-    public let name: String = "orientation"
+    init() {
+        super.init(name: "orientation")
+    }
     
     open override func read() -> Double
     {
@@ -59,7 +63,10 @@ open class Orientation: Sensor {
 
 
 open class Brightness: Sensor {
-    public let name: String = "brightness"
+    
+    init() {
+        super.init(name: "brightness")
+    }
     
     open override func read() -> Double {
         return preprocessing(value: UIScreen.main.brightness)
@@ -71,7 +78,9 @@ open class Brightness: Sensor {
 }
 
 open class AmbientLight: Sensor {
-    public let name: String = "ambientLight"
+    init() {
+        super.init(name: "ambientLight")
+    }
     
     open override func read() -> Double {
 //        var a = SRAmbientLightSample()
@@ -85,7 +94,9 @@ open class AmbientLight: Sensor {
 }
 
 open class Accelerometer: Sensor {
-    let name: String = "accelerometer"
+    init() {
+        super.init(name: "accelerometer")
+    }
     
     let motion = CMMotionManager()
     var x: Double = 0
@@ -111,7 +122,9 @@ open class Accelerometer: Sensor {
 
 
 open class Gyroscope: Sensor {
-    public let name: String = "gyroscope"
+    init() {
+        super.init(name: "gyroscope")
+    }
         
     let motion = CMMotionManager()
     var x: Double = 0

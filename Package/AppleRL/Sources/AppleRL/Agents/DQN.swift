@@ -6,14 +6,10 @@
 //
 
 import CoreML
+import BackgroundTasks
 
 
-open class DeepQNetwork<S> {
-    /// S: type of sensors
-    /// A: type of actions
-    /// R: type of reward
-    /// The <S, A, R> types are inherited by the Environment
-    
+open class DeepQNetwork {
     /// Define the buffer
     open var buffer: ExperienceReplayBuffer
     /// Define the SarsaTuple type
