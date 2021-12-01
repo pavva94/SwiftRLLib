@@ -15,9 +15,7 @@ struct LandmarkDetail: View {
     func a() {
         print(+1)
         do {
-            qnet.store(state: try MLMultiArray(landmark.state), action: landmark.action, reward: 1.0, nextState: try MLMultiArray(landmark.state))
-            
-            
+            qnet.storeAndDelete(id: landmark.id, state: try MLMultiArray(landmark.state), action: landmark.action, reward: 1.0, nextState: try MLMultiArray(landmark.state))
         } catch {
             
         }
@@ -26,7 +24,7 @@ struct LandmarkDetail: View {
     func b() {
         print(0)
         do {
-        qnet.store(state: try MLMultiArray(landmark.state), action: landmark.action, reward: 0.0, nextState: try MLMultiArray(landmark.state))
+            qnet.storeAndDelete(id: landmark.id, state: try MLMultiArray(landmark.state), action: landmark.action, reward: 0.0, nextState: try MLMultiArray(landmark.state))
         } catch {
             
         }
@@ -34,7 +32,7 @@ struct LandmarkDetail: View {
     func c() {
         print(-1)
         do {
-        qnet.store(state: try MLMultiArray(landmark.state), action: landmark.action, reward: -1.0, nextState: try MLMultiArray(landmark.state))
+            qnet.storeAndDelete(id: landmark.id, state: try MLMultiArray(landmark.state), action: landmark.action, reward: -1.0, nextState: try MLMultiArray(landmark.state))
         } catch {
             
         }

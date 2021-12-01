@@ -10,29 +10,6 @@ import Foundation
 
 let databasePath: String = "database.json"
 
-public func load<T: Decodable>(_ filename: String) -> T {
-    var data: Data
-    print(filename)
-    let fileManager = FileManager.default
-    do {
-
-        let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:true)
-        let fileURL = documentDirectory.appendingPathComponent(filename)
-        print(fileURL)
-    
-        data = try Data(contentsOf: fileURL)
-    } catch {
-        fatalError("Couldn't load \(filename) from main bundle:\n\(error)")
-    }
-
-    do {
-        let decoder = JSONDecoder()
-        return try decoder.decode(T.self, from: data)
-    } catch {
-        fatalError("Couldn't parse \(filename) as \(T.self):\n\(error)")
-    }
-}
-
 public func loadDatabase(_ filename: String) -> [DatabaseData] {
     var data: Data
     print(filename)
@@ -63,13 +40,13 @@ public func loadDatabase(_ filename: String) -> [DatabaseData] {
 }
 
 
-func SaveToFile(data: [DatabaseData], path: String){
+func saveDatabase(data: [DatabaseData]){
     let fileManager = FileManager.default
 
     do {
 
         let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:true)
-        let fileURL = documentDirectory.appendingPathComponent(path)
+        let fileURL = documentDirectory.appendingPathComponent(databasePath)
     
         let encoder = JSONEncoder()
 
@@ -81,12 +58,13 @@ func SaveToFile(data: [DatabaseData], path: String){
     print("database SAVED")
 }
 
-public func resetDatabase(path: String) {
+/// Reset the database to empty
+public func resetDatabase() {
     let fileManager = FileManager.default
     let data: [DatabaseData] = []
     do {
         let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:true)
-        let fileURL = documentDirectory.appendingPathComponent(path)
+        let fileURL = documentDirectory.appendingPathComponent(databasePath)
         let encoder = JSONEncoder()
 
         let jsonData = try encoder.encode(data)
@@ -96,16 +74,20 @@ public func resetDatabase(path: String) {
        }
 }
 
+/// Delete data to the database using ID
+func deleteFromDataset(id: Int) {
+    let databaseData: [DatabaseData] = loadDatabase(databasePath)
+    
+    let newDatabaseData = databaseData.filter { $0.id != id }
+    
+    saveDatabase(data: newDatabaseData)
+}
 
-func manageDatabase(_ data: DatabaseData, path: String) {
-    var databaseData: [DatabaseData] = loadDatabase(path)
-    
-    
+/// Add data to the database
+func addDataToDatabase(_ data: DatabaseData) {
+    var databaseData: [DatabaseData] = loadDatabase(databasePath)
+
     databaseData.append(data)
     
-    SaveToFile(data: databaseData, path: path)
-    
-    
-//    var databaseDataCheck: [DatabaseData] = load(databasePath)
-//    print(databaseDataCheck)
+    saveDatabase(data: databaseData)
 }
