@@ -23,6 +23,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         print("Your code here")
         
+//        qnet.startListen(interval: 10)
+//        qnet.startTrain(interval: 50)
+        
         BGTaskScheduler.shared.cancelAllTaskRequests()
 //        actionsArray.append(Action1())
 //        resetDatabase(path: databasePath)
@@ -32,39 +35,39 @@ class AppDelegate: NSObject, UIApplicationDelegate {
           forTaskWithIdentifier: "com.AppleRL.backgroundListen",
           using: nil) { (task) in
             print("Task handler")
-              self.handleAppRefreshTask(task: task as! BGAppRefreshTask)
+              qnet.handleAppRefreshTask(task: task as! BGAppRefreshTask)
         }
         return true
     }
     
-    public func handleAppRefreshTask(task: BGAppRefreshTask) {
-        print("Handling task")
-        task.expirationHandler = {
-          task.setTaskCompleted(success: false)
-        }
-      
-      
-//    NotificationCenter.default.post(name: .newPokemonFetched,
-//                                    object: self,
-//                                    userInfo: ["pokemon": pokemon])
-        qnet.listen()
-        task.setTaskCompleted(success: true)
-      
-      
-        scheduleBackgroundSensorFetch()
-    }
-
-    public func scheduleBackgroundSensorFetch() {
-        print("backgroundmode activate")
-        let sensorFetchTask = BGAppRefreshTaskRequest(identifier: "com.AppleRL.backgroundListen")
-        sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: 10)
-        do {
-            try BGTaskScheduler.shared.submit(sensorFetchTask)
-            print("task scheduled")
-        } catch {
-            print("Unable to submit task: \(error.localizedDescription)")
-        }
-    }
+//    public func handleAppRefreshTask(task: BGAppRefreshTask) {
+//        print("Handling task")
+//        task.expirationHandler = {
+//          task.setTaskCompleted(success: false)
+//        }
+//      
+//      
+////    NotificationCenter.default.post(name: .newPokemonFetched,
+////                                    object: self,
+////                                    userInfo: ["pokemon": pokemon])
+//        qnet.listen()
+//        task.setTaskCompleted(success: true)
+//      
+//      
+//        scheduleBackgroundSensorFetch()
+//    }
+//
+//    public func scheduleBackgroundSensorFetch() {
+//        print("backgroundmode activate")
+//        let sensorFetchTask = BGAppRefreshTaskRequest(identifier: "com.AppleRL.backgroundListen")
+//        sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: 10)
+//        do {
+//            try BGTaskScheduler.shared.submit(sensorFetchTask)
+//            print("task scheduled")
+//        } catch {
+//            print("Unable to submit task: \(error.localizedDescription)")
+//        }
+//    }
 }
 
 //
