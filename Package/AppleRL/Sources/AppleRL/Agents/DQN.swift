@@ -461,6 +461,38 @@ open class DeepQNetwork {
             print("Unable to submit task: \(error.localizedDescription)")
         }
     }
+    
+    public func handleTrainingTask(task: BGProcessingTask) {
+        defaultLogger.log("Handling Training task")
+        task.expirationHandler = {
+            task.setTaskCompleted(success: false)
+        }
+        
+        self.update()
+        task.setTaskCompleted(success: true)
+      
+      
+        scheduleBackgroundTrainingFetch()
+    }
+
+    public func scheduleBackgroundTrainingFetch() {
+        defaultLogger.log("backgroundmode training activate")
+        
+        let request = BGProcessingTaskRequest(identifier: "com.AppleRL.backgroundTraining")
+//        request.requiresNetworkConnectivity = true // Need to true if your task need to network process. Defaults to false.
+        request.requiresExternalPower = true // Need to true if your task requires a device connected to power source. Defaults to false.
+
+        request.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalBackgroundMode) // Process after 5 minutes.
+
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            defaultLogger.log("training task scheduled")
+        } catch {
+            defaultLogger.error("Unable to submit task: \(error.localizedDescription)")
+        }
+    }
+    
+    
 }
 
 // train test
