@@ -32,8 +32,8 @@ extension AppleRLModel {
 //        }
         
         // return prediction
-        print(prediction)
-        return "ciao"
+//        defaultLogger.log(convertToArray(from: prediction.actions).argmax()!)
+        return String(convertToArray(from: prediction.actions).argmax()!)
     }
     
     func predictFor(_ value: MLFeatureValue) -> AppleRLModelOutput? {
