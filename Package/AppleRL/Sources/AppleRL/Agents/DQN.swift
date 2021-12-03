@@ -450,12 +450,11 @@ open class DeepQNetwork {
     }
 
     public func scheduleBackgroundSensorFetch() {
-        defaultLogger.log("backgroundmode activate")
+        defaultLogger.log("Background fetch activate")
         let sensorFetchTask = BGAppRefreshTaskRequest(identifier: "com.AppleRL.backgroundListen")
         sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalBackgroundMode)
         do {
             try BGTaskScheduler.shared.submit(sensorFetchTask)
-            defaultLogger.log("task scheduled")
             defaultLogger.log("task scheduled")
         } catch {
             defaultLogger.error("Unable to submit task: \(error.localizedDescription)")
@@ -478,7 +477,7 @@ open class DeepQNetwork {
     public func scheduleBackgroundTrainingFetch() {
         defaultLogger.log("backgroundmode training activate")
         
-        let request = BGProcessingTaskRequest(identifier: "com.AppleRL.backgroundTraining")
+        let request = BGProcessingTaskRequest(identifier: "com.AppleRL.backgroundTrain")
 //        request.requiresNetworkConnectivity = true // Need to true if your task need to network process. Defaults to false.
         request.requiresExternalPower = true // Need to true if your task requires a device connected to power source. Defaults to false.
 
