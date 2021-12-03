@@ -16,8 +16,8 @@ import UIKit
 //        // Be sure to set an id to each action
 //        let action = action
 //        let actualBrightness = UIScreen.main.brightness //as! Float
-//        print("actualBrightness")
-//        print(actualBrightness)
+//        defaultLogger.log("actualBrightness")
+//        defaultLogger.log(actualBrightness)
 //        if action == 0 {
 //            // decrese brightness by a lot
 //            UIScreen.main.brightness = actualBrightness-CGFloat(0.3)

@@ -49,7 +49,7 @@ open class QLearning {
             }
         }
         self.qTable = temp
-        print(temp)
+        defaultLogger.log("\(temp)")
         
         self.path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("QLearningOrientation.plist")
     }
@@ -85,7 +85,7 @@ open class QLearning {
         var i = 0
         while i < data.count {
             let tuple: SarsaTuple = data[i]
-            print(tuple)
+//            defaultLogger.log("\(tuple)")
             let s: Int = Int(convertToArray(from: tuple.getState())[0]), a: Int = tuple.getAction(), r: Double = tuple.getReward()
 
             var maxQtable: [Double] = []
@@ -95,7 +95,7 @@ open class QLearning {
 
             let temp : Double = Double(r) + gamma * maxQtable.max()! - qTable[s][a]
             qTable[s][a] = qTable[s][a] + lr * temp
-            print(qTable)
+            defaultLogger.log("\(self.qTable)")
             i += 1
         }
         buffer.reset()
@@ -109,7 +109,7 @@ open class QLearning {
 //        }
 //
 //        qTable[s][a] = qTable[s][a] + lr * (Float(r) + gamma * maxQtable.max()! - qTable[s][a])
-//        print(qTable)
+//        defaultLogger.log(qTable)
     }
 
     @objc open func batchUpdate(batchSize: Int = 32) {
@@ -120,7 +120,7 @@ open class QLearning {
         var i = 0
         while i < data.count {
             let tuple: SarsaTuple = data[i]
-            print(tuple)
+//            defaultLogger.log(tuple)
             let s: Int = Int(convertToArray(from: tuple.getState())[0]), a: Int = tuple.getAction(), r: Double = tuple.getReward()
 
             var maxQtable: [Double] = []
@@ -129,7 +129,7 @@ open class QLearning {
             }
             let temp : Double = Double(r) + gamma * maxQtable.max()! - qTable[s][a]
             qTable[s][a] = qTable[s][a] + lr * temp
-            print(qTable)
+            defaultLogger.log("\(self.qTable)")
             i += 1
         }
         buffer.reset()
@@ -137,7 +137,7 @@ open class QLearning {
 
     @objc open func listen() {
         let state = environment.read()[0]
-        print(state)
+        defaultLogger.log("\(state)")
         let action = self.act(state: Int(state))
         environment.act(state: [state], action: action)
         let reward = environment.reward(state: [state], action: action)
@@ -170,16 +170,16 @@ open class QLearning {
     }
 
     open func save() {
-        print("Save")
+        defaultLogger.log("Save")
         // Save to file
         (self.qTable as NSArray).write(to: path, atomically: true)
     }
 
     open func load() {
-        print("Load")
+        defaultLogger.log("Load")
         // Read from file
         let savedArray = NSArray(contentsOf: path)  as! [[Double]]
-        print(savedArray)
+        defaultLogger.log("\(savedArray)")
         self.qTable = savedArray
     }
 

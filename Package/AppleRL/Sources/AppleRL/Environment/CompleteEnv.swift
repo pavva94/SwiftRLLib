@@ -13,7 +13,7 @@ import Foundation
 //    open override  func act(state: [[Double]], action: Int) -> ([[Double]], Double) { // return the reward that is always int?
 //        // here define the action, selected by the id number
 //        // Be sure to set an id to each action
-//        print(state) // action
+//        defaultLogger.log(state) // action
 //        return (state, self.reward(state: state, action: action))
 //    }
 //    

@@ -55,8 +55,8 @@ extension AppleRLModel {
 //        }
         
         // return prediction
-        print(type(of:prediction))
-        print(prediction)
+//        defaultLogger.log(type(of:prediction))
+//        defaultLogger.log(prediction)
         return prediction
     }
     
@@ -87,7 +87,7 @@ extension AppleRLModel {
                                            configuration: parameters,
                                             progressHandlers: handlers)
             else {
-                print("Could't create an MLUpdateTask.")
+                defaultLogger.error("Could't create an MLUpdateTask.")
                 return
         }
         

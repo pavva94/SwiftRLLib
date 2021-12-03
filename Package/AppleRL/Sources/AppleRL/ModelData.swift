@@ -10,19 +10,19 @@ import Foundation
 
 let databasePath: String = "database.json"
 
-public func loadDatabase(_ filename: String) -> [DatabaseData] {
+public func loadDatabase() -> [DatabaseData] {
     var data: Data
-    print(filename)
+    defaultLogger.log("\(databasePath)")
     let fileManager = FileManager.default
     do {
 
         let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:true)
-        let fileURL = documentDirectory.appendingPathComponent(filename)
-        print(fileURL)
+        let fileURL = documentDirectory.appendingPathComponent(databasePath)
+//        defaultLogger.log(fileURL)
     
         data = try Data(contentsOf: fileURL)
     } catch {
-        print("Couldn't load \(filename) from main bundle:\n\(error)")
+        defaultLogger.log("Couldn't load database from main bundle: \(error.localizedDescription)")
         return []
     }
     
@@ -35,7 +35,7 @@ public func loadDatabase(_ filename: String) -> [DatabaseData] {
         let decoder = JSONDecoder()
         return try decoder.decode([DatabaseData].self, from: data)
     } catch {
-        fatalError("Couldn't parse \(filename) as \([DatabaseData].self):\n\(error)")
+        fatalError("Couldn't parse \(databasePath) as \([DatabaseData].self):\n\(error)")
     }
 }
 
@@ -55,7 +55,7 @@ func saveDatabase(data: [DatabaseData]){
         } catch {
             fatalError("Couldn't write JSON:\n\(error)")
         }
-    print("database SAVED")
+    defaultLogger.log("database SAVED")
 }
 
 /// Reset the database to empty
@@ -70,13 +70,13 @@ public func resetDatabase() {
         let jsonData = try encoder.encode(data)
         try jsonData.write(to: fileURL)
        } catch {
-         print(error)
+           defaultLogger.error("Error during the reset of database \(error.localizedDescription)")
        }
 }
 
 /// Delete data to the database using ID
 func deleteFromDataset(id: Int) {
-    let databaseData: [DatabaseData] = loadDatabase(databasePath)
+    let databaseData: [DatabaseData] = loadDatabase()
     
     let newDatabaseData = databaseData.filter { $0.id != id }
     
@@ -85,7 +85,7 @@ func deleteFromDataset(id: Int) {
 
 /// Add data to the database
 func addDataToDatabase(_ data: DatabaseData) {
-    var databaseData: [DatabaseData] = loadDatabase(databasePath)
+    var databaseData: [DatabaseData] = loadDatabase()
 
     databaseData.append(data)
     

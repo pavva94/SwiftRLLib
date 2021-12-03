@@ -25,7 +25,7 @@ open class Action1: Action {
     public var description: String = "Action1"
     
     public func exec() {
-        print("Action1")
+        defaultLogger.log("Action1")
     }
 }
 
@@ -37,7 +37,7 @@ open class Action2: Action {
     public var description: String = "Action2"
     
     public func exec() {
-        print("Action2")
+        defaultLogger.log("Action2")
     }
 }
 
@@ -49,7 +49,7 @@ open class Action3: Action {
     public var description: String = "Action3"
     
     public func exec() {
-        print("Action3")
+        defaultLogger.log("Action3")
     }
 }
 
@@ -61,7 +61,7 @@ open class Action4: Action {
     public var description: String = "Action4"
     
     public func exec() {
-        print("Action4")
+        defaultLogger.log("Action4")
     }
 }
 
@@ -73,6 +73,6 @@ open class Action5: Action {
     public var description: String = "Action5"
     
     public func exec() {
-        print("Action5")
+        defaultLogger.log("Action5")
     }
 }

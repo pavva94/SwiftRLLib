@@ -43,7 +43,7 @@ open class Env {
         // TODO check the sensors with a list of selected/usable sensors
         for st in sensors {
             if !self.admittedSensors.contains(st) {
-                print("Sensor not allowed: \(st)")
+                defaultLogger.log("Sensor not allowed: \(st)")
                 continue
             }
             switch st {
@@ -54,7 +54,7 @@ open class Env {
                 do {
                     try AVAudioSession.sharedInstance().setActive(true)
                 } catch {
-                    print("Error on Volume")
+                    defaultLogger.log("Error on Volume")
                 }
                 // AVAudioSession.sharedInstance().outputVolume
             case "orientation":
@@ -64,7 +64,7 @@ open class Env {
             case "ambientLight":
                 self.sensors.append(AmbientLight())
             default:
-                print("Sensor not valid: " + String(st))
+                defaultLogger.log("Sensor not valid: \(st)")
             }
             
         }
@@ -108,13 +108,13 @@ open class Env {
         }
         
         if !actionFound {
-            print("Action not found")
+            defaultLogger.log("Action not found")
         } else {
             let data: DatabaseData = DatabaseData(id: idCounter, state: state, action: action, reward: 0.0)
             addDataToDatabase(data)
             self.idCounter += 1
             self.defaults.set(idCounter, forKey: "idCounter")
-            print("database saved, idCounter \(self.idCounter)")
+            defaultLogger.log("database saved, idCounter \(self.idCounter)")
         }
     }
     

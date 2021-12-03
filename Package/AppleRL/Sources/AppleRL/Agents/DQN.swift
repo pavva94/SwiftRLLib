@@ -99,9 +99,9 @@ open class DeepQNetwork {
         if let val = parameters["timeIntervalBackgroundMode"] {
             self.timeIntervalBackgroundMode = val as! Double
         } else {
-            self.timeIntervalBackgroundMode = 10*60
+            self.timeIntervalBackgroundMode = 1*60
         }
-        
+        defaultLogger.log("DQN Initialized")
         loadUpdatedModel()
             
     }
@@ -124,15 +124,15 @@ open class DeepQNetwork {
         if Double.random(in: 0..<1) < epsilon {
             // epsilon choice
             let choice = Int.random(in: 0..<self.environment.getActionSize())
-            print("Epsilon Choice \(choice)")
+            defaultLogger.log("Epsilon Choice \(choice)")
             return choice
         }
         else {
             let stateValue = MLFeatureValue(multiArray: state)
             // predict value from model
             let stateTarget = liveModel.predictFor(stateValue)
-            print("Model Choice " + String(convertToArray(from: stateTarget!.actions).argmax()!))
-            print("Model List \(convertToArray(from: stateTarget!.actions))")
+            defaultLogger.log("Model Choice \(convertToArray(from: stateTarget!.actions).argmax()!)")
+            defaultLogger.log("Model List \(convertToArray(from: stateTarget!.actions))")
             return convertToArray(from: stateTarget!.actions).argmax()!
         }
     }
@@ -155,7 +155,7 @@ open class DeepQNetwork {
         
         // Iter over data from buffer
         for d in data {
-            print("__________\(d.getAction())___________")
+            defaultLogger.log("__________\(d.getAction())___________")
             let state = d.getState()
             let action = d.getAction()
             let reward = d.getReward()
@@ -165,7 +165,7 @@ open class DeepQNetwork {
             let stateValue = MLFeatureValue(multiArray: state)
             // predict value
             let stateTarget = liveModel.predictFor(stateValue)!.actions
-            print("Predict livemodel \(stateTarget)")
+            defaultLogger.log("Predict livemodel \(stateTarget)")
             
             // Create a MLFeatureValue as input for the target model
             let nextStateValue = MLFeatureValue(multiArray: nextState)
@@ -173,11 +173,11 @@ open class DeepQNetwork {
             // take value for next state
             let nextStateActions = self.liveTargetModel.predictFor(nextStateValue)!.actions
             let nextStateTarget = convertToArray(from: nextStateActions)
-            print("Predict TargetModel \(nextStateActions)")
+            defaultLogger.log("Predict TargetModel \(nextStateActions)")
             // Update the taget with the max q-value of next state, using a greedy policy
             stateTarget[action] = NSNumber(value: Double(reward) + self.gamma * nextStateTarget.max()!)
 
-            print("target Updated \(stateTarget)")
+            defaultLogger.log("target Updated \(stateTarget)")
             target = MLFeatureValue(multiArray: stateTarget)
             
             // Create the final Dictionary to build the input
@@ -197,9 +197,9 @@ open class DeepQNetwork {
         
         // Convert the drawings into a batch provider as the update input.
         let trainingData = createUpdateFeatures()
-        print(trainingData.array)
+        defaultLogger.log("\(trainingData.array)")
         if trainingData.count == 0 {
-            print("Training not started caused by no data in buffer")
+            defaultLogger.info("Training not started caused by no data in buffer")
             return
         }
         
@@ -226,8 +226,8 @@ open class DeepQNetwork {
         /// The closure an MLUpdateTask calls when it finishes updating the model.
         func updateModelCompletionHandler(updateContext: MLUpdateContext) {
             if updateContext.task.state == .failed {
-                print("Failed")
-                print(updateContext.task.error)
+                defaultLogger.log("Failed")
+                defaultLogger.log("\(updateContext.task.error!.localizedDescription)")
                 return
               }
             // Save the updated model to the file system.
@@ -237,7 +237,7 @@ open class DeepQNetwork {
             loadUpdatedModel()
             
             // Inform the calling View Controller when the update is complete
-            DispatchQueue.main.async { print("Trained") }
+            DispatchQueue.main.async { defaultLogger.log("Trained") }
         }
         
         DispatchQueue.global(qos: .userInitiated).async {
@@ -252,21 +252,21 @@ open class DeepQNetwork {
     let progressHandler = { (context: MLUpdateContext) in
         switch context.event {
         case .trainingBegin:
-            print("Training begin")
+            defaultLogger.info("Training begin")
 
         case .miniBatchEnd:
             let batchIndex = context.metrics[.miniBatchIndex] as! Int
-            let batchLoss = context.metrics[.lossValue] as! Double
-//            print("Mini batch \(batchIndex), loss: \(batchLoss)")
+//            let batchLoss = context.metrics[.lossValue] as! Double
+//            defaultLogger.log("Mini batch \(batchIndex), loss: \(batchLoss)")
 
         case .epochEnd:
             let epochIndex = context.metrics[.epochIndex] as! Int
             let trainLoss = context.metrics[.lossValue] as! Double
-            print("Epoch \(epochIndex) Loss \(trainLoss)")
+            defaultLogger.info("Epoch \(epochIndex) Loss \(trainLoss)")
             
             
         default:
-            print("Unknown event")
+            defaultLogger.log("Unknown event")
         }
     }
     
@@ -274,10 +274,10 @@ open class DeepQNetwork {
         
         // Convert the drawings into a batch provider as the update input.
         let trainingData = createUpdateFeatures()
-        print(trainingData.array)
+//        defaultLogger.log(trainingData.array)
         
         if trainingData.count == 0 {
-            print("Training not started caused by no data in buffer")
+            defaultLogger.info("Training not started, caused by no data in buffer")
             return
         }
         
@@ -304,8 +304,8 @@ open class DeepQNetwork {
         /// The closure an MLUpdateTask calls when it finishes updating the model.
         func updateModelCompletionHandler(updateContext: MLUpdateContext) {
             if updateContext.task.state == .failed {
-                print("Failed")
-                print(updateContext.task.error)
+                defaultLogger.log("Failed")
+                defaultLogger.log("\(updateContext.task.error!.localizedDescription)")
                 return
               }
             // Save the updated model to the file system.
@@ -331,7 +331,7 @@ open class DeepQNetwork {
     @objc open func listen() {
         let state = environment.read()
         let newState = convertToMLMultiArrayFloat(from:state)
-        print(state)
+        defaultLogger.log("\(state)")
         let action = self.act(state: newState)
         environment.act(state: state, action: action)
         // in-App use means the user needs to give a reward using the app and only then the SarsaTuple is saved and used for training
@@ -365,12 +365,12 @@ open class DeepQNetwork {
     }
     
     open func save() {
-        print("Save")
+        defaultLogger.log("Save")
         fatalError("Save is only allowed after an Update")
     }
     
     open func load() {
-        print("Load")
+        defaultLogger.log("Load")
         // Read from file
         self.loadUpdatedModel()
         
@@ -384,23 +384,23 @@ open class DeepQNetwork {
             try fileManager.createDirectory(at: tempUpdatedModelURL,
                                             withIntermediateDirectories: true,
                                             attributes: nil)
-            print("filemanagerCreateed")
+            defaultLogger.log("filemanagerCreateed")
             
             // Save the updated model to temporary filename.
             try updatedModel.write(to: tempUpdatedModelURL)
             
-            print("modelwritten")
+            defaultLogger.log("modelwritten")
             
             // Replace any previously updated model with this one.
             _ = try fileManager.replaceItemAt(updatedModelURL,
                                               withItemAt: tempUpdatedModelURL)
             
-            print("Updated model saved to:\n\t\(updatedModelURL)")
+            defaultLogger.log("Updated model saved to:\n\t\(self.updatedModelURL)")
         } catch let error {
-            print("Could not save updated model to the file system: \(error)")
+            defaultLogger.error("Could not save updated model to the file system: \(error.localizedDescription)")
             return
         }
-        print("Saved Model")
+        defaultLogger.log("Saved Model")
     }
     
     
@@ -409,32 +409,32 @@ open class DeepQNetwork {
     private func loadUpdatedModel() {
         guard FileManager.default.fileExists(atPath: updatedModelURL.path) else {
             // The updated model is not present at its designated path.
-            print("The updated model is not present at its designated path.")
+            defaultLogger.info("The updated model is not present at its designated path.")
             return
         }
         
         // Create an instance of the updated model.
         guard let model = try? AppleRLModel(contentsOf: updatedModelURL) else {
-            print("Error loading the Model")
+            defaultLogger.error("Error loading the Model")
             return
         }
         
         // Use this updated model to make predictions in the future.
         updatedModel = model
-        print("Model Loaded")
+        defaultLogger.log("Model Loaded")
         
         // Align target model after epochsAlignTarget updates
         if self.countTargetUpdate >= self.epochsAlignTarget {
             targetModel = model
             self.countTargetUpdate = 0
-            print("Target model updated")
+            defaultLogger.log("Target model updated")
         }
         self.countTargetUpdate += 1
         
     }
     
     public func handleAppRefreshTask(task: BGAppRefreshTask) {
-        print("Handling task")
+        defaultLogger.log("Handling task")
         task.expirationHandler = {
             task.setTaskCompleted(success: false)
         }
@@ -446,19 +446,19 @@ open class DeepQNetwork {
         self.listen()
         task.setTaskCompleted(success: true)
       
-      
         scheduleBackgroundSensorFetch()
     }
 
     public func scheduleBackgroundSensorFetch() {
-        print("backgroundmode activate")
+        defaultLogger.log("backgroundmode activate")
         let sensorFetchTask = BGAppRefreshTaskRequest(identifier: "com.AppleRL.backgroundListen")
         sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalBackgroundMode)
         do {
             try BGTaskScheduler.shared.submit(sensorFetchTask)
-            print("task scheduled")
+            defaultLogger.log("task scheduled")
+            defaultLogger.log("task scheduled")
         } catch {
-            print("Unable to submit task: \(error.localizedDescription)")
+            defaultLogger.error("Unable to submit task: \(error.localizedDescription)")
         }
     }
     
