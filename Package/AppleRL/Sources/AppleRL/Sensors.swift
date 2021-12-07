@@ -33,12 +33,12 @@ open class Battery: Sensor {
         super.init(name: "battery")
     }
 
-    open override func read() -> Double {
+    open override func read() -> [Double] {
         return preprocessing(value: UIDevice.current.batteryLevel * 100)
     }
     
-    public override func preprocessing(value: Any) -> Double {
-        return Double(Int.random(in: 1..<100))//(value as! Float).f.swd as! S
+    public override func preprocessing(value: Any) -> [Double] {
+        return [Double(Int.random(in: 1..<100))]//(value as! Float).f.swd as! S
     }
 }
 
@@ -47,16 +47,16 @@ open class Orientation: Sensor {
         super.init(name: "orientation")
     }
     
-    open override func read() -> Double
+    open override func read() -> [Double]
     {
         return preprocessing(value: UIDevice.current.orientation.isLandscape)
     }
     
-    open override func preprocessing(value: Any) -> Double {
+    open override func preprocessing(value: Any) -> [Double] {
         if value as! Bool {
-            return Double(0)
+            return [Double(0)]
         } else {
-            return Double(1)
+            return [Double(1)]
         }
     }
 }
@@ -68,12 +68,12 @@ open class Brightness: Sensor {
         super.init(name: "brightness")
     }
     
-    open override func read() -> Double {
+    open override func read() -> [Double] {
         return preprocessing(value: UIScreen.main.brightness)
     }
     
-    open override func preprocessing(value: Any) -> Double {
-        return (value as! CGFloat).swd
+    open override func preprocessing(value: Any) -> [Double] {
+        return [(value as! CGFloat).swd]
     }
 }
 
@@ -82,14 +82,14 @@ open class AmbientLight: Sensor {
         super.init(name: "ambientLight")
     }
     
-    open override func read() -> Double {
+    open override func read() -> [Double] {
 //        var a = SRAmbientLightSample()
 //        var l = a.lux.value
-        return Double.random(in: 0..<10)
+        return [Double.random(in: 0..<10)]
     }
     
-    open override func preprocessing(value: Any) -> Double {
-        return (value as! CGFloat).swd
+    open override func preprocessing(value: Any) -> [Double] {
+        return [(value as! CGFloat).swd]
     }
 }
 
@@ -103,7 +103,7 @@ open class Accelerometer: Sensor {
     var y: Double = 0
     var z: Double = 0
     
-    open override func read() -> Double {
+    open override func read() -> [Double] {
         // Make sure the accelerometer hardware is available.
         if self.motion.isAccelerometerAvailable {
             if let data = self.motion.accelerometerData {
@@ -115,8 +115,8 @@ open class Accelerometer: Sensor {
         return preprocessing(value: [x, y, z])
     }
     
-    open override func preprocessing(value: Any) -> Double {
-        return value as! Double
+    open override func preprocessing(value: Any) -> [Double] {
+        return value as! [Double]
     }
 }
 
@@ -131,7 +131,7 @@ open class Gyroscope: Sensor {
     var y: Double = 0
     var z: Double = 0
     
-    open override func read() -> Double {
+    open override func read() -> [Double] {
         // Make sure the accelerometer hardware is available.
         if self.motion.isGyroAvailable {
             if let data = self.motion.gyroData {
@@ -143,8 +143,8 @@ open class Gyroscope: Sensor {
         return preprocessing(value: [x, y, z])
     }
     
-    open override func preprocessing(value: Any) -> Double {
-        return value as! Double
+    open override func preprocessing(value: Any) -> [Double] {
+        return value as! [Double]
     }
 }
 //public class Accelerometer: Sensor<[Double]> {

@@ -31,10 +31,10 @@ open class Sensor {
         self.name = name;
     }
 
-    func read() -> Double {
+    func read() -> [Double] {
         fatalError("read() has not been implemented")
     }
-    func preprocessing(value: Any) -> Double {
+    func preprocessing(value: Any) -> [Double] {
         fatalError("preprocessing() has not been implemented")
     }
 

@@ -87,7 +87,10 @@ open class Env {
         var data: [Double] = []
         
         for s in self.sensors {
-            data.append(s.read())
+            let sensorData = s.read()
+            for sd in sensorData {
+                data.append(sd)
+            }
         }
         
         return data

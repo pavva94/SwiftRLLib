@@ -22,6 +22,7 @@ extension AppleRLModel {
         guard let prediction = try? prediction(data: input)
 //                .label
         else {
+            defaultLogger.error("Label Prediction not found")
             return nil
         }
         
@@ -45,6 +46,7 @@ extension AppleRLModel {
         guard let prediction = try? prediction(data: input)
 //                .label
         else {
+            defaultLogger.error("Prediction not found")
             return nil
         }
         
@@ -110,5 +112,5 @@ extension Double {
 
 extension CGFloat {
     var swf: Float { return Float(self) }
-    var swd: Double {return Double(self)}
+    var swd: Double { return Double(self) }
 }
