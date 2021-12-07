@@ -7,9 +7,10 @@ The top-level definition of the Landmarks app.
 
 import SwiftUI
 import AppleRL
+import os
 
-let databasePath: String = "database.json"
-var databaseData: [DatabaseData] = loadDatabase(databasePath)
+var databaseData: [DatabaseData] = loadDatabase()
+let defaultLogger = Logger()
 
 @main
 struct LandmarksApp: App {
@@ -19,8 +20,9 @@ struct LandmarksApp: App {
         WindowGroup {
             ContentView()
                 .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
-                    print("CACCA")
+                    print("INITIAL?")
                     qnet.scheduleBackgroundSensorFetch()
+                    qnet.scheduleBackgroundTrainingFetch()
                 }
         }
     }

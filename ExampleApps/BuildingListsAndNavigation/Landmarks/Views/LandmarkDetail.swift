@@ -13,7 +13,7 @@ struct LandmarkDetail: View {
     var landmark: DatabaseData
     
     func a() {
-        print(+1)
+        defaultLogger.log("\(+1)")
         do {
             qnet.storeAndDelete(id: landmark.id, state: try MLMultiArray(landmark.state), action: landmark.action, reward: 1.0, nextState: try MLMultiArray(landmark.state))
         } catch {
@@ -22,7 +22,7 @@ struct LandmarkDetail: View {
     }
     
     func b() {
-        print(0)
+        defaultLogger.log("\(0)")
         do {
             qnet.storeAndDelete(id: landmark.id, state: try MLMultiArray(landmark.state), action: landmark.action, reward: 0.0, nextState: try MLMultiArray(landmark.state))
         } catch {
@@ -30,7 +30,7 @@ struct LandmarkDetail: View {
         }
     }
     func c() {
-        print(-1)
+        defaultLogger.log("\(-1)")
         do {
             qnet.storeAndDelete(id: landmark.id, state: try MLMultiArray(landmark.state), action: landmark.action, reward: -1.0, nextState: try MLMultiArray(landmark.state))
         } catch {
@@ -94,7 +94,7 @@ struct LandmarkDetail: View {
 //                Text(String(format: "%.1f", landmark.state))
                 HStack (
                     alignment: .top,
-                    spacing: 10
+                    spacing: 50
                 ) {
                     Button("+1", action: a)
                     Button("0", action: b)

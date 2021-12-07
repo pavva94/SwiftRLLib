@@ -21,7 +21,7 @@ let qnet: DeepQNetwork = DeepQNetwork(env: e, parameters: params)
 class AppDelegate: NSObject, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        print("Your code here")
+        defaultLogger.log("Your code here")
         
 //        qnet.startListen(interval: 10)
 //        qnet.startTrain(interval: 50)
@@ -34,51 +34,16 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         BGTaskScheduler.shared.register(
           forTaskWithIdentifier: "com.AppleRL.backgroundListen",
           using: nil) { (task) in
-            print("Task handler")
+            defaultLogger.log("Task handler")
               qnet.handleAppRefreshTask(task: task as! BGAppRefreshTask)
+        }
+        
+        BGTaskScheduler.shared.register(
+          forTaskWithIdentifier: "com.AppleRL.backgroundTrain",
+          using: nil) { (task) in
+            defaultLogger.log("Task handler")
+              qnet.handleTrainingTask(task: task as! BGProcessingTask)
         }
         return true
     }
-    
-//    public func handleAppRefreshTask(task: BGAppRefreshTask) {
-//        print("Handling task")
-//        task.expirationHandler = {
-//          task.setTaskCompleted(success: false)
-//        }
-//      
-//      
-////    NotificationCenter.default.post(name: .newPokemonFetched,
-////                                    object: self,
-////                                    userInfo: ["pokemon": pokemon])
-//        qnet.listen()
-//        task.setTaskCompleted(success: true)
-//      
-//      
-//        scheduleBackgroundSensorFetch()
-//    }
-//
-//    public func scheduleBackgroundSensorFetch() {
-//        print("backgroundmode activate")
-//        let sensorFetchTask = BGAppRefreshTaskRequest(identifier: "com.AppleRL.backgroundListen")
-//        sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: 10)
-//        do {
-//            try BGTaskScheduler.shared.submit(sensorFetchTask)
-//            print("task scheduled")
-//        } catch {
-//            print("Unable to submit task: \(error.localizedDescription)")
-//        }
-//    }
 }
-
-//
-//public func initializeEnv() {
-//    e = Env(sensors: ["brightness", "battery", "ambientLight"], actions: [], actionSize: 3, stateSize: 3)
-////    resetDatabase()
-////        DeepQNetwork<[Float], Int, Double>(env: nil, parameters: params)
-//    print("DQN created")
-////        var a = qnet.act(state: 2.0)
-////        print("ActDone")
-////        print(a)
-////    qnet.startListen(interval: 10)
-//    qnet.startTrain(interval: 50)
-//}
