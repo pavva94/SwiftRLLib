@@ -16,6 +16,8 @@ open class Env {
         "orientation",
         "brightness",
         "ambientLight",
+        "clock",
+        "date",
         // not implemented yet
         "proximity",
         "gyroscope",
@@ -63,6 +65,10 @@ open class Env {
                 self.sensors.append(Brightness())
             case "ambientLight":
                 self.sensors.append(AmbientLight())
+            case "clock":
+                self.sensors.append(Clock())
+            case "date":
+                self.sensors.append(Date())
             default:
                 defaultLogger.log("Sensor not valid: \(st)")
             }
