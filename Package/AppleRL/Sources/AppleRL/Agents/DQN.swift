@@ -32,6 +32,7 @@ open class DeepQNetwork {
     var epsilon: Double
     var gamma: Double
     var timeIntervalBackgroundMode: Double
+    var timeIntervalTrainingBackgroundMode: Double
     var miniBatchSize: Int = 8
     
     var countTargetUpdate: Int = 0
@@ -98,10 +99,11 @@ open class DeepQNetwork {
         self.gamma = (parameters["gamma"] as? Double)!
         self.epochs = 10 //(parameters["epochs"] as? Float)!
         self.learningRate = (parameters["learning_rate"] as? Double)!
+        self.timeIntervalTrainingBackgroundMode = Double(60*60)
         if let val = parameters["timeIntervalBackgroundMode"] {
             self.timeIntervalBackgroundMode = val as! Double
         } else {
-            self.timeIntervalBackgroundMode = Double(1*60)
+            self.timeIntervalBackgroundMode = Double(10*60)
         }
         defaultLogger.log("DQN Initialized")
         loadUpdatedModel()
@@ -499,7 +501,7 @@ open class DeepQNetwork {
 //        request.requiresNetworkConnectivity = true // Need to true if your task need to network process. Defaults to false.
         request.requiresExternalPower = true // Need to true if your task requires a device connected to power source. Defaults to false.
 
-        request.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalBackgroundMode * 10.0) // Process after 5 minutes.
+        request.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalTrainingBackgroundMode * 10.0) // Process after 5 minutes.
 
         do {
             try BGTaskScheduler.shared.submit(request)

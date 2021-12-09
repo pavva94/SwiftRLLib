@@ -97,7 +97,7 @@ public struct ExperienceReplayBuffer {
     }
     
     mutating func reset() {
-        self.trainingData = [SarsaTupleGeneric]()
+        self.trainingData = []
         resetDatabase(path: bufferPath)
     }
 }

@@ -73,6 +73,7 @@ public func resetDatabase(path: String) {
        } catch {
            defaultLogger.error("Error during the reset of database \(error.localizedDescription)")
        }
+    defaultLogger.log("Reset of database done \(path)")
 }
 
 /// Delete data to the database using ID
