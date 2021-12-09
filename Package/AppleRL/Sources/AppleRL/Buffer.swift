@@ -41,14 +41,8 @@ public struct ExperienceReplayBuffer {
     
     let defaults = UserDefaults.standard
     
-    /// The desired number of drawings to update the model
-    private let requiredDataCount = 3
-    
     /// Collection of the training drawings
     private var trainingData = [SarsaTupleGeneric]()
-    
-    /// A Boolean that indicates whether the instance has all the required drawings.
-    var isReadyForTraining: Bool { trainingData.count >= requiredDataCount }
     
     init() {
         do {
@@ -56,7 +50,7 @@ public struct ExperienceReplayBuffer {
             for data in db {
                 trainingData.append(SarsaTupleGeneric(state: try MLMultiArray(data.state), action: data.action, reward: data.reward))
             }
-            print("buffer ready")
+            print("buffer ready: \(trainingData.count)")
         } catch {
             defaultLogger.error("Error during initialization of buffer: \(error.localizedDescription)")
         }

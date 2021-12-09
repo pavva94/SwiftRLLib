@@ -32,9 +32,13 @@ open class DeepQNetwork {
     var epsilon: Double
     var gamma: Double
     var timeIntervalBackgroundMode: Double
+    var miniBatchSize: Int = 8
     
     var countTargetUpdate: Int = 0
     let epochsAlignTarget: Int = 10
+    
+    /// A Boolean that indicates whether the instance has all the required data: 2 times the minibatch size
+    var isReadyForTraining: Bool { buffer.count >= miniBatchSize * 2 }
     
     
     /// The updated Model model.
@@ -204,6 +208,11 @@ open class DeepQNetwork {
             return
         }
         
+        if !self.isReadyForTraining {
+            defaultLogger.info("Training not started caused by too little data in buffer")
+            return
+        }
+        
         // This is how we can change the hyperparameters before training. If you
         // don't do this, the defaults as defined in the mlmodel file are used.
         // Note that the values you choose here must match what is allowed in the
@@ -211,7 +220,7 @@ open class DeepQNetwork {
         let parameters: [MLParameterKey: Any] = [
             .epochs: self.epochs,
             //.seed: 1234,
-            .miniBatchSize: 2,
+            .miniBatchSize: self.miniBatchSize,
             .learningRate: self.learningRate,
             //.shuffle: false,
         ]
@@ -490,7 +499,7 @@ open class DeepQNetwork {
 //        request.requiresNetworkConnectivity = true // Need to true if your task need to network process. Defaults to false.
         request.requiresExternalPower = true // Need to true if your task requires a device connected to power source. Defaults to false.
 
-        request.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalBackgroundMode) // Process after 5 minutes.
+        request.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalBackgroundMode * 10.0) // Process after 5 minutes.
 
         do {
             try BGTaskScheduler.shared.submit(request)
