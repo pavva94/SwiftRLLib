@@ -26,9 +26,11 @@ import Foundation
 
 open class Sensor {
     var name: String
+    var stateSize: Int
     
-    init(name : String = "Sensor") {
-        self.name = name;
+    init(name : String = "Sensor", stateSize: Int) {
+        self.name = name
+        self.stateSize = stateSize
     }
 
     func read() -> [Double] {

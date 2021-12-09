@@ -34,10 +34,10 @@ open class Env {
     private var stateSize: Int
     
     
-    public init(sensors: [String], actions: [Action], actionSize: Int, stateSize: Int) {
+    public init(sensors: [String], actions: [Action], actionSize: Int) {
         
         self.actionSize = actionSize
-        self.stateSize = stateSize
+        self.stateSize = 0
         self.sensors = []
         self.actions = actions
         self.idCounter = self.defaults.integer(forKey: "idCounter")
@@ -51,24 +51,33 @@ open class Env {
             switch st {
             case "battery":
                 UIDevice.current.isBatteryMonitoringEnabled = true
-                self.sensors.append(Battery())
+                let sens = BatterySensor()
+                self.sensors.append(sens)
+                self.stateSize += sens.stateSize
             case "volume":
-                do {
-                    try AVAudioSession.sharedInstance().setActive(true)
-                } catch {
-                    defaultLogger.log("Error on Volume")
-                }
-                // AVAudioSession.sharedInstance().outputVolume
+                let sens = VolumeSensor()
+                self.sensors.append(sens)
+                self.stateSize += sens.stateSize
             case "orientation":
-                self.sensors.append(Orientation())
+                let sens = OrientationSensor()
+                self.sensors.append(sens)
+                self.stateSize += sens.stateSize
             case "brightness":
-                self.sensors.append(Brightness())
+                let sens = BrightnessSensor()
+                self.sensors.append(sens)
+                self.stateSize += sens.stateSize
             case "ambientLight":
-                self.sensors.append(AmbientLight())
+                let sens = AmbientLightSensor()
+                self.sensors.append(sens)
+                self.stateSize += sens.stateSize
             case "clock":
-                self.sensors.append(Clock())
+                let sens = ClockSensor()
+                self.sensors.append(sens)
+                self.stateSize += sens.stateSize
             case "date":
-                self.sensors.append(Date())
+                let sens = DateSensor()
+                self.sensors.append(sens)
+                self.stateSize += sens.stateSize
             default:
                 defaultLogger.log("Sensor not valid: \(st)")
             }
@@ -87,6 +96,7 @@ open class Env {
     open func addSensor(s: Sensor) {
         self.admittedSensors.append(s.name)
         self.sensors.append(s)
+        self.stateSize += s.stateSize
     }
     
     open func read() -> [Double] {
@@ -104,12 +114,12 @@ open class Env {
     
     open func act(state: [Double], action: Int) -> Void { // return the reward that is always int?
         // here define the action, selected by the id number
-        // Be sure to se an id to each action
+        // Be sure to set an id to each action
         // search action based on Id
         
         var actionFound = false
         for savedAction in self.actions {
-            if savedAction.id == action{
+            if savedAction.id == action {
                 savedAction.exec()
                 actionFound = true
                 break
@@ -117,7 +127,7 @@ open class Env {
         }
         
         if !actionFound {
-            defaultLogger.log("Action not found")
+            defaultLogger.log("Action not found: \(action)")
         } else {
             let data: DatabaseData = DatabaseData(id: idCounter, state: state, action: action, reward: 0.0)
             addDataToDatabase(data, databasePath)

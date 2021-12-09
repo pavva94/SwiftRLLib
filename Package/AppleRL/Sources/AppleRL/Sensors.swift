@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import SensorKit
 import CoreMotion
+import AVKit
 
 //public class Orientation: Sensor<Bool> {
 //
@@ -28,9 +29,9 @@ import CoreMotion
 //    }
 //}
 
-open class Battery: Sensor {
+open class BatterySensor: Sensor {
     init() {
-        super.init(name: "battery")
+        super.init(name: "battery", stateSize: 1)
     }
 
     open override func read() -> [Double] {
@@ -42,9 +43,9 @@ open class Battery: Sensor {
     }
 }
 
-open class Orientation: Sensor {
+open class OrientationSensor: Sensor {
     init() {
-        super.init(name: "orientation")
+        super.init(name: "orientation", stateSize: 1)
     }
     
     open override func read() -> [Double]
@@ -61,10 +62,10 @@ open class Orientation: Sensor {
     }
 }
 
-open class Clock: Sensor {
+open class ClockSensor: Sensor {
     
     init() {
-        super.init(name: "clock")
+        super.init(name: "clock", stateSize: 3)
     }
     
     open override func read() -> [Double] {
@@ -74,7 +75,7 @@ open class Clock: Sensor {
         let hour = calendar.component(.hour, from: date)
         let minute = calendar.component(.minute, from: date)
         let second = calendar.component(.second, from: date)
-        return preprocessing(value: [hour, minute, second])
+        return preprocessing(value: [Double(hour), Double(minute), Double(second)])
     }
     
     open override func preprocessing(value: Any) -> [Double] {
@@ -82,10 +83,10 @@ open class Clock: Sensor {
     }
 }
 
-open class Date: Sensor {
+open class DateSensor: Sensor {
     
     init() {
-        super.init(name: "date")
+        super.init(name: "date", stateSize: 3)
     }
     
     open override func read() -> [Double] {
@@ -95,7 +96,7 @@ open class Date: Sensor {
         let year = calendar.component(.year, from: date)
         let month = calendar.component(.month, from: date)
         let day = calendar.component(.day, from: date)
-        return preprocessing(value: [year, month, day])
+        return preprocessing(value: [Double(year), Double(month), Double(day)])
     }
     
     open override func preprocessing(value: Any) -> [Double] {
@@ -103,11 +104,31 @@ open class Date: Sensor {
     }
 }
 
-
-open class Brightness: Sensor {
+open class VolumeSensor: Sensor {
     
     init() {
-        super.init(name: "brightness")
+        super.init(name: "volume", stateSize: 1)
+    }
+    
+    open override func read() -> [Double] {
+        do {
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            defaultLogger.log("Error on Volume")
+        }
+        return preprocessing(value: AVAudioSession.sharedInstance().outputVolume)
+    }
+    
+    open override func preprocessing(value: Any) -> [Double] {
+        return [(value as! CGFloat).swd]
+    }
+}
+
+
+open class BrightnessSensor: Sensor {
+    
+    init() {
+        super.init(name: "brightness", stateSize: 1)
     }
     
     open override func read() -> [Double] {
@@ -119,9 +140,9 @@ open class Brightness: Sensor {
     }
 }
 
-open class AmbientLight: Sensor {
+open class AmbientLightSensor: Sensor {
     init() {
-        super.init(name: "ambientLight")
+        super.init(name: "ambientLight", stateSize: 1)
     }
     
     open override func read() -> [Double] {
@@ -135,9 +156,9 @@ open class AmbientLight: Sensor {
     }
 }
 
-open class Accelerometer: Sensor {
+open class AccelerometerSensor: Sensor {
     init() {
-        super.init(name: "accelerometer")
+        super.init(name: "accelerometer", stateSize: 3)
     }
     
     let motion = CMMotionManager()
@@ -163,9 +184,9 @@ open class Accelerometer: Sensor {
 }
 
 
-open class Gyroscope: Sensor {
+open class GyroscopeSensor: Sensor {
     init() {
-        super.init(name: "gyroscope")
+        super.init(name: "gyroscope", stateSize: 3)
     }
         
     let motion = CMMotionManager()
