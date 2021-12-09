@@ -38,7 +38,7 @@ open class Battery: Sensor {
     }
     
     public override func preprocessing(value: Any) -> [Double] {
-        return [Double(Int.random(in: 1..<100))]//(value as! Float).f.swd as! S
+        return [(value as! Float).f.swd] // [Double(Int.random(in: 1..<100))]
     }
 }
 
@@ -58,6 +58,48 @@ open class Orientation: Sensor {
         } else {
             return [Double(1)]
         }
+    }
+}
+
+open class Clock: Sensor {
+    
+    init() {
+        super.init(name: "clock")
+    }
+    
+    open override func read() -> [Double] {
+        let date = Foundation.Date() // save date, so all components use the same date
+        let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
+
+        let hour = calendar.component(.hour, from: date)
+        let minute = calendar.component(.minute, from: date)
+        let second = calendar.component(.second, from: date)
+        return preprocessing(value: [hour, minute, second])
+    }
+    
+    open override func preprocessing(value: Any) -> [Double] {
+        return value as! [Double]
+    }
+}
+
+open class Date: Sensor {
+    
+    init() {
+        super.init(name: "date")
+    }
+    
+    open override func read() -> [Double] {
+        let date = Foundation.Date() // save date, so all components use the same date
+        let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
+
+        let year = calendar.component(.year, from: date)
+        let month = calendar.component(.month, from: date)
+        let day = calendar.component(.day, from: date)
+        return preprocessing(value: [year, month, day])
+    }
+    
+    open override func preprocessing(value: Any) -> [Double] {
+        return value as! [Double]
     }
 }
 
@@ -83,9 +125,9 @@ open class AmbientLight: Sensor {
     }
     
     open override func read() -> [Double] {
-//        var a = SRAmbientLightSample()
-//        var l = a.lux.value
-        return [Double.random(in: 0..<10)]
+        let a = SRAmbientLightSample()
+        let l = a.lux.value
+        return [l]
     }
     
     open override func preprocessing(value: Any) -> [Double] {
