@@ -36,7 +36,7 @@ import AppleRL
 struct LandmarkList: View {
     var body: some View {
         NavigationView {
-            List(databaseData) { landmark in
+            List(databaseDataApp) { landmark in
                 NavigationLink {
                     LandmarkDetail(landmark: landmark)
                 } label: {

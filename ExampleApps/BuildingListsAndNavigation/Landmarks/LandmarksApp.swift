@@ -9,7 +9,7 @@ import SwiftUI
 import AppleRL
 import os
 
-var databaseData: [DatabaseData] = loadDatabase()
+var databaseDataApp: [DatabaseData] = loadDatabase("database.json")
 let defaultLogger = Logger()
 
 @main

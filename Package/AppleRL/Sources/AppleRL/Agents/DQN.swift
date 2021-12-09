@@ -20,6 +20,7 @@ open class DeepQNetwork {
     let outputName = "actions_true"
     
     let environment: Env
+    let fileManager = FileManager.default
     
     /// Timers for ListenMode
     var timerListen : Timer? = nil { willSet { timerListen?.invalidate() }}
@@ -80,8 +81,6 @@ open class DeepQNetwork {
     private var tempUpdatedModelURL: URL
     /// The permanent location of the updated Target Model model.
     private var updatedTargetModelURL: URL
-    /// The temporary location of the updated Target Model model.
-    private var tempUpdatedTargetModelURL: URL
     
     /// Initialize every variables
     required public init(env: Env, parameters: Dictionary<String, Any>) {
@@ -89,7 +88,6 @@ open class DeepQNetwork {
         self.updatedModelURL = appDirectory.appendingPathComponent("personalized.mlmodelc")
         self.tempUpdatedModelURL = appDirectory.appendingPathComponent("personalized_tmp.mlmodelc")
         self.updatedTargetModelURL = appDirectory.appendingPathComponent("personalizedTarget.mlmodelc")
-        self.tempUpdatedTargetModelURL = appDirectory.appendingPathComponent("personalizedTarget_tmp.mlmodelc")
         
         self.buffer = ExperienceReplayBuffer()
         self.epsilon = (parameters["epsilon"] as? Double)!
@@ -116,7 +114,7 @@ open class DeepQNetwork {
     open func storeAndDelete(id: Int, state: MLMultiArray, action: Int, reward: Double, nextState: MLMultiArray) {
         let tuple = SarsaTuple(state: state, action: action, reward: reward, nextState: nextState)
         buffer.addData(tuple)
-        deleteFromDataset(id: id)
+        deleteFromDataset(id: id, path: databasePath)
     }
     
     /// Epsilon Greedy policy based on class parameters
@@ -130,7 +128,9 @@ open class DeepQNetwork {
         else {
             let stateValue = MLFeatureValue(multiArray: state)
             // predict value from model
+            defaultLogger.log("State Value \(convertToArray(from: state))")
             let stateTarget = liveModel.predictFor(stateValue)
+            var k = stateTarget!.actions
             defaultLogger.log("Model Choice \(convertToArray(from: stateTarget!.actions).argmax()!)")
             defaultLogger.log("Model List \(convertToArray(from: stateTarget!.actions))")
             return convertToArray(from: stateTarget!.actions).argmax()!
@@ -156,6 +156,7 @@ open class DeepQNetwork {
         // Iter over data from buffer
         for d in data {
             defaultLogger.log("__________\(d.getAction())___________")
+            defaultLogger.log("__________\(d.getState())___________")
             let state = d.getState()
             let action = d.getAction()
             let reward = d.getReward()
@@ -378,7 +379,6 @@ open class DeepQNetwork {
     
     private func saveUpdatedModel(_ updateContext: MLUpdateContext) {
         let updatedModel = updateContext.model
-        let fileManager = FileManager.default
         do {
             // Create a directory for the updated model.
             try fileManager.createDirectory(at: tempUpdatedModelURL,
@@ -426,6 +426,15 @@ open class DeepQNetwork {
         // Align target model after epochsAlignTarget updates
         if self.countTargetUpdate >= self.epochsAlignTarget {
             targetModel = model
+            do {
+                // Save the updated model to temporary filename.
+            
+                // Replace any previously updated model with this one.
+                _ = try fileManager.replaceItemAt(updatedTargetModelURL,
+                                                  withItemAt: updatedModelURL)
+            } catch {
+                defaultLogger.error("Target model not saved")
+            }
             self.countTargetUpdate = 0
             defaultLogger.log("Target model updated")
         }

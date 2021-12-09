@@ -23,5 +23,6 @@ struct ContentView_Previews: PreviewProvider {
 
 
 func refreshData() {
-    databaseData = loadDatabase()
+    databaseDataApp = loadDatabase("database.json")
+    
 }
