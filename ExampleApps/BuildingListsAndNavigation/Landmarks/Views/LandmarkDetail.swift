@@ -37,6 +37,15 @@ struct LandmarkDetail: View {
             
         }
     }
+    
+    func getActionDescription(_ id: Int) -> String {
+        for a in actionsArray {
+            if a.id == id {
+                return a.description
+            }
+        }
+        return "No Description"
+    }
 
     var body: some View {
         ScrollView {
@@ -57,7 +66,7 @@ struct LandmarkDetail: View {
                     spacing: 10
                 ) {
                     Text("Action")
-                    Text(String(landmark.action))
+                    Text(getActionDescription(landmark.action))
                 }.font(.subheadline)
                 .foregroundColor(.secondary)
                 
@@ -82,8 +91,8 @@ struct LandmarkDetail: View {
                     alignment: .top,
                     spacing: 10
                 ) {
-                    Text("State -> Ambient Light")
-                    Text(String(format: "%.1f", landmark.state[2]))
+                    Text("State -> Clock")
+                    Text("\(Int(landmark.state[2])): \(Int(landmark.state[3])). \(Int(landmark.state[4]))")
                 }.font(.subheadline)
                 .foregroundColor(.secondary)
 

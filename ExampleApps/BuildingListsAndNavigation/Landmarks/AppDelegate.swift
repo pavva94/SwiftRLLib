@@ -12,12 +12,12 @@ import BackgroundTasks
 import AppleRL
 import CoreML
 
-var actionsArray: [Action] = [Increase(), LeaveIt(), Increase()]
-var e: Env = Env(sensors: ["brightness", "battery", "clock"], actions: actionsArray, actionSize: 3, stateSize: 3)
+var actionsArray: [Action] = [Decrese(), LeaveIt(), Increase()]
+var environment: Env = Env(sensors: ["brightness", "battery", "clock"], actions: actionsArray, actionSize: 3)
 let params: Dictionary<String, Any> = ["epsilon": Double(0.7), "learning_rate": Double(0.15), "gamma": Double(0.5)]
-let qnet: DeepQNetwork = DeepQNetwork(env: e, parameters: params)
+let qnet: DeepQNetwork = DeepQNetwork(env: environment, parameters: params)
 
-let backgroundMode = false
+let backgroundMode = true
 
 
 class AppDelegate: NSObject, UIApplicationDelegate {

@@ -21,31 +21,18 @@ struct LandmarksApp: App {
         WindowGroup {
             ContentView()
                 .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
-                    print("INITIAL?")
+                    print("App Closed, background mode: \(backgroundMode)")
 //                    qnet.scheduleBackgroundSensorFetch()
 //                    qnet.scheduleBackgroundTrainingFetch()
                     
                     
                     if backgroundMode {
-                        BGTaskScheduler.shared.cancelAllTaskRequests()
-
-                        BGTaskScheduler.shared.register(
-                          forTaskWithIdentifier: "com.AppleRL.backgroundListen",
-                          using: nil) { (task) in
-                            defaultLogger.log("Task handler")
-                              qnet.handleAppRefreshTask(task: task as! BGAppRefreshTask)
-                        }
-
-                        BGTaskScheduler.shared.register(
-                          forTaskWithIdentifier: "com.AppleRL.backgroundTrain",
-                          using: nil) { (task) in
-                            defaultLogger.log("Task handler")
-                              qnet.handleTrainingTask(task: task as! BGProcessingTask)
-                        }
-                    } else {
-                        qnet.startListen(interval: 10)
-                        qnet.startTrain(interval: 50)
-                    }
+                        qnet.scheduleBackgroundSensorFetch()
+                        qnet.scheduleBackgroundTrainingFetch()
+                    } //else {
+//                        qnet.startListen(interval: 10)
+//                        qnet.startTrain(interval: 50)
+//                    }
                 }
         }
     }

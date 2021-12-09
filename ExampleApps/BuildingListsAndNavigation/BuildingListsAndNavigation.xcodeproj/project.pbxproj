@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		7301CE3F2761FE0400E20ECF /* AppActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7301CE3E2761FE0400E20ECF /* AppActions.swift */; };
+		7301CE42276248C200E20ECF /* AppleRLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 7301CE40276247BE00E20ECF /* AppleRLModel.mlmodel */; };
 		734D21F5274FD051003629B4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734D21F4274FD051003629B4 /* AppDelegate.swift */; };
-		73C52DDD274E9C2B008D1D90 /* AppleRLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 73C52DDC274E9C2B008D1D90 /* AppleRLModel.mlmodel */; };
 		73DED6BC274FD74100CEC9FD /* AppleRL in Frameworks */ = {isa = PBXBuildFile; productRef = 73DED6BB274FD74100CEC9FD /* AppleRL */; };
 		C20D77EE24B665D7002E7AEA /* LandmarksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20D77ED24B665D7002E7AEA /* LandmarksApp.swift */; };
 		C20D77F024B665D7002E7AEA /* LandmarkDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20D77EF24B665D7002E7AEA /* LandmarkDetail.swift */; };
@@ -26,8 +26,9 @@
 /* Begin PBXFileReference section */
 		32C0591524A7452A1B7C1DE3 /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		7301CE3E2761FE0400E20ECF /* AppActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppActions.swift; sourceTree = "<group>"; };
+		7301CE40276247BE00E20ECF /* AppleRLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = AppleRLModel.mlmodel; path = ../../../Package/AppleRL/Sources/AppleRL/AppleRLModel.mlmodel; sourceTree = "<group>"; };
+		7301CE412762480D00E20ECF /* AppleRLModel.mlmodelc */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppleRLModel.mlmodelc; sourceTree = "<group>"; };
 		734D21F4274FD051003629B4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		73C52DDC274E9C2B008D1D90 /* AppleRLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = AppleRLModel.mlmodel; sourceTree = "<group>"; };
 		73DED6BA274FD73C00CEC9FD /* AppleRL */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AppleRL; path = ../../Package/AppleRL; sourceTree = "<group>"; };
 		C20D77EA24B665D7002E7AEA /* Landmarks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Landmarks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C20D77ED24B665D7002E7AEA /* LandmarksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandmarksApp.swift; sourceTree = "<group>"; };
@@ -114,7 +115,8 @@
 			isa = PBXGroup;
 			children = (
 				C20D77ED24B665D7002E7AEA /* LandmarksApp.swift */,
-				73C52DDC274E9C2B008D1D90 /* AppleRLModel.mlmodel */,
+				7301CE40276247BE00E20ECF /* AppleRLModel.mlmodel */,
+				7301CE412762480D00E20ECF /* AppleRLModel.mlmodelc */,
 				734D21F4274FD051003629B4 /* AppDelegate.swift */,
 				C2FEB33824B7CA02004FAB73 /* Views */,
 				C20D780824B685C4002E7AEA /* Model */,
@@ -239,10 +241,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7301CE42276248C200E20ECF /* AppleRLModel.mlmodel in Sources */,
 				C20D77F024B665D7002E7AEA /* LandmarkDetail.swift in Sources */,
 				C20D77FF24B67FB3002E7AEA /* MapView.swift in Sources */,
 				7301CE3F2761FE0400E20ECF /* AppActions.swift in Sources */,
-				73C52DDD274E9C2B008D1D90 /* AppleRLModel.mlmodel in Sources */,
 				C20D780B24B68B4D002E7AEA /* LandmarkList.swift in Sources */,
 				C20D77EE24B665D7002E7AEA /* LandmarksApp.swift in Sources */,
 				C2C583C524DB881D00DD0019 /* ContentView.swift in Sources */,
