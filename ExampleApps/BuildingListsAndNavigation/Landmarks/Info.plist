@@ -4,8 +4,8 @@
 <dict>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.AppleRL.backgroundListen</string>
-		<string>com.AppleRL.backgroundTrain</string>
+		<string>com.pavesialessandro.applerl.backgroundListen</string>
+		<string>com.pavesialessandro.applerl.backgroundTrain</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>

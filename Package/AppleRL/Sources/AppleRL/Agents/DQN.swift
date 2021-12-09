@@ -97,7 +97,7 @@ open class DeepQNetwork {
         if let val = parameters["timeIntervalBackgroundMode"] {
             self.timeIntervalBackgroundMode = val as! Double
         } else {
-            self.timeIntervalBackgroundMode = 1*60
+            self.timeIntervalBackgroundMode = Double(1*60)
         }
         defaultLogger.log("DQN Initialized")
         loadUpdatedModel()
@@ -460,7 +460,7 @@ open class DeepQNetwork {
 
     public func scheduleBackgroundSensorFetch() {
         defaultLogger.log("Background fetch activate")
-        let sensorFetchTask = BGAppRefreshTaskRequest(identifier: "com.AppleRL.backgroundListen")
+        let sensorFetchTask = BGAppRefreshTaskRequest(identifier: "com.pavesialessandro.applerl.backgroundListen")
         sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalBackgroundMode)
         do {
             try BGTaskScheduler.shared.submit(sensorFetchTask)
@@ -486,7 +486,7 @@ open class DeepQNetwork {
     public func scheduleBackgroundTrainingFetch() {
         defaultLogger.log("backgroundmode training activate")
         
-        let request = BGProcessingTaskRequest(identifier: "com.AppleRL.backgroundTrain")
+        let request = BGProcessingTaskRequest(identifier: "com.pavesialessandro.applerl.backgroundTrain")
 //        request.requiresNetworkConnectivity = true // Need to true if your task need to network process. Defaults to false.
         request.requiresExternalPower = true // Need to true if your task requires a device connected to power source. Defaults to false.
 

@@ -29,18 +29,20 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             BGTaskScheduler.shared.cancelAllTaskRequests()
 
             BGTaskScheduler.shared.register(
-              forTaskWithIdentifier: "com.AppleRL.backgroundListen",
+              forTaskWithIdentifier: "com.pavesialessandro.applerl.backgroundListen",
               using: nil) { (task) in
                 defaultLogger.log("Task handler")
                   qnet.handleAppRefreshTask(task: task as! BGAppRefreshTask)
             }
 
             BGTaskScheduler.shared.register(
-              forTaskWithIdentifier: "com.AppleRL.backgroundTrain",
+              forTaskWithIdentifier: "com.pavesialessandro.applerl.backgroundTrain",
               using: nil) { (task) in
                 defaultLogger.log("Task handler")
                   qnet.handleTrainingTask(task: task as! BGProcessingTask)
             }
+            
+            
         } else {
             qnet.startListen(interval: 10)
             qnet.startTrain(interval: 50)
