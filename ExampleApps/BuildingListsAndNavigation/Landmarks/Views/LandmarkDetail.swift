@@ -7,33 +7,32 @@ A view showing the details for a landmark.
 
 import SwiftUI
 import CoreML
+import AppleRL
 
 struct LandmarkDetail: View {
     var landmark: DatabaseData
     
     func a() {
-        print(+1)
+        defaultLogger.log("\(+1)")
         do {
-            qnet.store(state: try MLMultiArray(landmark.state), action: landmark.action, reward: 1.0, nextState: try MLMultiArray(landmark.state))
-            
-            
+            qnet.storeAndDelete(id: landmark.id, state: try MLMultiArray(landmark.state), action: landmark.action, reward: 1.0, nextState: try MLMultiArray(landmark.state))
         } catch {
             
         }
     }
     
     func b() {
-        print(0)
+        defaultLogger.log("\(0)")
         do {
-        qnet.store(state: try MLMultiArray(landmark.state), action: landmark.action, reward: 0.0, nextState: try MLMultiArray(landmark.state))
+            qnet.storeAndDelete(id: landmark.id, state: try MLMultiArray(landmark.state), action: landmark.action, reward: 0.0, nextState: try MLMultiArray(landmark.state))
         } catch {
             
         }
     }
     func c() {
-        print(-1)
+        defaultLogger.log("\(-1)")
         do {
-        qnet.store(state: try MLMultiArray(landmark.state), action: landmark.action, reward: -1.0, nextState: try MLMultiArray(landmark.state))
+            qnet.storeAndDelete(id: landmark.id, state: try MLMultiArray(landmark.state), action: landmark.action, reward: -1.0, nextState: try MLMultiArray(landmark.state))
         } catch {
             
         }
@@ -95,7 +94,7 @@ struct LandmarkDetail: View {
 //                Text(String(format: "%.1f", landmark.state))
                 HStack (
                     alignment: .top,
-                    spacing: 10
+                    spacing: 50
                 ) {
                     Button("+1", action: a)
                     Button("0", action: b)
@@ -111,6 +110,6 @@ struct LandmarkDetail: View {
 
 struct LandmarkDetail_Previews: PreviewProvider {
     static var previews: some View {
-        LandmarkDetail(landmark: databaseData[0])
+        LandmarkDetail(landmark: databaseDataApp[0])
     }
 }

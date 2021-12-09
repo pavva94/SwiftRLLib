@@ -28,55 +28,118 @@ import CoreMotion
 //    }
 //}
 
-open class Battery<S>: Sensor<S> {
-    open override func read() -> S {
+open class Battery: Sensor {
+    init() {
+        super.init(name: "battery")
+    }
+
+    open override func read() -> [Double] {
         return preprocessing(value: UIDevice.current.batteryLevel * 100)
     }
     
-    open override func preprocessing(value: Any) -> S {
-        return Double(Int.random(in: 1..<100)) as! S//(value as! Float).f.swd as! S
+    public override func preprocessing(value: Any) -> [Double] {
+        return [(value as! Float).f.swd] // [Double(Int.random(in: 1..<100))]
     }
 }
 
-open class Orientation<S>: Sensor<S> {
-    open override func read() -> S {
+open class Orientation: Sensor {
+    init() {
+        super.init(name: "orientation")
+    }
+    
+    open override func read() -> [Double]
+    {
         return preprocessing(value: UIDevice.current.orientation.isLandscape)
     }
     
-    open override func preprocessing(value: Any) -> S {
+    open override func preprocessing(value: Any) -> [Double] {
         if value as! Bool {
-            return 0 as! S
+            return [Double(0)]
         } else {
-            return 1 as! S
+            return [Double(1)]
         }
     }
 }
 
+open class Clock: Sensor {
+    
+    init() {
+        super.init(name: "clock")
+    }
+    
+    open override func read() -> [Double] {
+        let date = Foundation.Date() // save date, so all components use the same date
+        let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
 
-open class Brightness<S>: Sensor<S> {
-    open override func read() -> S {
+        let hour = calendar.component(.hour, from: date)
+        let minute = calendar.component(.minute, from: date)
+        let second = calendar.component(.second, from: date)
+        return preprocessing(value: [hour, minute, second])
+    }
+    
+    open override func preprocessing(value: Any) -> [Double] {
+        return value as! [Double]
+    }
+}
+
+open class Date: Sensor {
+    
+    init() {
+        super.init(name: "date")
+    }
+    
+    open override func read() -> [Double] {
+        let date = Foundation.Date() // save date, so all components use the same date
+        let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
+
+        let year = calendar.component(.year, from: date)
+        let month = calendar.component(.month, from: date)
+        let day = calendar.component(.day, from: date)
+        return preprocessing(value: [year, month, day])
+    }
+    
+    open override func preprocessing(value: Any) -> [Double] {
+        return value as! [Double]
+    }
+}
+
+
+open class Brightness: Sensor {
+    
+    init() {
+        super.init(name: "brightness")
+    }
+    
+    open override func read() -> [Double] {
         return preprocessing(value: UIScreen.main.brightness)
     }
     
-    open override func preprocessing(value: Any) -> S {
-        return (value as! CGFloat).swd as! S
+    open override func preprocessing(value: Any) -> [Double] {
+        return [(value as! CGFloat).swd]
     }
 }
 
-open class AmbientLight<S>: Sensor<S> {
-    open override func read() -> S {
-//        var a = SRAmbientLightSample()
-//        var l = a.lux.value
-        return Double.random(in: 0..<10) as! S
+open class AmbientLight: Sensor {
+    init() {
+        super.init(name: "ambientLight")
     }
     
-    open override func preprocessing(value: Any) -> S {
-        return (value as! CGFloat).swd as! S
+    open override func read() -> [Double] {
+        let a = SRAmbientLightSample()
+        let l = a.lux.value
+        return [l]
+    }
+    
+    open override func preprocessing(value: Any) -> [Double] {
+        return [(value as! CGFloat).swd]
     }
 }
 
-
-open class Accelerometer: Sensor<[Double]> {
+open class Accelerometer: Sensor {
+    init() {
+        super.init(name: "accelerometer")
+    }
+    
     let motion = CMMotionManager()
     var x: Double = 0
     var y: Double = 0
@@ -100,7 +163,11 @@ open class Accelerometer: Sensor<[Double]> {
 }
 
 
-open class Gyroscope: Sensor<[Double]> {
+open class Gyroscope: Sensor {
+    init() {
+        super.init(name: "gyroscope")
+    }
+        
     let motion = CMMotionManager()
     var x: Double = 0
     var y: Double = 0

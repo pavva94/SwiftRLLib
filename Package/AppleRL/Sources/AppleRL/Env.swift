@@ -9,57 +9,68 @@ import Foundation
 import UIKit
 import AVKit
 
-let admittedSensors = [
-    "battery",
-    "volume",
-    "orientation",
-    "brightness",
-    "ambientLight",
-    // not implemented yet
-    "proximity",
-    "light",
-    "gyroscope",
-    "barometer",
+open class Env {
+    var admittedSensors = [
+        "battery",
+        "volume",
+        "orientation",
+        "brightness",
+        "ambientLight",
+        "clock",
+        "date",
+        // not implemented yet
+        "proximity",
+        "gyroscope",
+        "barometer",
+        
+    ]
     
-]
-
-open class Env<S, A, R> {
+    let defaults = UserDefaults.standard
+    var idCounter: Int
     
-    private var sensors: [Sensor<S>]
+    private var sensors: [Sensor]
+    private var actions: [Action]
     private var actionSize: Int
     private var stateSize: Int
     
-    public init(sens: [String], actionSize: Int, stateSize: Int) {
+    
+    public init(sensors: [String], actions: [Action], actionSize: Int, stateSize: Int) {
         
         self.actionSize = actionSize
         self.stateSize = stateSize
         self.sensors = []
+        self.actions = actions
+        self.idCounter = self.defaults.integer(forKey: "idCounter")
         
         // TODO check the sensors with a list of selected/usable sensors
-        for st in sens {
-            if !admittedSensors.contains(st) {
-                print("Sensor not allowed: \(st)")
+        for st in sensors {
+            if !self.admittedSensors.contains(st) {
+                defaultLogger.log("Sensor not allowed: \(st)")
                 continue
             }
             switch st {
             case "battery":
                 UIDevice.current.isBatteryMonitoringEnabled = true
-                sensors.append(Battery<S>())
+                self.sensors.append(Battery())
             case "volume":
                 do {
                     try AVAudioSession.sharedInstance().setActive(true)
                 } catch {
-                    print("Error on Volume")
+                    defaultLogger.log("Error on Volume")
                 }
                 // AVAudioSession.sharedInstance().outputVolume
             case "orientation":
-                sensors.append(Orientation<S>())
+                self.sensors.append(Orientation())
             case "brightness":
-                sensors.append(Brightness<S>())
+                self.sensors.append(Brightness())
             case "ambientLight":
-                sensors.append(AmbientLight<S>())
+                self.sensors.append(AmbientLight())
+            case "clock":
+                self.sensors.append(Clock())
+            case "date":
+                self.sensors.append(Date())
             default:
-                print("Sensor not valid: " + String(st))
+                defaultLogger.log("Sensor not valid: \(st)")
             }
             
         }
@@ -73,29 +84,52 @@ open class Env<S, A, R> {
         return self.stateSize
     }
     
-    open func addSensor(s: Sensor<S>) {
-        sensors.append(s)
+    open func addSensor(s: Sensor) {
+        self.admittedSensors.append(s.name)
+        self.sensors.append(s)
     }
     
-    open func read() -> [S] {
-        var data: [S] = []
+    open func read() -> [Double] {
+        var data: [Double] = []
         
-        for s in sensors {
-            data.append(s.read())
+        for s in self.sensors {
+            let sensorData = s.read()
+            for sd in sensorData {
+                data.append(sd)
+            }
         }
         
         return data
     }
     
-    open func act(state: [S], action: A) -> ([S], R) { // return the reward that is always int?
+    open func act(state: [Double], action: Int) -> Void { // return the reward that is always int?
         // here define the action, selected by the id number
         // Be sure to se an id to each action
-        fatalError("act() has not been implemented")
+        // search action based on Id
+        
+        var actionFound = false
+        for savedAction in self.actions {
+            if savedAction.id == action{
+                savedAction.exec()
+                actionFound = true
+                break
+            }
+        }
+        
+        if !actionFound {
+            defaultLogger.log("Action not found")
+        } else {
+            let data: DatabaseData = DatabaseData(id: idCounter, state: state, action: action, reward: 0.0)
+            addDataToDatabase(data, databasePath)
+            self.idCounter += 1
+            self.defaults.set(idCounter, forKey: "idCounter")
+            defaultLogger.log("database saved, idCounter \(self.idCounter)")
+        }
     }
     
-    open func reward(state: [S], action: A) -> R {
+    open func reward(state: [Double], action: Int) -> Double {
         fatalError("reward() has not been implemented")
     }
-    
+
     
 }

@@ -6,6 +6,7 @@ A view showing a list of landmarks.
 */
 
 import SwiftUI
+import AppleRL
 
 //struct LandmarkList: View {
 //    var body: some View {
@@ -35,7 +36,7 @@ import SwiftUI
 struct LandmarkList: View {
     var body: some View {
         NavigationView {
-            List(databaseData) { landmark in
+            List(databaseDataApp) { landmark in
                 NavigationLink {
                     LandmarkDetail(landmark: landmark)
                 } label: {

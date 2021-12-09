@@ -37,26 +37,36 @@ import SwiftUI
 import CoreML
 
 /// - Tag: LabeledDrawingCollection
-public struct ExperienceReplayBuffer<S, A, R> {
+public struct ExperienceReplayBuffer {
+    
+    let defaults = UserDefaults.standard
     
     /// The desired number of drawings to update the model
     private let requiredDataCount = 3
     
     /// Collection of the training drawings
-    private var trainingData = [SarsaTupleGeneric<S, A, R>]()
+    private var trainingData = [SarsaTupleGeneric]()
     
     /// A Boolean that indicates whether the instance has all the required drawings.
     var isReadyForTraining: Bool { trainingData.count >= requiredDataCount }
     
     init() {
-        
+        do {
+            let db = loadDatabase(bufferPath)
+            for data in db {
+                trainingData.append(SarsaTupleGeneric(state: try MLMultiArray(data.state), action: data.action, reward: data.reward))
+            }
+            print("buffer ready")
+        } catch {
+            defaultLogger.error("Error during initialization of buffer: \(error.localizedDescription)")
+        }
     }
     
     var count: Int {
         return trainingData.count
     }
     
-    var batchProvider: [SarsaTupleGeneric<S, A, R>] {return trainingData}
+    var batchProvider: [SarsaTupleGeneric] {return trainingData}
     
    /// Creates a batch provider of training data given the contents of `trainingData`.
    /// - Tag: DrawingBatchProvider
@@ -82,13 +92,18 @@ public struct ExperienceReplayBuffer<S, A, R> {
 //    }
            
     /// Adds a drawing to the private array, but only if the type requires more.
-    mutating func addData(_ data: SarsaTupleGeneric<S, A, R>) {
-//        if trainingData.count < requiredDataCount {
+    mutating func addData(_ data: SarsaTupleGeneric) {
         trainingData.append(data)
-//        }
+        var idCounter: Int = self.defaults.integer(forKey: "idCounter")
+        let temp = DatabaseData(id: idCounter, state: convertToArray(from: data.getState()), action: data.getAction(), reward: data.getReward())
+        
+        idCounter += 1
+        self.defaults.set(idCounter, forKey: "idCounter")
+        addDataToDatabase(temp, bufferPath)
     }
     
     mutating func reset() {
-        self.trainingData = [SarsaTupleGeneric<S, A, R>]()
+        self.trainingData = [SarsaTupleGeneric]()
+        resetDatabase(path: bufferPath)
     }
 }

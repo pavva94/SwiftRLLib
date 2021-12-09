@@ -8,14 +8,14 @@
 import CoreML
 
 
-struct SarsaTupleGeneric<S, A, R> {
+struct SarsaTupleGeneric {
     private var state: MLMultiArray
-    private var action: A
-    private var reward: R
+    private var action: Int
+    private var reward: Double
     private var next_state: MLMultiArray
 //    var featureValue: MLFeatureValue
     
-    init(state: MLMultiArray, action: A, reward: R, nextState: MLMultiArray) {
+    init(state: MLMultiArray, action: Int, reward: Double, nextState: MLMultiArray) {
         self.state = state
         self.action = action
         self.reward = reward
@@ -23,7 +23,7 @@ struct SarsaTupleGeneric<S, A, R> {
 //        self.featureValue = try! MLFeatureValue(multiArray: MLMultiArray([state as Any, action as Any, reward as Any, nextState as Any]))
     }
     
-    init(state: MLMultiArray, action: A, reward: R) {
+    init(state: MLMultiArray, action: Int, reward: Double) {
         self.state = state
         self.action = action
         self.reward = reward
@@ -35,11 +35,11 @@ struct SarsaTupleGeneric<S, A, R> {
         return self.state
     }
     
-    func getAction() -> A {
+    func getAction() -> Int {
         return self.action
     }
     
-    func getReward() -> R {
+    func getReward() -> Double {
         return self.reward
     }
     

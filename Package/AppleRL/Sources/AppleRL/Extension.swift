@@ -22,6 +22,7 @@ extension AppleRLModel {
         guard let prediction = try? prediction(data: input)
 //                .label
         else {
+            defaultLogger.error("Label Prediction not found")
             return nil
         }
         
@@ -32,8 +33,8 @@ extension AppleRLModel {
 //        }
         
         // return prediction
-        print(prediction)
-        return "ciao"
+//        defaultLogger.log(convertToArray(from: prediction.actions).argmax()!)
+        return String(convertToArray(from: prediction.actions).argmax()!)
     }
     
     func predictFor(_ value: MLFeatureValue) -> AppleRLModelOutput? {
@@ -43,20 +44,14 @@ extension AppleRLModel {
         
         // Use the Model to predict a label for the drawing.
         guard let prediction = try? prediction(data: input)
-//                .label
         else {
+            defaultLogger.error("Prediction not found")
             return nil
         }
         
-        // A label of "unknown" means the model has no prediction for the image.
-        // This typically means the Model hasn't been updated with any image/label pairs.
-//        guard prediction != AppleRLModel.unknownLabel else {
-//            return nil
-//        }
-        
         // return prediction
-        print(type(of:prediction))
-        print(prediction)
+//        defaultLogger.log(type(of:prediction))
+//        defaultLogger.log("\(convertToArray(from: prediction.actions))")
         return prediction
     }
     
@@ -87,7 +82,7 @@ extension AppleRLModel {
                                            configuration: parameters,
                                             progressHandlers: handlers)
             else {
-                print("Could't create an MLUpdateTask.")
+                defaultLogger.error("Could't create an MLUpdateTask.")
                 return
         }
         
@@ -110,13 +105,5 @@ extension Double {
 
 extension CGFloat {
     var swf: Float { return Float(self) }
-    var swd: Double {return Double(self)}
+    var swd: Double { return Double(self) }
 }
-
-
-
-public protocol ValidRewardTypes { }
-
-extension Double: ValidRewardTypes { }
-
-extension Int: ValidRewardTypes { }
