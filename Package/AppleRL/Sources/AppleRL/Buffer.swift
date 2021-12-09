@@ -39,6 +39,8 @@ import CoreML
 /// - Tag: LabeledDrawingCollection
 public struct ExperienceReplayBuffer {
     
+    let defaults = UserDefaults.standard
+    
     /// The desired number of drawings to update the model
     private let requiredDataCount = 3
     
@@ -49,7 +51,15 @@ public struct ExperienceReplayBuffer {
     var isReadyForTraining: Bool { trainingData.count >= requiredDataCount }
     
     init() {
-        
+        do {
+            let db = loadDatabase(bufferPath)
+            for data in db {
+                trainingData.append(SarsaTupleGeneric(state: try MLMultiArray(data.state), action: data.action, reward: data.reward))
+            }
+            print("buffer ready")
+        } catch {
+            defaultLogger.error("Error during initialization of buffer: \(error.localizedDescription)")
+        }
     }
     
     var count: Int {
@@ -83,12 +93,17 @@ public struct ExperienceReplayBuffer {
            
     /// Adds a drawing to the private array, but only if the type requires more.
     mutating func addData(_ data: SarsaTupleGeneric) {
-//        if trainingData.count < requiredDataCount {
         trainingData.append(data)
-//        }
+        var idCounter: Int = self.defaults.integer(forKey: "idCounter")
+        let temp = DatabaseData(id: idCounter, state: convertToArray(from: data.getState()), action: data.getAction(), reward: data.getReward())
+        
+        idCounter += 1
+        self.defaults.set(idCounter, forKey: "idCounter")
+        addDataToDatabase(temp, bufferPath)
     }
     
     mutating func reset() {
         self.trainingData = [SarsaTupleGeneric]()
+        resetDatabase(path: bufferPath)
     }
 }

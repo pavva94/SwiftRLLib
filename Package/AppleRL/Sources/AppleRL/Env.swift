@@ -114,7 +114,7 @@ open class Env {
             defaultLogger.log("Action not found")
         } else {
             let data: DatabaseData = DatabaseData(id: idCounter, state: state, action: action, reward: 0.0)
-            addDataToDatabase(data)
+            addDataToDatabase(data, databasePath)
             self.idCounter += 1
             self.defaults.set(idCounter, forKey: "idCounter")
             defaultLogger.log("database saved, idCounter \(self.idCounter)")
