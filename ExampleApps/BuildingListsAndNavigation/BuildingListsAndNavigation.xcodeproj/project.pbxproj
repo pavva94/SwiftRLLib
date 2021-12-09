@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7301CE3F2761FE0400E20ECF /* AppActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7301CE3E2761FE0400E20ECF /* AppActions.swift */; };
 		734D21F5274FD051003629B4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734D21F4274FD051003629B4 /* AppDelegate.swift */; };
 		73C52DDD274E9C2B008D1D90 /* AppleRLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 73C52DDC274E9C2B008D1D90 /* AppleRLModel.mlmodel */; };
 		73DED6BC274FD74100CEC9FD /* AppleRL in Frameworks */ = {isa = PBXBuildFile; productRef = 73DED6BB274FD74100CEC9FD /* AppleRL */; };
@@ -24,6 +25,7 @@
 
 /* Begin PBXFileReference section */
 		32C0591524A7452A1B7C1DE3 /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
+		7301CE3E2761FE0400E20ECF /* AppActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppActions.swift; sourceTree = "<group>"; };
 		734D21F4274FD051003629B4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		73C52DDC274E9C2B008D1D90 /* AppleRLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = AppleRLModel.mlmodel; sourceTree = "<group>"; };
 		73DED6BA274FD73C00CEC9FD /* AppleRL */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AppleRL; path = ../../Package/AppleRL; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				C20D780224B684BD002E7AEA /* Landmark.swift */,
+				7301CE3E2761FE0400E20ECF /* AppActions.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -238,6 +241,7 @@
 			files = (
 				C20D77F024B665D7002E7AEA /* LandmarkDetail.swift in Sources */,
 				C20D77FF24B67FB3002E7AEA /* MapView.swift in Sources */,
+				7301CE3F2761FE0400E20ECF /* AppActions.swift in Sources */,
 				73C52DDD274E9C2B008D1D90 /* AppleRLModel.mlmodel in Sources */,
 				C20D780B24B68B4D002E7AEA /* LandmarkList.swift in Sources */,
 				C20D77EE24B665D7002E7AEA /* LandmarksApp.swift in Sources */,
@@ -386,7 +390,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.AppleRL;
+				PRODUCT_BUNDLE_IDENTIFIER = com.pavesialessandro.applerlapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -410,7 +414,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.AppleRL;
+				PRODUCT_BUNDLE_IDENTIFIER = com.pavesialessandro.applerlapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
