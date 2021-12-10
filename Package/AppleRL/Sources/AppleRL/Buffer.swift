@@ -60,7 +60,7 @@ public struct ExperienceReplayBuffer {
         return trainingData.count
     }
     
-    var batchProvider: [SarsaTupleGeneric] {return trainingData}
+    var batchProvider: [SarsaTupleGeneric] { return trainingData }
     
    /// Creates a batch provider of training data given the contents of `trainingData`.
    /// - Tag: DrawingBatchProvider
@@ -99,5 +99,14 @@ public struct ExperienceReplayBuffer {
     mutating func reset() {
         self.trainingData = []
         resetDatabase(path: bufferPath)
+        do {
+            let db = loadDatabase(bufferPath)
+            for data in db {
+                trainingData.append(SarsaTupleGeneric(state: try MLMultiArray(data.state), action: data.action, reward: data.reward))
+            }
+            print("buffer ready: \(trainingData.count)")
+        } catch {
+            defaultLogger.error("Error during Resetting of buffer: \(error.localizedDescription)")
+        }
     }
 }
