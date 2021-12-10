@@ -99,11 +99,11 @@ open class DeepQNetwork {
         self.gamma = (parameters["gamma"] as? Double)!
         self.epochs = 10 //(parameters["epochs"] as? Float)!
         self.learningRate = (parameters["learning_rate"] as? Double)!
-        self.timeIntervalTrainingBackgroundMode = Double(60*60)
+        self.timeIntervalTrainingBackgroundMode = Double(20*60)
         if let val = parameters["timeIntervalBackgroundMode"] {
             self.timeIntervalBackgroundMode = val as! Double
         } else {
-            self.timeIntervalBackgroundMode = Double(10*60)
+            self.timeIntervalBackgroundMode = Double(1*60)
         }
         defaultLogger.log("DQN Initialized")
         loadUpdatedModel()
@@ -235,30 +235,33 @@ open class DeepQNetwork {
         let usingUpdatedModel = updatedModel != nil
         let currentModelURL = usingUpdatedModel ? updatedModelURL : defaultModelURL
         
-        /// The closure an MLUpdateTask calls when it finishes updating the model.
-        func updateModelCompletionHandler(updateContext: MLUpdateContext) {
-            if updateContext.task.state == .failed {
-                defaultLogger.log("Failed")
-                defaultLogger.log("\(updateContext.task.error!.localizedDescription)")
-                return
-              }
-            // Save the updated model to the file system.
-            saveUpdatedModel(updateContext)
-            
-            // Begin using the saved updated model.
-            loadUpdatedModel()
-            
-            // Inform the calling View Controller when the update is complete
-            DispatchQueue.main.async { defaultLogger.log("Trained") }
-        }
-        
         DispatchQueue.global(qos: .userInitiated).async {
             AppleRLModel.updateModel(at: currentModelURL,
                                         with: trainingData,
                                         parameters: config,
                                         progressHandler: self.progressHandler,
-                                        completionHandler: updateModelCompletionHandler)
+                                     completionHandler: self.updateModelCompletionHandler)
         }
+    }
+    
+    /// The closure an MLUpdateTask calls when it finishes updating the model.
+    func updateModelCompletionHandler(updateContext: MLUpdateContext) {
+        if updateContext.task.state == .failed {
+            defaultLogger.log("Failed")
+            defaultLogger.log("\(updateContext.task.error!.localizedDescription)")
+            return
+          }
+        // Save the updated model to the file system.
+        saveUpdatedModel(updateContext)
+
+        // Begin using the saved updated model.
+        loadUpdatedModel()
+        
+        // reset the buffer only after the model trained for sure
+        buffer.reset()
+
+        // Inform the calling View Controller when the update is complete
+        DispatchQueue.main.async { defaultLogger.log("Trained") }
     }
     
     let progressHandler = { (context: MLUpdateContext) in
@@ -313,37 +316,19 @@ open class DeepQNetwork {
         let usingUpdatedModel = updatedModel != nil
         let currentModelURL = usingUpdatedModel ? updatedModelURL : defaultModelURL
         
-        /// The closure an MLUpdateTask calls when it finishes updating the model.
-        func updateModelCompletionHandler(updateContext: MLUpdateContext) {
-            if updateContext.task.state == .failed {
-                defaultLogger.log("Failed")
-                defaultLogger.log("\(updateContext.task.error!.localizedDescription)")
-                return
-              }
-            // Save the updated model to the file system.
-            saveUpdatedModel(updateContext)
-            
-            // Begin using the saved updated model.
-            loadUpdatedModel()
-            
-            // Inform the calling View Controller when the update is complete
-            DispatchQueue.main.async { self.buffer.reset() }
-        }
-        
-        
         DispatchQueue.global(qos: .userInitiated).async {
             AppleRLModel.updateModel(at: currentModelURL,
                                         with: trainingData,
                                         parameters: config,
                                         progressHandler: self.progressHandler,
-                                        completionHandler: updateModelCompletionHandler)
+                                     completionHandler: self.updateModelCompletionHandler)
         }
     }
     
     @objc open func listen() {
         let state = environment.read()
         let newState = convertToMLMultiArrayFloat(from:state)
-        defaultLogger.log("\(state)")
+        defaultLogger.log("Listen: \(state)")
         let action = self.act(state: newState)
         environment.act(state: state, action: action)
         // in-App use means the user needs to give a reward using the app and only then the SarsaTuple is saved and used for training
@@ -454,7 +439,7 @@ open class DeepQNetwork {
     }
     
     public func handleAppRefreshTask(task: BGAppRefreshTask) {
-        defaultLogger.log("Handling task")
+        defaultLogger.log("Handling Listen ask")
         task.expirationHandler = {
             task.setTaskCompleted(success: false)
         }
@@ -472,7 +457,7 @@ open class DeepQNetwork {
     public func scheduleBackgroundSensorFetch() {
         defaultLogger.log("Background fetch activate")
         let sensorFetchTask = BGAppRefreshTaskRequest(identifier: "com.pavesialessandro.applerl.backgroundListen")
-        sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalBackgroundMode)
+        sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalBackgroundMode) // launch at least every x minutes
         do {
             try BGTaskScheduler.shared.submit(sensorFetchTask)
             defaultLogger.log("task scheduled")
@@ -501,7 +486,7 @@ open class DeepQNetwork {
 //        request.requiresNetworkConnectivity = true // Need to true if your task need to network process. Defaults to false.
         request.requiresExternalPower = true // Need to true if your task requires a device connected to power source. Defaults to false.
 
-        request.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalTrainingBackgroundMode * 10.0) // Process after 5 minutes.
+        request.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalTrainingBackgroundMode) // Process after x minutes.
 
         do {
             try BGTaskScheduler.shared.submit(request)
@@ -532,3 +517,6 @@ open class DeepQNetwork {
 //
 //Model List [0.04121972993016243, 0.048581261187791824, 0.04852025955915451, -0.9568986296653748, -0.5867434144020081]
 //Model List [0.04121972993016243, 0.048581261187791824, 0.04852025955915451, -0.9568986296653748, -0.5867434144020081]
+
+
+// e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.pavesialessandro.applerl.backgroundListen"]
