@@ -25,15 +25,23 @@ struct LandmarksApp: App {
 //                    qnet.scheduleBackgroundSensorFetch()
 //                    qnet.scheduleBackgroundTrainingFetch()
                     
+                    BGTaskScheduler.shared.cancelAllTaskRequests()
+                    
                     
                     if backgroundMode {
                         qnet.scheduleBackgroundSensorFetch()
                         qnet.scheduleBackgroundTrainingFetch()
+
                     } //else {
-//                        qnet.startListen(interval: 10)
-//                        qnet.startTrain(interval: 50)
+                        qnet.startListen(interval: 10)
+                        qnet.startTrain(interval: 50)
 //                    }
                 }
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                        print("Moving back to the foreground!")
+                        databaseDataApp = loadDatabase("database.json")
+                    
+                    }
         }
     }
 }

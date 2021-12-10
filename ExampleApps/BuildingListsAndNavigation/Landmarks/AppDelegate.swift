@@ -26,22 +26,24 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         defaultLogger.log("Your code here")
         
         if backgroundMode {
-            BGTaskScheduler.shared.cancelAllTaskRequests()
-
+            print("Background tasks registered")
             BGTaskScheduler.shared.register(
               forTaskWithIdentifier: "com.pavesialessandro.applerl.backgroundListen",
               using: nil) { (task) in
-                defaultLogger.log("Task handler")
+                defaultLogger.log("Listen Task handler")
                   qnet.handleAppRefreshTask(task: task as! BGAppRefreshTask)
             }
 
             BGTaskScheduler.shared.register(
               forTaskWithIdentifier: "com.pavesialessandro.applerl.backgroundTrain",
               using: nil) { (task) in
-                defaultLogger.log("Task handler")
+                defaultLogger.log("Background Task handler")
                   qnet.handleTrainingTask(task: task as! BGProcessingTask)
             }
             
+            BGTaskScheduler.shared.cancelAllTaskRequests()
+            qnet.scheduleBackgroundTrainingFetch()
+            qnet.scheduleBackgroundSensorFetch()
             
         } else {
             qnet.startListen(interval: 10)

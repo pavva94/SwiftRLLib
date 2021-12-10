@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7301CE3F2761FE0400E20ECF /* AppActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7301CE3E2761FE0400E20ECF /* AppActions.swift */; };
 		7301CE42276248C200E20ECF /* AppleRLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 7301CE40276247BE00E20ECF /* AppleRLModel.mlmodel */; };
+		7301CE442762D08900E20ECF /* log09-12-2021-1hour.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 7301CE432762D08900E20ECF /* log09-12-2021-1hour.rtf */; };
 		734D21F5274FD051003629B4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734D21F4274FD051003629B4 /* AppDelegate.swift */; };
 		73DED6BC274FD74100CEC9FD /* AppleRL in Frameworks */ = {isa = PBXBuildFile; productRef = 73DED6BB274FD74100CEC9FD /* AppleRL */; };
 		C20D77EE24B665D7002E7AEA /* LandmarksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20D77ED24B665D7002E7AEA /* LandmarksApp.swift */; };
@@ -28,6 +29,7 @@
 		7301CE3E2761FE0400E20ECF /* AppActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppActions.swift; sourceTree = "<group>"; };
 		7301CE40276247BE00E20ECF /* AppleRLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = AppleRLModel.mlmodel; path = ../../../Package/AppleRL/Sources/AppleRL/AppleRLModel.mlmodel; sourceTree = "<group>"; };
 		7301CE412762480D00E20ECF /* AppleRLModel.mlmodelc */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppleRLModel.mlmodelc; sourceTree = "<group>"; };
+		7301CE432762D08900E20ECF /* log09-12-2021-1hour.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = "log09-12-2021-1hour.rtf"; sourceTree = "<group>"; };
 		734D21F4274FD051003629B4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		73DED6BA274FD73C00CEC9FD /* AppleRL */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AppleRL; path = ../../Package/AppleRL; sourceTree = "<group>"; };
 		C20D77EA24B665D7002E7AEA /* Landmarks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Landmarks.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -124,6 +126,7 @@
 				C20D77F124B665D8002E7AEA /* Assets.xcassets */,
 				C20D77F624B665D8002E7AEA /* Info.plist */,
 				C20D77F324B665D8002E7AEA /* Preview Content */,
+				7301CE432762D08900E20ECF /* log09-12-2021-1hour.rtf */,
 			);
 			path = Landmarks;
 			sourceTree = "<group>";
@@ -231,6 +234,7 @@
 			files = (
 				C20D77F524B665D8002E7AEA /* Preview Assets.xcassets in Resources */,
 				C20D77F224B665D8002E7AEA /* Assets.xcassets in Resources */,
+				7301CE442762D08900E20ECF /* log09-12-2021-1hour.rtf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

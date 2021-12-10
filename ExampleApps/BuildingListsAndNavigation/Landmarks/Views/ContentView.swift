@@ -10,7 +10,7 @@ import AppleRL
 
 struct ContentView: View {
     var body: some View {
-        LandmarkList().onAppear(perform: refreshData)
+        LandmarkList(databaseDataApp: loadDatabase("database.json")).onAppear(perform: refreshData)
     }
 }
 
