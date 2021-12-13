@@ -11,4 +11,4 @@ The AppleRL package give the developer the access to use Reinforcement Learning 
 
 
 
-* Only some devices was tested.
+\* Only some devices was tested.
