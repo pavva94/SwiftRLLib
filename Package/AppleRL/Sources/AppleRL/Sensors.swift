@@ -10,6 +10,7 @@ import UIKit
 import SensorKit
 import CoreMotion
 import AVKit
+import CoreLocation
 
 //public class Orientation: Sensor<Bool> {
 //
@@ -40,6 +41,47 @@ open class BatterySensor: Sensor {
     
     public override func preprocessing(value: Any) -> [Double] {
         return [(value as! Float).f.swd] // [Double(Int.random(in: 1..<100))]
+    }
+}
+
+open class LowPowerModeSensor: Sensor {
+    
+    class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+        let manager = CLLocationManager()
+
+        @Published var location: CLLocationCoordinate2D?
+
+        override init() {
+            super.init()
+            manager.delegate = self
+        }
+
+        func requestLocation() {
+            manager.requestLocation()
+        }
+
+        func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+            location = locations.first?.coordinate
+        }
+    }
+    
+    private var locationManager = LocationManager()
+    
+    init() {
+        super.init(name: "lowPowerMode", stateSize: 1)
+    }
+
+    open override func read() -> [Double] {
+       
+        return preprocessing(value: locationManager.requestLocation())
+    }
+    
+    public override func preprocessing(value: Any) -> [Double] {
+        if value as! Bool {
+            return [Double(1.0)]
+        } else {
+            return [Double(0.0)]
+        }
     }
 }
 
@@ -155,6 +197,23 @@ open class AmbientLightSensor: Sensor {
         return [(value as! CGFloat).swd]
     }
 }
+
+
+open class LocationSensor: Sensor {
+    
+    init() {
+        super.init(name: "location", stateSize: 2)
+    }
+    
+    open override func read() -> [Double] {
+        return preprocessing(value: UIScreen.main.brightness)
+    }
+    
+    open override func preprocessing(value: Any) -> [Double] {
+        return [(value as! CGFloat).swd]
+    }
+}
+
 
 open class AccelerometerSensor: Sensor {
     init() {

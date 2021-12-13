@@ -303,7 +303,7 @@ open class DeepQNetwork {
         let parameters: [MLParameterKey: Any] = [
             .epochs: self.epochs,
             //.seed: 1234,
-            .miniBatchSize: 2,
+            .miniBatchSize: 8,
             .learningRate: self.learningRate,
             //.shuffle: false,
         ]

@@ -18,6 +18,7 @@ open class Env {
         "ambientLight",
         "clock",
         "date",
+        "lowPowerMode",
         // not implemented yet
         "proximity",
         "gyroscope",
@@ -48,39 +49,40 @@ open class Env {
                 defaultLogger.log("Sensor not allowed: \(st)")
                 continue
             }
+            var sens: Sensor
             switch st {
             case "battery":
                 UIDevice.current.isBatteryMonitoringEnabled = true
-                let sens = BatterySensor()
-                self.sensors.append(sens)
-                self.stateSize += sens.stateSize
+                sens = BatterySensor()
+               
             case "volume":
-                let sens = VolumeSensor()
-                self.sensors.append(sens)
-                self.stateSize += sens.stateSize
+                sens = VolumeSensor()
+               
             case "orientation":
-                let sens = OrientationSensor()
-                self.sensors.append(sens)
-                self.stateSize += sens.stateSize
+                sens = OrientationSensor()
+               
             case "brightness":
-                let sens = BrightnessSensor()
-                self.sensors.append(sens)
-                self.stateSize += sens.stateSize
+                sens = BrightnessSensor()
+               
             case "ambientLight":
-                let sens = AmbientLightSensor()
-                self.sensors.append(sens)
-                self.stateSize += sens.stateSize
+                sens = AmbientLightSensor()
+               
             case "clock":
-                let sens = ClockSensor()
-                self.sensors.append(sens)
-                self.stateSize += sens.stateSize
+                sens = ClockSensor()
+               
             case "date":
-                let sens = DateSensor()
-                self.sensors.append(sens)
-                self.stateSize += sens.stateSize
+                sens = DateSensor()
+               
+            case "lowPowerMode":
+                sens = LowPowerModeSensor()
+               
             default:
                 defaultLogger.log("Sensor not valid: \(st)")
+                continue
             }
+            
+            self.sensors.append(sens)
+            self.stateSize += sens.stateSize
             
         }
     }
@@ -112,7 +114,7 @@ open class Env {
         return data
     }
     
-    open func act(state: [Double], action: Int) -> Void { // return the reward that is always int?
+open func act(state: [Double], action: Int) -> Void { // return the reward that is always int?
         // here define the action, selected by the id number
         // Be sure to set an id to each action
         // search action based on Id
