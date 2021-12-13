@@ -11,6 +11,7 @@ import SensorKit
 import CoreMotion
 import AVKit
 import CoreLocation
+import Combine
 
 //public class Orientation: Sensor<Bool> {
 //
@@ -44,44 +45,63 @@ open class BatterySensor: Sensor {
     }
 }
 
-open class LowPowerModeSensor: Sensor {
-    
-    class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
-        let manager = CLLocationManager()
+open class LocationSensor: Sensor {
 
-        @Published var location: CLLocationCoordinate2D?
+    class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+
+        private let locationManager = CLLocationManager()
+        @Published var locationStatus: CLAuthorizationStatus?
+        @Published var lastLocation: CLLocation?
 
         override init() {
             super.init()
-            manager.delegate = self
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.requestAlwaysAuthorization()
+            locationManager.startUpdatingLocation()
+            locationManager.allowsBackgroundLocationUpdates = true
         }
 
-        func requestLocation() {
-            manager.requestLocation()
-        }
-
-        func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-            location = locations.first?.coordinate
+       
+        
+        var statusString: String {
+            guard let status = locationStatus else {
+                return "unknown"
+            }
+            
+            switch status {
+            case .notDetermined: return "notDetermined"
+            case .authorizedWhenInUse: return "authorizedWhenInUse"
+            case .authorizedAlways: return "authorizedAlways"
+            case .restricted: return "restricted"
+            case .denied: return "denied"
+            default: return "unknown"
+            }
         }
     }
     
-    private var locationManager = LocationManager()
+    let locationManager = LocationManager()
     
     init() {
-        super.init(name: "lowPowerMode", stateSize: 1)
+        super.init(name: "location", stateSize: 2)
+        
+
     }
 
     open override func read() -> [Double] {
-       
-        return preprocessing(value: locationManager.requestLocation())
+        print(locationManager.statusString)
+        var userLatitude: Double {
+            return locationManager.lastLocation?.coordinate.latitude ?? 0
+        }
+        
+        var userLongitude: Double {
+            return locationManager.lastLocation?.coordinate.longitude ?? 0
+        }
+        return preprocessing(value: [userLatitude, userLongitude])
     }
     
     public override func preprocessing(value: Any) -> [Double] {
-        if value as! Bool {
-            return [Double(1.0)]
-        } else {
-            return [Double(0.0)]
-        }
+        return value as! [Double]
     }
 }
 
@@ -199,18 +219,24 @@ open class AmbientLightSensor: Sensor {
 }
 
 
-open class LocationSensor: Sensor {
+open class LowPowerModeSensor: Sensor {
     
     init() {
-        super.init(name: "location", stateSize: 2)
+        super.init(name: "lowPowerMode", stateSize: 2)
     }
     
     open override func read() -> [Double] {
-        return preprocessing(value: UIScreen.main.brightness)
+        let lowerPowerEnabled = ProcessInfo.processInfo.isLowPowerModeEnabled
+            
+        return preprocessing(value: lowerPowerEnabled)
     }
     
     open override func preprocessing(value: Any) -> [Double] {
-        return [(value as! CGFloat).swd]
+        if value as! Bool {
+            return [Double(1.0)]
+        } else {
+            return [Double(0.0)]
+        }
     }
 }
 

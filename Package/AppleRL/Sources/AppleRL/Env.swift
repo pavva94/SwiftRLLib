@@ -19,6 +19,7 @@ open class Env {
         "clock",
         "date",
         "lowPowerMode",
+        "location",
         // not implemented yet
         "proximity",
         "gyroscope",
@@ -75,6 +76,9 @@ open class Env {
                
             case "lowPowerMode":
                 sens = LowPowerModeSensor()
+                
+            case "location":
+                sens = LocationSensor()
                
             default:
                 defaultLogger.log("Sensor not valid: \(st)")
