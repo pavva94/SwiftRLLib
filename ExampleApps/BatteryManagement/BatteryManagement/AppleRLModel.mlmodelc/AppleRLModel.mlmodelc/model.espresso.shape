@@ -1,0 +1,34 @@
+{
+  "layer_shapes" : {
+    "dense_2__activation___output" : {
+      "k" : 32,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "data" : {
+      "k" : 5,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "dense_3__activation___output" : {
+      "k" : 3,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "actions" : {
+      "k" : 3,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    },
+    "dense_1__activation___output" : {
+      "k" : 64,
+      "w" : 1,
+      "n" : 1,
+      "h" : 1
+    }
+  }
+}
