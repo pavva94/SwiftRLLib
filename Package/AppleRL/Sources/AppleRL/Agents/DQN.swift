@@ -99,11 +99,11 @@ open class DeepQNetwork {
         self.gamma = (parameters["gamma"] as? Double)!
         self.epochs = 10 //(parameters["epochs"] as? Float)!
         self.learningRate = (parameters["learning_rate"] as? Double)!
-        self.timeIntervalTrainingBackgroundMode = Double(30*60)
+        self.timeIntervalTrainingBackgroundMode = Double(2*60*60) // 2 ore
         if let val = parameters["timeIntervalBackgroundMode"] {
             self.timeIntervalBackgroundMode = val as! Double
         } else {
-            self.timeIntervalBackgroundMode = Double(10*60)
+            self.timeIntervalBackgroundMode = Double(10*60) // 10 minuti
         }
         defaultLogger.log("DQN Initialized")
         loadUpdatedModel()
