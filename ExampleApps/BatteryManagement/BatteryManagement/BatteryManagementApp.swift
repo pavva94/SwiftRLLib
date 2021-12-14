@@ -12,7 +12,7 @@ import CoreLocation
 
 let actionsArray: [Action] = [Deactivate(), LeaveIt(), Activate()]
 var environment: Env = Env(sensors: ["localization", "battery", "clock", "lowPowerMode"], actions: actionsArray, actionSize: 3)
-let params: Dictionary<String, Any> = ["epsilon": Double(0.7), "learning_rate": Double(0.15), "gamma": Double(0.5)]
+let params: Dictionary<String, Any> = ["epsilon": Double(0.7), "learning_rate": Double(0.15), "gamma": Double(0.5), "timeIntervalBackgroundMode": Double(30*60)]
 let qnet: DeepQNetwork = DeepQNetwork(env: environment, parameters: params)
 var firstOpen = true
 let locationManager = CLLocationManager()

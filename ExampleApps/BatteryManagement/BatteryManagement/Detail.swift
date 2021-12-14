@@ -69,8 +69,9 @@ struct Detail: View {
                     alignment: .top,
                     spacing: 10
                 ) {
-                    Text("State -> Brightness")
+                    Text("State -> Coordinates (lat, long")
                     Text(String(format: "%.1f", data.state[0]))
+                    Text(String(format: "%.1f", data.state[1]))
                 }.font(.subheadline)
                 .foregroundColor(.secondary)
                 
@@ -79,7 +80,7 @@ struct Detail: View {
                     spacing: 10
                 ) {
                     Text("State -> Battery")
-                    Text(String(format: "%.1f", data.state[1]))
+                    Text(String(format: "%.1f", data.state[2]))
                 }.font(.subheadline)
                 .foregroundColor(.secondary)
                 HStack (
@@ -87,7 +88,15 @@ struct Detail: View {
                     spacing: 10
                 ) {
                     Text("State -> Clock")
-                    Text("\(Int(data.state[2])): \(Int(data.state[3])). \(Int(data.state[4]))")
+                    Text("\(Int(data.state[3])): \(Int(data.state[4])). \(Int(data.state[5]))")
+                }.font(.subheadline)
+                .foregroundColor(.secondary)
+                HStack (
+                    alignment: .top,
+                    spacing: 10
+                ) {
+                    Text("State -> LowPowerMode")
+                    Text("\(Int(data.state[6]))")
                 }.font(.subheadline)
                 .foregroundColor(.secondary)
 
