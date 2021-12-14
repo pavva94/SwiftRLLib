@@ -15,13 +15,19 @@ open class Env {
         "volume",
         "orientation",
         "brightness",
-        "ambientLight",
+//        "ambientLight",
         "clock",
         "date",
         "lowPowerMode",
         "location",
-        // not implemented yet
-        "proximity",
+        "hour",
+        "minute",
+        "second",
+        "altitude",
+        "speed",
+        "city",
+        "country",
+//        "proximity",
         "gyroscope",
         "barometer",
         
@@ -44,8 +50,16 @@ open class Env {
         self.actions = actions
         self.idCounter = self.defaults.integer(forKey: "idCounter")
         
+        var sensorsList: [String] = []
+        
+        if !sensors.isEmpty && sensors[0] == "all" {
+            sensorsList = admittedSensors
+        } else {
+            sensorsList = sensors
+        }
+        
         // TODO check the sensors with a list of selected/usable sensors
-        for st in sensors {
+        for st in sensorsList {
             if !self.admittedSensors.contains(st) {
                 defaultLogger.log("Sensor not allowed: \(st)")
                 continue
@@ -70,6 +84,15 @@ open class Env {
                
             case "clock":
                 sens = ClockSensor()
+                
+            case "hour":
+                sens = HourSensor()
+                
+            case "minute":
+                sens = MinuteSensor()
+                
+            case "second":
+                sens = SecondSensor()
                
             case "date":
                 sens = DateSensor()
@@ -79,6 +102,12 @@ open class Env {
                 
             case "location":
                 sens = LocationSensor()
+            
+            case "speed":
+                sens = SpeedSensor()
+                
+            case "altitude":
+                sens = AltitudeSensor()
                
             default:
                 defaultLogger.log("Sensor not valid: \(st)")
@@ -109,6 +138,7 @@ open class Env {
         var data: [Double] = []
         
         for s in self.sensors {
+            print(s)
             let sensorData = s.read()
             for sd in sensorData {
                 data.append(sd)

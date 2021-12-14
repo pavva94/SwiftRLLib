@@ -47,55 +47,24 @@ open class BatterySensor: Sensor {
 
 open class LocationSensor: Sensor {
 
-    class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
-
-        private let locationManager = CLLocationManager()
-        @Published var locationStatus: CLAuthorizationStatus?
-        @Published var lastLocation: CLLocation?
-
-        override init() {
-            super.init()
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
-            locationManager.requestAlwaysAuthorization()
-            locationManager.startUpdatingLocation()
-            locationManager.allowsBackgroundLocationUpdates = true
-        }
-
-       
-        
-        var statusString: String {
-            guard let status = locationStatus else {
-                return "unknown"
-            }
-            
-            switch status {
-            case .notDetermined: return "notDetermined"
-            case .authorizedWhenInUse: return "authorizedWhenInUse"
-            case .authorizedAlways: return "authorizedAlways"
-            case .restricted: return "restricted"
-            case .denied: return "denied"
-            default: return "unknown"
-            }
-        }
-    }
-    
-    let locationManager = LocationManager()
+    let locationManager = LocationManagerRL()
     
     init() {
         super.init(name: "location", stateSize: 2)
-        
+        locationManager.requestPermission()
 
+    }
+    var coordinate: CLLocationCoordinate2D? {
+        locationManager.lastSeenLocation?.coordinate
     }
 
     open override func read() -> [Double] {
-        print(locationManager.statusString)
         var userLatitude: Double {
-            return locationManager.lastLocation?.coordinate.latitude ?? 0
+            return coordinate?.latitude ?? 0
         }
         
         var userLongitude: Double {
-            return locationManager.lastLocation?.coordinate.longitude ?? 0
+            return coordinate?.longitude ?? 0
         }
         return preprocessing(value: [userLatitude, userLongitude])
     }
@@ -104,6 +73,75 @@ open class LocationSensor: Sensor {
         return value as! [Double]
     }
 }
+
+open class AltitudeSensor: Sensor {
+    let locationManager = LocationManagerRL()
+    
+    init() {
+        super.init(name: "altitude", stateSize: 1)
+    }
+    
+    open override func read() -> [Double]
+    {
+        return preprocessing(value: locationManager.lastSeenLocation?.altitude ?? 0.0)
+    }
+    
+    open override func preprocessing(value: Any) -> [Double] {
+        return [value as! Double]
+    }
+}
+
+open class SpeedSensor: Sensor {
+    let locationManager = LocationManagerRL()
+    
+    init() {
+        super.init(name: "speed", stateSize: 1)
+    }
+    
+    open override func read() -> [Double]
+    {
+        return preprocessing(value: locationManager.lastSeenLocation?.speed ?? 0.0)
+    }
+    
+    open override func preprocessing(value: Any) -> [Double] {
+        return [value as! Double]
+    }
+}
+
+open class CitySensor: Sensor {
+    let locationManager = LocationManagerRL()
+    
+    init() {
+        super.init(name: "city", stateSize: 1)
+    }
+    
+    open override func read() -> [Double]
+    {
+        return preprocessing(value: locationManager.currentPlacemark?.administrativeArea ?? 0)
+    }
+    
+    open override func preprocessing(value: Any) -> [Double] {
+        return [value as! Double]
+    }
+}
+
+open class CountrySensor: Sensor {
+    let locationManager = LocationManagerRL()
+    
+    init() {
+        super.init(name: "country", stateSize: 1)
+    }
+    
+    open override func read() -> [Double]
+    {
+        return preprocessing(value: locationManager.currentPlacemark?.country ?? 0)
+    }
+    
+    open override func preprocessing(value: Any) -> [Double] {
+        return [value as! Double]
+    }
+}
+
 
 open class OrientationSensor: Sensor {
     init() {
@@ -145,6 +183,65 @@ open class ClockSensor: Sensor {
     }
 }
 
+open class HourSensor: Sensor {
+    
+    init() {
+        super.init(name: "hour", stateSize: 3)
+    }
+    
+    open override func read() -> [Double] {
+        let date = Foundation.Date() // save date, so all components use the same date
+        let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
+
+        let hour = calendar.component(.hour, from: date)
+        return preprocessing(value: [Double(hour)])
+    }
+    
+    open override func preprocessing(value: Any) -> [Double] {
+        return value as! [Double]
+    }
+}
+
+open class MinuteSensor: Sensor {
+    
+    init() {
+        super.init(name: "minute", stateSize: 3)
+    }
+    
+    open override func read() -> [Double] {
+        let date = Foundation.Date() // save date, so all components use the same date
+        let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
+
+        let minute = calendar.component(.minute, from: date)
+        return preprocessing(value: [Double(minute)])
+    }
+    
+    open override func preprocessing(value: Any) -> [Double] {
+        return value as! [Double]
+    }
+}
+
+open class SecondSensor: Sensor {
+    
+    init() {
+        super.init(name: "second", stateSize: 3)
+    }
+    
+    open override func read() -> [Double] {
+        let date = Foundation.Date() // save date, so all components use the same date
+        let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
+
+        let second = calendar.component(.second, from: date)
+        return preprocessing(value: [Double(second)])
+    }
+    
+    open override func preprocessing(value: Any) -> [Double] {
+        return value as! [Double]
+    }
+}
+
+
+
 open class DateSensor: Sensor {
     
     init() {
@@ -182,7 +279,8 @@ open class VolumeSensor: Sensor {
     }
     
     open override func preprocessing(value: Any) -> [Double] {
-        return [(value as! CGFloat).swd]
+        return [Double(value as! Float)]
+        
     }
 }
 
@@ -218,11 +316,38 @@ open class AmbientLightSensor: Sensor {
     }
 }
 
+open class BarometerSensor: Sensor {
+    private var altimeter: CMAltimeter!
+    
+    init() {
+        super.init(name: "barometer", stateSize: 1)
+        altimeter = CMAltimeter()
+    }
+    
+    open override func read() -> [Double] {
+        if CMAltimeter.isRelativeAltitudeAvailable() {
+            // 2
+            altimeter.startRelativeAltitudeUpdates(to: .main, withHandler: { data, error in
+                // 3
+                if (error == nil) {
+                    print("Relative Altitude: \(data!.relativeAltitude)")
+                    print("Pressure: \(data!.pressure)")
+                }
+            })
+        }
+        return [0]
+    }
+    
+    open override func preprocessing(value: Any) -> [Double] {
+        return [(value as! CGFloat).swd]
+    }
+}
+
 
 open class LowPowerModeSensor: Sensor {
     
     init() {
-        super.init(name: "lowPowerMode", stateSize: 2)
+        super.init(name: "lowPowerMode", stateSize: 1)
     }
     
     open override func read() -> [Double] {
@@ -295,25 +420,3 @@ open class GyroscopeSensor: Sensor {
         return value as! [Double]
     }
 }
-//public class Accelerometer: Sensor<[Double]> {
-//    let motion = CMMotionManager()
-//    var x: Double = 0
-//    var y: Double = 0
-//    var z: Double = 0
-//
-//    public override func read() -> [Double] {
-//        // Make sure the accelerometer hardware is available.
-//        if self.motion.isAccelerometerAvailable {
-//            if let data = self.motion.accelerometerData {
-//                        x = data.acceleration.x
-//                        y = data.acceleration.y
-//                        z = data.acceleration.z
-//            }
-//        }
-//        return preprocessing(value: [x, y, z])
-//    }
-//
-//    public override func preprocessing(value: Any) -> [Double] {
-//        return value as! [Double]
-//    }
-//}
