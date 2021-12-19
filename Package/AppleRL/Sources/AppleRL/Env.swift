@@ -137,8 +137,18 @@ open class Env {
     open func read() -> [Double] {
         var data: [Double] = []
         
+        var params: Dictionary<String, Double> = [:]
+        
+        for s in self.sensors {
+            params[s.name] = s.read()[0]
+        }
+        
         for s in self.sensors {
             print(s)
+            if s.name == "battery" {
+                data.append(BatterySimulator.simulateBattery(battery: 0.0, params: params))
+                continue
+            }
             let sensorData = s.read()
             for sd in sensorData {
                 data.append(sd)
