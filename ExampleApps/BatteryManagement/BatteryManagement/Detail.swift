@@ -8,6 +8,7 @@
 import SwiftUI
 import AppleRL
 import CoreML
+import MapKit
 
 
 struct Detail: View {
@@ -49,6 +50,22 @@ struct Detail: View {
         }
         return "No Description"
     }
+    
+    func openMap() -> Void {
+        let latitude: CLLocationDegrees = data.state[0]
+        let longitude: CLLocationDegrees = data.state[1]
+        let regionDistance:CLLocationDistance = 10000
+        let coordinates = CLLocationCoordinate2DMake(latitude, longitude)
+        let regionSpan = MKCoordinateRegion(center: coordinates, latitudinalMeters: regionDistance, longitudinalMeters: regionDistance)
+        let options = [
+            MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center),
+            MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span)
+        ]
+        let placemark = MKPlacemark(coordinate: coordinates, addressDictionary: nil)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = "Selected Position"
+        mapItem.openInMaps(launchOptions: options)
+    }
 
     var body: some View {
         ScrollView {
@@ -69,9 +86,10 @@ struct Detail: View {
                     alignment: .top,
                     spacing: 10
                 ) {
-                    Text("State -> Coordinates (lat, long")
+                    Text("State -> Coordinates")
                     Text(String(format: "%.1f", data.state[0]))
                     Text(String(format: "%.1f", data.state[1]))
+                    Button("Open in Maps", action: openMap)
                 }.font(.subheadline)
                 .foregroundColor(.secondary)
                 
@@ -122,3 +140,5 @@ struct Detail: View {
 //        Detail(data: databaseDataApp[0])
 //    }
 //}
+
+
