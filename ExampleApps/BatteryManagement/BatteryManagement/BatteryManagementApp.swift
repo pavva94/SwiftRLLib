@@ -24,6 +24,8 @@ class Env1: Env {
         // activate outside with high battery (>60%)
         // deactivate with low battery (<25%)
         
+//        print(state)
+        
         let lat = state[0]
         let long = state[1]
         let battery = state[2]
@@ -52,17 +54,22 @@ class Env1: Env {
         
         // Case 1: if i'm watching ntflix (20% of the time) and the agent want to decrese brightness, NOT permitted -10
         if watchingNetflix < 0.2 && action == 11 {
+            print("i'm watching ntflix: -10")
             reward += -10
         }
         // Case 2: if the battery is under 20% and the agent want to deactivate LPM, NOT permitted -10
         else if battery < 0.2 && action == 2 {
+            print("the battery is under 20% and the agent want to deactivate: -10")
             reward += -10
+        } else if battery < 0.0 {
+            print("the battery is dead: -20")
+            reward += -20
         }
         
         
         // Final reward based on what the agent need to maximise
-        // here the difference between the current value battery and the last state battery value
-        reward += battery - nextState[2]
+        // here the difference between the current battery value and the battery value of previous state 
+        reward += nextState[2] - battery
         
         print("Final reward: \(reward)")
         
@@ -95,7 +102,7 @@ class Env1: Env {
 //    }
 //}
 
-let actionsArray: [Action] = [LPMDeactivate(), LPMLeaveIt(), LPMActivate(), BrightnessDecrese(), BrightnessLeaveIt(), BrightnessIncrese()]
+let actionsArray: [Action] = [BrightnessDecrese(), BrightnessLeaveIt(), BrightnessIncrese()]
 var environment: Env = Env1(sensors: ["location", "battery", "clock", "lowPowerMode", "brightness"], actions: actionsArray, actionSize: 3)
 let params: Dictionary<String, Any> = ["epsilon": Double(0.7), "learning_rate": Double(0.15), "gamma": Double(0.5), "timeIntervalBackgroundMode": Double(30*60)]
 let qnet: DeepQNetwork = DeepQNetwork(env: environment, parameters: params)
@@ -106,8 +113,8 @@ let locationManager = LocationManagerRL()
 struct BatteryManagementApp: App {
     
     init(){
-        resetDatabase(path: "database.json")
-        resetDatabase(path: "buffer.json")
+//        resetDatabase(path: "database.json")
+//        resetDatabase(path: "buffer.json")
         print("Background tasks registered")
         BGTaskScheduler.shared.register(
           forTaskWithIdentifier: "com.pavesialessandro.applerl.backgroundListen",
@@ -178,8 +185,8 @@ struct BatteryManagementApp: App {
 //            qnet.store(state: MLState, action: action, reward: reward, nextState: MLState)
             
             
-            qnet.startListen(interval: 10)
-            qnet.startTrain(interval: 50)
+            qnet.startListen(interval: 20)
+            qnet.startTrain(interval: 120)
             BGTaskScheduler.shared.cancelAllTaskRequests()
 //            qnet.scheduleBackgroundSensorFetch()
 //            qnet.scheduleBackgroundTrainingFetch()

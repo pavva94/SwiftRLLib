@@ -7,6 +7,7 @@
 
 import Foundation
 import AppleRL
+import UIKit
 
 
 open class LPMActivate: Action {
@@ -118,7 +119,7 @@ open class WFDeactivate: Action {
 }
 
 open class BrightnessIncrese: Action {
-    public var id: Int = 9
+    public var id: Int = 0
     
     public init() {}
     
@@ -126,11 +127,12 @@ open class BrightnessIncrese: Action {
     
     public func exec() {
         print(description)
+        UIScreen.main.brightness = UIScreen.main.brightness + 0.2
     }
 }
 
 open class BrightnessLeaveIt: Action {
-    public var id: Int = 10
+    public var id: Int = 1
     
     public init() {}
     
@@ -142,7 +144,7 @@ open class BrightnessLeaveIt: Action {
 }
 
 open class BrightnessDecrese: Action {
-    public var id: Int = 11
+    public var id: Int = 2
     
     public init() {}
     
@@ -150,5 +152,6 @@ open class BrightnessDecrese: Action {
     
     public func exec() {
         print(description)
+        UIScreen.main.brightness = UIScreen.main.brightness - 0.2
     }
 }
