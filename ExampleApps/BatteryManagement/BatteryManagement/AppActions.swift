@@ -9,38 +9,146 @@ import Foundation
 import AppleRL
 
 
-open class Activate: Action {
+open class LPMActivate: Action {
     public var id: Int = 0
     
     public init() {}
     
-    public var description: String = "Decrese Brightness is good"
+    public var description: String = "Activate the LowPowerMode!"
     
     public func exec() {
-        print("Action1")
+        print(description)
     }
 }
 
-open class LeaveIt: Action {
+open class LPMLeaveIt: Action {
     public var id: Int = 1
     
     public init() {}
     
-    public var description: String = "Leave it as it is"
+    public var description: String = "Leave LowPowerMode it as it is"
     
     public func exec() {
-        print("Action2")
+        print(description)
     }
 }
 
-open class Deactivate: Action {
+open class LPMDeactivate: Action {
     public var id: Int = 2
     
     public init() {}
     
-    public var description: String = "Increase Brightness is good"
+    public var description: String = "Deactivate the LowPowerMode!"
     
     public func exec() {
-        print("Action3")
+        print(description)
+    }
+}
+
+open class BTActivate: Action {
+    public var id: Int = 3
+    
+    public init() {}
+    
+    public var description: String = "Activate the BT!"
+    
+    public func exec() {
+        print(description)
+    }
+}
+
+open class BTLeaveIt: Action {
+    public var id: Int = 4
+    
+    public init() {}
+    
+    public var description: String = "Leave BT it as it is"
+    
+    public func exec() {
+        print(description)
+    }
+}
+
+open class BTDeactivate: Action {
+    public var id: Int = 5
+    
+    public init() {}
+    
+    public var description: String = "Deactivate the BT!"
+    
+    public func exec() {
+        print(description)
+    }
+}
+
+open class WFActivate: Action {
+    public var id: Int = 6
+    
+    public init() {}
+    
+    public var description: String = "Activate the WF!"
+    
+    public func exec() {
+        print(description)
+    }
+}
+
+open class WFLeaveIt: Action {
+    public var id: Int = 7
+    
+    public init() {}
+    
+    public var description: String = "Leave WF it as it is"
+    
+    public func exec() {
+        print(description)
+    }
+}
+
+open class WFDeactivate: Action {
+    public var id: Int = 8
+    
+    public init() {}
+    
+    public var description: String = "Deactivate the WF!"
+    
+    public func exec() {
+        print(description)
+    }
+}
+
+open class BrightnessIncrese: Action {
+    public var id: Int = 9
+    
+    public init() {}
+    
+    public var description: String = "Increase Brightness"
+    
+    public func exec() {
+        print(description)
+    }
+}
+
+open class BrightnessLeaveIt: Action {
+    public var id: Int = 10
+    
+    public init() {}
+    
+    public var description: String = "Leave Brightness as it is"
+    
+    public func exec() {
+        print(description)
+    }
+}
+
+open class BrightnessDecrese: Action {
+    public var id: Int = 11
+    
+    public init() {}
+    
+    public var description: String = "Decrese the Brightness!"
+    
+    public func exec() {
+        print(description)
     }
 }
