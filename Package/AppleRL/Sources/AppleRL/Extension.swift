@@ -77,16 +77,19 @@ extension AppleRLModel {
                             completionHandler: completionHandler)
         
         // Create an Update Task.
-        guard let updateTask = try? MLUpdateTask(forModelAt: url,
+        do {
+            print(url)
+            let updateTask = try MLUpdateTask(forModelAt: url,
                                            trainingData: trainingData,
                                            configuration: parameters,
                                             progressHandlers: handlers)
-            else {
-                defaultLogger.error("Could't create an MLUpdateTask.")
-                return
+            updateTask.resume()
+        } catch {
+            defaultLogger.error("Could't create an MLUpdateTask: \(error.localizedDescription)")
+            return
         }
         
-        updateTask.resume()
+       
     }
 }
 

@@ -12,5 +12,6 @@ public struct DatabaseData: Hashable, Codable, Identifiable {
     public var state: [Double]
     public var action: Int
     public var reward: Double
+    public var nextState: [Double]
     
 }

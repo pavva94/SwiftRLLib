@@ -7,8 +7,10 @@ Storage for model data.
 
 import Foundation
 
-
+/// Database used to check all the action done by the agent
 let databasePath: String = "database.json"
+
+/// Permanent store of the buffer
 let bufferPath: String = "buffer.json"
 
 public func loadDatabase(_ path: String) -> [DatabaseData] {

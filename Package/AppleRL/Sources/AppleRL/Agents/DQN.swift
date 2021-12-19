@@ -120,7 +120,7 @@ open class DeepQNetwork {
     open func storeAndDelete(id: Int, state: MLMultiArray, action: Int, reward: Double, nextState: MLMultiArray) {
         let tuple = SarsaTuple(state: state, action: action, reward: reward, nextState: nextState)
         buffer.addData(tuple)
-        deleteFromDataset(id: id, path: databasePath)
+//        deleteFromDataset(id: id, path: databasePath)
     }
     
     /// Epsilon Greedy policy based on class parameters
@@ -252,7 +252,7 @@ open class DeepQNetwork {
             return
           }
         // Save the updated model to the file system.
-        saveUpdatedModel(updateContext)
+        saveUpdatedModel(updateContext, true)
 
         // Begin using the saved updated model.
         loadUpdatedModel()
@@ -326,15 +326,24 @@ open class DeepQNetwork {
     }
     
     @objc open func listen() {
+        // read new state and do things like act
         let state = environment.read()
         let newState = convertToMLMultiArrayFloat(from:state)
         defaultLogger.log("Listen: \(state)")
         let action = self.act(state: newState)
         environment.act(state: state, action: action)
-        // in-App use means the user needs to give a reward using the app and only then the SarsaTuple is saved and used for training
-        // here the online-use
-//        let newNextState = convertToMLMultiArrayFloat(from:next_state)
-//        self.store(state: newState, action: action, reward: reward, nextState: newNextState)
+
+        // then we are done with the current tuple we can take care of finish the last one
+        if self.buffer.count > 0 {
+            let last_state = self.buffer.getLastOne()
+            let newNextState = convertToMLMultiArrayFloat(from:state)
+            // retrieve the reward based on the old state, the current state and the action done in between
+            let reward = environment.reward(state: convertToArray(from: last_state.getState()), action: last_state.getAction(), nextState: state)
+            self.buffer.overrideLastOne(tuple: SarsaTuple(state: last_state.getState(), action: last_state.getAction(), reward: reward, nextState: newNextState))
+        }
+        
+        // wait the overriding of last tuple to save current tuple
+        self.buffer.addData(SarsaTuple(state: newState, action: action, reward: 0.0))
     }
     
     open func startListen(interval: Int) {
@@ -373,8 +382,62 @@ open class DeepQNetwork {
         
     }
     
-    private func saveUpdatedModel(_ updateContext: MLUpdateContext) {
+    func checkPerformance(_ updatedModel: MLModel) {
+        print("MSE: check")
+        let state = environment.read()
+        print(state)
+        let MLState = convertToMLMultiArrayFloat(from:state)
+        // Create a MLFeatureValue as input for the model
+        let stateValue = MLFeatureValue(multiArray: MLState)
+        // predict value
+        let oldPredictions = self.liveModel.predictFor(stateValue)!.actions
+        
+        // predict value
+        let newModel = AppleRLModel(model: updatedModel)
+        let newPredictions = newModel.predictFor(stateValue)!.actions
+        
+        // take value from the target net as the target
+        let targetPredictions = self.liveTargetModel.predictFor(stateValue)!.actions
+        
+        var errorOld = 0.0
+        var errorNew = 0.0
+        for i in 0..<oldPredictions.count {
+            let tempOld = oldPredictions[i] as! Double - Double(targetPredictions[i])
+            errorOld += tempOld*tempOld
+            
+            let tempNew = newPredictions[i] as! Double - Double(targetPredictions[i])
+            errorNew += tempNew*tempNew
+        }
+        errorOld /= Double(oldPredictions.count)
+        errorNew /= Double(oldPredictions.count)
+        
+        print("MSE error Old-Target: \(errorOld), Error New-Target: \(errorNew)")
+        
+        
+        print("Same State: [0.0, 0.0, 20, 16.0, 39.0, 48.0, 0.0], Correct action: 2") // no location, 20% battery, no LPM -> Activate = 2, nextState [0.0, 0.0, 18, 16.0, 39.0, 48.0, 1.0] = battery -2 and LPM active
+        var stateFixed = MLFeatureValue(multiArray:convertToMLMultiArrayFloat(from: [0.0, 0.0, 20, 16.0, 39.0, 48.0, 0.0]))
+        print("Reward: \(environment.reward(state: [0.0, 0.0, 20, 16.0, 39.0, 48.0, 0.0], action: 2, nextState: [0.0, 0.0, 18, 16.0, 39.0, 48.0, 1.0]))")
+        var actionChoosen = newModel.predictLabelFor(stateFixed)
+        print("Action choosen: \(String(describing: actionChoosen))")
+        var actionListChoosen = newModel.predictFor(stateFixed)
+        print("Action List choosen: \(String(describing: actionListChoosen))")
+        
+        print("Same State: [0.0, 0.0, 80, 08.0, 09.0, 08.0, 1.0], Correct action: 0") // no location, 80% battery, yes LPM -> Deactivate = 0, nextState [0.0, 0.0, 75, 16.0, 39.0, 48.0, 0.0] = battery -5 and LPM deactive
+        stateFixed = MLFeatureValue(multiArray:convertToMLMultiArrayFloat(from: [0.0, 0.0, 80, 08.0, 09.0, 88.0, 1.0]))
+        print("Reward: \(environment.reward(state: [0.0, 0.0, 80, 08.0, 09.0, 88.0, 1.0], action: 0, nextState: [0.0, 0.0, 80, 16.0, 39.0, 48.0, 0.0]))")
+        actionChoosen = newModel.predictLabelFor(stateFixed)
+        actionListChoosen = newModel.predictFor(stateFixed)
+        print("Action List choosen: \(String(describing: actionListChoosen))")
+        print("Action choosen: \(String(describing: actionChoosen))")
+    }
+    
+    private func saveUpdatedModel(_ updateContext: MLUpdateContext, _ testPerformance: Bool = false) {
         let updatedModel = updateContext.model
+        
+        if testPerformance {
+            checkPerformance(updatedModel)
+        }
+        
         do {
             // Create a directory for the updated model.
             try fileManager.createDirectory(at: tempUpdatedModelURL,
@@ -438,7 +501,7 @@ open class DeepQNetwork {
         
     }
     
-    public func handleAppRefreshTask(task: BGAppRefreshTask) {
+    open func handleAppRefreshTask(task: BGAppRefreshTask) {
         defaultLogger.log("Handling Listen ask")
         task.expirationHandler = {
             task.setTaskCompleted(success: false)
@@ -466,7 +529,7 @@ open class DeepQNetwork {
         }
     }
     
-    public func handleTrainingTask(task: BGProcessingTask) {
+    open func handleTrainingTask(task: BGProcessingTask) {
         defaultLogger.log("Handling Training task")
         task.expirationHandler = {
             task.setTaskCompleted(success: false)

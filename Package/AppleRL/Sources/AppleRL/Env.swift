@@ -165,16 +165,18 @@ open func act(state: [Double], action: Int) -> Void { // return the reward that 
         if !actionFound {
             defaultLogger.log("Action not found: \(action)")
         } else {
-            let data: DatabaseData = DatabaseData(id: idCounter, state: state, action: action, reward: 0.0)
-            addDataToDatabase(data, databasePath)
-            self.idCounter += 1
-            self.defaults.set(idCounter, forKey: "idCounter")
-            defaultLogger.log("database saved, idCounter \(self.idCounter)")
+//            let data: DatabaseData = DatabaseData(id: idCounter, state: state, action: action, reward: 0.0)
+//            addDataToDatabase(data, databasePath)
+//            self.idCounter += 1
+//            self.defaults.set(idCounter, forKey: "idCounter")
+//            defaultLogger.log("database saved, idCounter \(self.idCounter)")
+            defaultLogger.log("Action found: \(action)")
         }
     }
     
-    open func reward(state: [Double], action: Int) -> Double {
-        fatalError("reward() has not been implemented")
+    open func reward(state: [Double], action: Int, nextState: [Double]) -> Double {
+        defaultLogger.error("reward() has not been implemented")
+        return 0.0
     }
 
     
