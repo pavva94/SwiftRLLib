@@ -117,11 +117,11 @@ open class DeepQNetwork {
     }
     
     /// Create and store SarsaTuple into the buffer and delete from database
-    open func storeAndDelete(id: Int, state: MLMultiArray, action: Int, reward: Double, nextState: MLMultiArray) {
-        let tuple = SarsaTuple(state: state, action: action, reward: reward, nextState: nextState)
-        buffer.addData(tuple)
-//        deleteFromDataset(id: id, path: databasePath)
-    }
+//    open func storeAndDelete(id: Int, state: MLMultiArray, action: Int, reward: Double, nextState: MLMultiArray) {
+//        let tuple = SarsaTuple(state: state, action: action, reward: reward, nextState: nextState)
+//        buffer.addData(tuple)
+////        deleteFromDataset(id: id, path: databasePath)
+//    }
     
     /// Epsilon Greedy policy based on class parameters
     func epsilonGreedy(state: MLMultiArray) -> Int {
@@ -329,21 +329,24 @@ open class DeepQNetwork {
         // read new state and do things like act
         let state = environment.read()
         let newState = convertToMLMultiArrayFloat(from:state)
-        defaultLogger.log("Listen: \(state)")
+        defaultLogger.log("Listen State: \(state)")
         let action = self.act(state: newState)
         environment.act(state: state, action: action)
 
+        
+        defaultLogger.log("Buffer count \(self.buffer.count)")
         // then we are done with the current tuple we can take care of finish the last one
-        if self.buffer.count > 0 {
-            let last_state = self.buffer.getLastOne()
+        if !self.buffer.isEmpty {
             let newNextState = convertToMLMultiArrayFloat(from:state)
+            defaultLogger.log("Listen Old State: \(self.buffer.lastData.getState())")
             // retrieve the reward based on the old state, the current state and the action done in between
-            let reward = environment.reward(state: convertToArray(from: last_state.getState()), action: last_state.getAction(), nextState: state)
-            self.buffer.overrideLastOne(tuple: SarsaTuple(state: last_state.getState(), action: last_state.getAction(), reward: reward, nextState: newNextState))
+            let reward = environment.reward(state: convertToArray(from: self.buffer.lastData.getState()), action: self.buffer.lastData.getAction(), nextState: state)
+            
+            self.store(state: self.buffer.lastData.getState(), action: self.buffer.lastData.getAction(), reward: reward, nextState: newNextState)
         }
         
         // wait the overriding of last tuple to save current tuple
-        self.buffer.addData(SarsaTuple(state: newState, action: action, reward: 0.0))
+        self.buffer.setLastData(SarsaTuple(state: newState, action: action, reward: 0.0))
     }
     
     open func startListen(interval: Int) {

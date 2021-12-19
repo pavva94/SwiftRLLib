@@ -54,8 +54,8 @@ open class QLearning {
         self.path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("QLearningOrientation.plist")
     }
 
-    func store(state: Int, action: Int, reward: Double) {
-        let tuple = SarsaTuple(state: convertToMLMultiArrayFloat(from:[state]), action: action, reward: reward)
+    func store(state: Int, action: Int, reward: Double, nextState: Double) {
+        let tuple = SarsaTuple(state: convertToMLMultiArrayFloat(from:[state]), action: action, reward: reward, nextState: convertToMLMultiArrayFloat(from:[nextState]))
         buffer.addData(tuple)
     }
 
@@ -146,15 +146,15 @@ open class QLearning {
         
         if self.buffer.count > 0 {
             // then we are done with the current tuple we can take care of finish the last one
-            let last_state = self.buffer.getLastOne()
+            let last_state = self.buffer.lastData
     //        let newNextState = convertToMLMultiArrayFloat(from:state)
             // retrieve the reward based on the old state, the current state and the action done in between
             let reward = environment.reward(state: convertToArray(from: last_state.getState()), action: last_state.getAction(), nextState: [state])
-            self.buffer.overrideLastOne(tuple: SarsaTuple(state: last_state.getState(), action: last_state.getAction(), reward: reward, nextState: convertToMLMultiArrayFloat(from: [state])))
+            self.store(state: Int(convertToArray(from: last_state.getState())[0]), action: last_state.getAction(), reward: reward, nextState: state)
         }
         
         // wait the overriding of last tuple to save current tuple
-        self.buffer.addData(SarsaTuple(state: convertToMLMultiArrayFloat(from: [state]), action: action, reward: 0.0))
+//        self.buffer.addData(SarsaTuple(state: convertToMLMultiArrayFloat(from: [state]), action: action, reward: 0.0))
     }
 
     open func startListen(interval: Int) {
