@@ -492,8 +492,11 @@ open class DeepQNetwork {
                 // Save the updated model to temporary filename.
             
                 // Replace any previously updated model with this one.
-                _ = try fileManager.replaceItemAt(updatedTargetModelURL,
-                                                  withItemAt: updatedModelURL)
+                // Firtly i need to remove the last targetModel and then copy the new one
+                try fileManager.removeItem(at: updatedTargetModelURL)
+                try fileManager.copyItem(at: updatedModelURL, to: updatedTargetModelURL)
+//                _ = try fileManager.replaceItemAt(updatedTargetModelURL,
+//                                                  withItemAt: updatedModelURL)
             } catch {
                 defaultLogger.error("Target model not saved")
             }
