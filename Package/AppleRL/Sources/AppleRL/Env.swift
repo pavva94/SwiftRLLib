@@ -149,6 +149,10 @@ open class Env {
                 data.append(BatterySimulator.simulateBattery(battery: 0.0, params: params))
                 continue
             }
+            if s.name == "brightness" {
+                data.append(BatterySimulator.simulateBrightness())
+                continue
+            }
             let sensorData = s.read()
             for sd in sensorData {
                 data.append(sd)

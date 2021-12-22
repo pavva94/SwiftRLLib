@@ -252,7 +252,7 @@ open class DeepQNetwork {
             return
           }
         // Save the updated model to the file system.
-        saveUpdatedModel(updateContext, true)
+        saveUpdatedModel(updateContext)
 
         // Begin using the saved updated model.
         loadUpdatedModel()
