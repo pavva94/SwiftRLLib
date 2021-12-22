@@ -18,7 +18,7 @@
 		73793FE127678A5500A79709 /* AppleRL in Frameworks */ = {isa = PBXBuildFile; productRef = 73793FE027678A5500A79709 /* AppleRL */; };
 		73793FE4276797FC00A79709 /* Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73793FE3276797FC00A79709 /* Row.swift */; };
 		73793FE62767983700A79709 /* Detail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73793FE52767983700A79709 /* Detail.swift */; };
-		73BF615B276F5FF400F9F1DD /* AppleRLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 73BF615A276F5FF400F9F1DD /* AppleRLModel.mlmodel */; };
+		73C68C5F2770D13F003817D2 /* AppleRLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 73C68C5E2770D13F003817D2 /* AppleRLModel.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,7 +54,7 @@
 		73793FE227678A7500A79709 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		73793FE3276797FC00A79709 /* Row.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Row.swift; sourceTree = "<group>"; };
 		73793FE52767983700A79709 /* Detail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Detail.swift; sourceTree = "<group>"; };
-		73BF615A276F5FF400F9F1DD /* AppleRLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = AppleRLModel.mlmodel; sourceTree = "<group>"; };
+		73C68C5E2770D13F003817D2 /* AppleRLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = AppleRLModel.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,7 +111,7 @@
 				73793FE227678A7500A79709 /* Info.plist */,
 				73793FB02767887E00A79709 /* BatteryManagementApp.swift */,
 				73793FB22767887E00A79709 /* ContentView.swift */,
-				73BF615A276F5FF400F9F1DD /* AppleRLModel.mlmodel */,
+				73C68C5E2770D13F003817D2 /* AppleRLModel.mlmodel */,
 				73793FB42767888000A79709 /* Assets.xcassets */,
 				73793FB62767888000A79709 /* Preview Content */,
 				73793FDD27678A0600A79709 /* AppActions.swift */,
@@ -297,7 +297,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				73793FE4276797FC00A79709 /* Row.swift in Sources */,
-				73BF615B276F5FF400F9F1DD /* AppleRLModel.mlmodel in Sources */,
+				73C68C5F2770D13F003817D2 /* AppleRLModel.mlmodel in Sources */,
 				73793FE62767983700A79709 /* Detail.swift in Sources */,
 				73793FB32767887E00A79709 /* ContentView.swift in Sources */,
 				73793FB12767887E00A79709 /* BatteryManagementApp.swift in Sources */,

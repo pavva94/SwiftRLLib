@@ -123,11 +123,12 @@ open class BrightnessIncrese: Action {
     
     public init() {}
     
-    public var description: String = "Increase Brightness"
+    public var description: String = "Increase Brightness +0.2"
     
     public func exec() {
         print(description)
-        UIScreen.main.brightness = UIScreen.main.brightness + 0.2
+//        UIScreen.main.brightness = UIScreen.main.brightness + 0.2
+        BatterySimulator.actOverBrightness(value: +0.2)
     }
 }
 
@@ -148,10 +149,11 @@ open class BrightnessDecrese: Action {
     
     public init() {}
     
-    public var description: String = "Decrese the Brightness!"
+    public var description: String = "Decrese the Brightness -0.2"
     
     public func exec() {
         print(description)
-        UIScreen.main.brightness = UIScreen.main.brightness - 0.2
+//        UIScreen.main.brightness = UIScreen.main.brightness - 0.2
+        BatterySimulator.actOverBrightness(value: -0.2)
     }
 }
