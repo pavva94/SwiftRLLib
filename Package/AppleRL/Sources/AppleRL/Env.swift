@@ -141,16 +141,22 @@ open class Env {
         
         for s in self.sensors {
             params[s.name] = s.read()[0]
+            if s.name == "brightness" {
+                let val = BatterySimulator.simulateBrightness()
+                params[s.name] = val
+                continue
+            }
         }
         
         for s in self.sensors {
             print(s)
             if s.name == "battery" {
-                data.append(BatterySimulator.simulateBattery(battery: 0.0, params: params))
+                data.append(BatterySimulator.simulateBattery(params: params))
                 continue
             }
             if s.name == "brightness" {
-                data.append(BatterySimulator.simulateBrightness())
+                let val = BatterySimulator.simulateBrightness()
+                data.append(val)
                 continue
             }
             let sensorData = s.read()
@@ -159,6 +165,7 @@ open class Env {
             }
         }
         
+        print("params \(params)")
         return data
     }
     

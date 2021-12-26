@@ -110,3 +110,24 @@ extension CGFloat {
     var swf: Float { return Float(self) }
     var swd: Double { return Double(self) }
 }
+
+
+// Specify the decimal place to round to using an enum
+public enum RoundingPrecision {
+    case ones
+    case tenths
+    case hundredths
+    case thousands
+}
+
+extension Double {
+    // Round to the specific decimal place
+    func customRound(_ rule: FloatingPointRoundingRule, precision: RoundingPrecision = .tenths) -> Double {
+        switch precision {
+        case .ones: return (self * Double(1)).rounded(rule) / 1
+        case .tenths: return (self * Double(10)).rounded(rule) / 10
+        case .hundredths: return (self * Double(100)).rounded(rule) / 100
+        case .thousands: return (self * Double(1000)).rounded(rule) / 1000
+        }
+    }
+}
