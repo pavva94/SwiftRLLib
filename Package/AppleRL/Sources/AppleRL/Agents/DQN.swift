@@ -124,8 +124,8 @@ open class DeepQNetwork {
 //    }
     
     /// Epsilon Greedy policy based on class parameters
-    func epsilonGreedy(state: MLMultiArray) -> Int {
-        if Double.random(in: 0..<1) < epsilon {
+    func epsilonGreedy(state: MLMultiArray, greedy: Bool = false) -> Int {
+        if !greedy && Double.random(in: 0..<1) < epsilon {
             // epsilon choice
             let choice = Int.random(in: 0..<self.environment.getActionSize())
             defaultLogger.log("Epsilon Choice \(choice)")
@@ -136,7 +136,7 @@ open class DeepQNetwork {
             // predict value from model
             defaultLogger.log("State Value \(convertToArray(from: state))")
             let stateTarget = liveModel.predictFor(stateValue)
-            var k = stateTarget!.actions
+            
             defaultLogger.log("Model Choice \(convertToArray(from: stateTarget!.actions).argmax()!)")
             defaultLogger.log("Model List \(convertToArray(from: stateTarget!.actions))")
             return convertToArray(from: stateTarget!.actions).argmax()!
