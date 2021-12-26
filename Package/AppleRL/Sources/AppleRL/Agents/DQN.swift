@@ -144,7 +144,7 @@ open class DeepQNetwork {
     }
     
     /// open function to make a choice about what action do
-    open func act(state: MLMultiArray) -> Int {
+    open func act(state: MLMultiArray, greedy: Bool = false) -> Int {
         return epsilonGreedy(state: state)
     }
     
