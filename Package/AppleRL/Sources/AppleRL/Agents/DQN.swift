@@ -174,15 +174,19 @@ open class DeepQNetwork {
             let stateTarget = liveModel.predictFor(stateValue)!.actions
             defaultLogger.log("Predict livemodel \(stateTarget)")
             
-            // Create a MLFeatureValue as input for the target model
-            let nextStateValue = MLFeatureValue(multiArray: nextState)
-            
-            // take value for next state
-            let nextStateActions = self.liveTargetModel.predictFor(nextStateValue)!.actions
-            let nextStateTarget = convertToArray(from: nextStateActions)
-            defaultLogger.log("Predict TargetModel \(nextStateActions)")
-            // Update the taget with the max q-value of next state, using a greedy policy
-            stateTarget[action] = NSNumber(value: Double(reward) + self.gamma * nextStateTarget.max()!)
+            if nextState != [] {
+                // Create a MLFeatureValue as input for the target model
+                let nextStateValue = MLFeatureValue(multiArray: nextState)
+                
+                // take value for next state
+                let nextStateActions = updatedModel!.predictFor(nextStateValue)!.actions
+                let nextStateTarget = convertToArray(from: nextStateActions)
+                defaultLogger.log("Predict TargetModel \(nextStateActions)")
+                // Update the taget with the max q-value of next state, using a greedy policy
+                stateTarget[action] = NSNumber(value: Double(reward) + self.gamma * nextStateTarget.max()!)
+            } else {
+                stateTarget[action] = NSNumber(value: Double(reward))
+            }
 
             defaultLogger.log("target Updated \(stateTarget)")
             target = MLFeatureValue(multiArray: stateTarget)
