@@ -234,6 +234,7 @@ open class DeepQNetwork {
         // The URL of the currently active Model.
         let usingUpdatedModel = updatedModel != nil
         let currentModelURL = usingUpdatedModel ? updatedModelURL : defaultModelURL
+        defaultLogger.log("currentModelURL \(currentModelURL)")
         
         DispatchQueue.global(qos: .userInitiated).async {
             AppleRLModel.updateModel(at: currentModelURL,
@@ -259,6 +260,9 @@ open class DeepQNetwork {
         
         // reset the buffer only after the model trained for sure
         buffer.reset()
+        
+        // Test performance
+        Tester.checkCorrectPrediction(environment: environment, urlModel: self.getModelURL())
 
         // Inform the calling View Controller when the update is complete
         DispatchQueue.main.async { defaultLogger.log("Trained") }
@@ -385,61 +389,8 @@ open class DeepQNetwork {
         
     }
     
-    func checkPerformance(_ updatedModel: MLModel) {
-        print("MSE: check")
-        let state = environment.read()
-        print(state)
-        let MLState = convertToMLMultiArrayFloat(from:state)
-        // Create a MLFeatureValue as input for the model
-        let stateValue = MLFeatureValue(multiArray: MLState)
-        // predict value
-        let oldPredictions = self.liveModel.predictFor(stateValue)!.actions
-        
-        // predict value
-        let newModel = AppleRLModel(model: updatedModel)
-        let newPredictions = newModel.predictFor(stateValue)!.actions
-        
-        // take value from the target net as the target
-        let targetPredictions = self.liveTargetModel.predictFor(stateValue)!.actions
-        
-        var errorOld = 0.0
-        var errorNew = 0.0
-        for i in 0..<oldPredictions.count {
-            let tempOld = oldPredictions[i] as! Double - Double(targetPredictions[i])
-            errorOld += tempOld*tempOld
-            
-            let tempNew = newPredictions[i] as! Double - Double(targetPredictions[i])
-            errorNew += tempNew*tempNew
-        }
-        errorOld /= Double(oldPredictions.count)
-        errorNew /= Double(oldPredictions.count)
-        
-        print("MSE error Old-Target: \(errorOld), Error New-Target: \(errorNew)")
-        
-        
-        print("Same State: [0.0, 0.0, 20, 16.0, 39.0, 48.0, 0.0], Correct action: 2") // no location, 20% battery, no LPM -> Activate = 2, nextState [0.0, 0.0, 18, 16.0, 39.0, 48.0, 1.0] = battery -2 and LPM active
-        var stateFixed = MLFeatureValue(multiArray:convertToMLMultiArrayFloat(from: [0.0, 0.0, 20, 16.0, 39.0, 48.0, 0.0]))
-        print("Reward: \(environment.reward(state: [0.0, 0.0, 20, 16.0, 39.0, 48.0, 0.0], action: 2, nextState: [0.0, 0.0, 18, 16.0, 39.0, 48.0, 1.0]))")
-        var actionChoosen = newModel.predictLabelFor(stateFixed)
-        print("Action choosen: \(String(describing: actionChoosen))")
-        var actionListChoosen = newModel.predictFor(stateFixed)
-        print("Action List choosen: \(String(describing: actionListChoosen))")
-        
-        print("Same State: [0.0, 0.0, 80, 08.0, 09.0, 08.0, 1.0], Correct action: 0") // no location, 80% battery, yes LPM -> Deactivate = 0, nextState [0.0, 0.0, 75, 16.0, 39.0, 48.0, 0.0] = battery -5 and LPM deactive
-        stateFixed = MLFeatureValue(multiArray:convertToMLMultiArrayFloat(from: [0.0, 0.0, 80, 08.0, 09.0, 88.0, 1.0]))
-        print("Reward: \(environment.reward(state: [0.0, 0.0, 80, 08.0, 09.0, 88.0, 1.0], action: 0, nextState: [0.0, 0.0, 80, 16.0, 39.0, 48.0, 0.0]))")
-        actionChoosen = newModel.predictLabelFor(stateFixed)
-        actionListChoosen = newModel.predictFor(stateFixed)
-        print("Action List choosen: \(String(describing: actionListChoosen))")
-        print("Action choosen: \(String(describing: actionChoosen))")
-    }
-    
     private func saveUpdatedModel(_ updateContext: MLUpdateContext, _ testPerformance: Bool = false) {
         let updatedModel = updateContext.model
-        
-        if testPerformance {
-            checkPerformance(updatedModel)
-        }
         
         do {
             // Create a directory for the updated model.

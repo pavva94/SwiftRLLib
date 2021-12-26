@@ -30,6 +30,7 @@ class Env1: Env {
         let long = state[1]
         let battery = state[0]
         let hourRL = state[1]
+        let minuteRL = state[2]
         let brightness = state[3]
         
         
@@ -53,8 +54,8 @@ class Env1: Env {
 
         
         // Case 1: if i'm watching ntflix (20% of the time) and the agent want to decrese brightness, NOT permitted -10
-        if watchingNetflix < 0.2 && action == 2 {
-            print("i'm watching ntflix: -10")
+        if watchingNetflix < 0.2 && action == 2 && [18.0, 19.0].contains(hourRL){
+            print("i'm watching netflix: -10")
             reward += -10
 //        }
 //        // Case 2: if the battery is under 20% and the agent want to deactivate LPM, NOT permitted -10
@@ -66,8 +67,8 @@ class Env1: Env {
             print("the battery is dead: -20")
             reward += -20
         }
-        if brightness < 0.1 && action == 0 {
-            print("Not increase the brightness when closed: -20")
+        if brightness < 0.1 && action != 1 {
+            print("Do not modify the brightness when closed: -20")
             reward += -20
         }
         
@@ -109,7 +110,7 @@ class Env1: Env {
 
 let actionsArray: [Action] = [BrightnessDecrese(), BrightnessLeaveIt(), BrightnessIncrese()]
 var environment: Env = Env1(sensors: ["battery", "clock", "brightness"], actions: actionsArray, actionSize: 3)
-let params: Dictionary<String, Any> = ["epsilon": Double(0.7), "learning_rate": Double(0.15), "gamma": Double(0.5), "timeIntervalBackgroundMode": Double(30*60)]
+let params: Dictionary<String, Any> = ["epsilon": Double(0.3), "learning_rate": Double(0.15), "gamma": Double(0.5), "timeIntervalBackgroundMode": Double(30*60)]
 let qnet: DeepQNetwork = DeepQNetwork(env: environment, parameters: params)
 var firstOpen = true
 let locationManager = LocationManagerRL()
