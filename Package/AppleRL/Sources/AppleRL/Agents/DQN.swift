@@ -75,24 +75,24 @@ open class DeepQNetwork {
     }
     
     /// The location of the app's Application Support directory for the user.
-    private let appDirectory = FileManager.default.urls(for: .applicationSupportDirectory,
+    private static let appDirectory = FileManager.default.urls(for: .applicationSupportDirectory,
                                                                in: .userDomainMask).first!
     
     /// The default Model model's file URL.
     private let defaultModelURL = AppleRLModel.urlOfModelInThisBundle
     /// The permanent location of the updated Model model.
-    private var updatedModelURL: URL
+    private var updatedModelURL: URL = appDirectory.appendingPathComponent("personalized.mlmodelc")
     /// The temporary location of the updated Model model.
-    private var tempUpdatedModelURL: URL
+    private var tempUpdatedModelURL: URL = appDirectory.appendingPathComponent("personalized_tmp.mlmodelc")
     /// The permanent location of the updated Target Model model.
-    private var updatedTargetModelURL: URL
+    private var updatedTargetModelURL: URL = appDirectory.appendingPathComponent("personalizedTarget.mlmodelc")
     
     /// Initialize every variables
     required public init(env: Env, parameters: Dictionary<String, Any>) {
         environment = env
-        self.updatedModelURL = appDirectory.appendingPathComponent("personalized.mlmodelc")
-        self.tempUpdatedModelURL = appDirectory.appendingPathComponent("personalized_tmp.mlmodelc")
-        self.updatedTargetModelURL = appDirectory.appendingPathComponent("personalizedTarget.mlmodelc")
+//        self.updatedModelURL = appDirectory.appendingPathComponent("personalized.mlmodelc")
+//        self.tempUpdatedModelURL = appDirectory.appendingPathComponent("personalized_tmp.mlmodelc")
+//        self.updatedTargetModelURL = appDirectory.appendingPathComponent("personalizedTarget.mlmodelc")
         
         self.buffer = ExperienceReplayBuffer()
         self.epsilon = (parameters["epsilon"] as? Double)!
