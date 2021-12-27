@@ -79,7 +79,7 @@ class Env1: Env {
         
         print("Final reward: \(reward)")
         
-        return reward
+        return reward.customRound(.toNearestOrAwayFromZero)
     }
 }
 
@@ -110,7 +110,7 @@ class Env1: Env {
 
 let actionsArray: [Action] = [BrightnessDecrese(), BrightnessLeaveIt(), BrightnessIncrese()]
 var environment: Env = Env1(sensors: ["battery", "clock", "brightness"], actions: actionsArray, actionSize: 3)
-let params: Dictionary<String, Any> = ["epsilon": Double(0.3), "learning_rate": Double(0.15), "gamma": Double(0.5), "timeIntervalBackgroundMode": Double(30*60)]
+let params: Dictionary<ModelParameters, Any> = [.epsilon: Double(0.3), .learning_rate: Double(0.15), .gamma: Double(0.5), .timeIntervalBackgroundMode: Double(30*60)]
 let qnet: DeepQNetwork = DeepQNetwork(env: environment, parameters: params)
 var firstOpen = true
 let locationManager = LocationManagerRL()
@@ -121,20 +121,20 @@ struct BatteryManagementApp: App {
     init(){
 //        resetDatabase(path: "database.json")
 //        resetDatabase(path: "buffer.json")
-        print("Background tasks registered")
-        BGTaskScheduler.shared.register(
-          forTaskWithIdentifier: "com.pavesialessandro.applerl.backgroundListen",
-          using: nil) { (task) in
-            print("Listen Task handler")
-              qnet.handleAppRefreshTask(task: task as! BGAppRefreshTask)
-        }
-
-        BGTaskScheduler.shared.register(
-          forTaskWithIdentifier: "com.pavesialessandro.applerl.backgroundTrain",
-          using: nil) { (task) in
-            print("Background Task handler")
-              qnet.handleTrainingTask(task: task as! BGProcessingTask)
-        }
+//        print("Background tasks registered")
+//        BGTaskScheduler.shared.register(
+//          forTaskWithIdentifier: backgroundListenURL,
+//          using: nil) { (task) in
+//            print("Listen Task handler")
+//              qnet.handleAppRefreshTask(task: task as! BGAppRefreshTask)
+//        }
+//
+//        BGTaskScheduler.shared.register(
+//          forTaskWithIdentifier: backgroundTrainURL,
+//          using: nil) { (task) in
+//            print("Background Task handler")
+//              qnet.handleTrainingTask(task: task as! BGProcessingTask)
+//        }
         
     }
     
@@ -191,11 +191,24 @@ struct BatteryManagementApp: App {
 //            qnet.store(state: MLState, action: action, reward: reward, nextState: MLState)
             
             
-            qnet.startListen(interval: 20)
-            qnet.startTrain(interval: 120)
-            BGTaskScheduler.shared.cancelAllTaskRequests()
+            qnet.startListen(interval: 5)
+            qnet.startTrain(interval: 30)
+//            BGTaskScheduler.shared.cancelAllTaskRequests()
 //            qnet.scheduleBackgroundSensorFetch()
 //            qnet.scheduleBackgroundTrainingFetch()
+            print("------------- \(qnet.getDeafultModelURL())")
+            Tester.checkCorrectPrediction(environment: environment, urlModel: qnet.getDeafultModelURL())
+            print("------------- \(qnet.getModelURL())")
+            Tester.checkCorrectPrediction(environment: environment, urlModel: qnet.getModelURL())
+            print("-------------")
+//            Tester.checkCorrectPrediction(environment: environment, urlModel: qnet.getModelURL())
+//            print("-------------")
+//            Tester.checkCorrectPrediction(environment: environment, urlModel: qnet.getModelURL())
+//            print("-------------")
+//            Tester.checkCorrectPrediction(environment: environment, urlModel: qnet.getModelURL())
+//            print("-------------")
+//            Tester.checkCorrectPrediction(environment: environment, urlModel: qnet.getModelURL())
+//            print("-------------")
             }
         firstOpen = false
         
