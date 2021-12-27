@@ -22,10 +22,14 @@ open class Simulator {
         
     ]
     
+    private var clockHoursValues: [Double]
+    private var clockMinutesValues: [Double]
     private var batteryValuesPer30Minutes: [Double]
     private var brightnessValuesPer30Minutes: [Double]
     
     init() {
+        clockHoursValues = [8.00, 8.00, 9.00, 9.00, 10.00, 10.00, 11.00, 11.00, 12.00, 12.00, 13.00, 13.00, 14.00, 14.00, 15.00, 15.00, 16.00, 16.00, 17.00, 17.00, 18.00, 18.00, 19.00, 19.00, 20.00, 20.00, 21.00, 21.00, 22.00, 22.00, 23.00, 23.00]
+        clockMinutesValues = [0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00]
         batteryValuesPer30Minutes = [currentBattery]
         brightnessValuesPer30Minutes = [Double.random(in: 0...1).customRound(.toNearestOrAwayFromZero)]
     }
@@ -59,8 +63,12 @@ open class Simulator {
         return newBatteryValue
     }
     
+    func simulateClock() -> [Double]{
+        return [clockHoursValues[self.simStep], clockMinutesValues[self.simStep]]
+    }
+    
     open func actOverBrightness(value: Double) {
-        let newValue = (brightnessValuesPer30Minutes.last! - value).customRound(.toNearestOrAwayFromZero)
+        let newValue = (brightnessValuesPer30Minutes.last! + value).customRound(.toNearestOrAwayFromZero)
         if newValue > 1.0 {
             brightnessValuesPer30Minutes.append(1.0)
         } else if newValue < 0.0 {
@@ -72,7 +80,14 @@ open class Simulator {
     }
     
     func simulateBrightness() -> Double {
-        return brightnessValuesPer30Minutes.last!
+        var value = brightnessValuesPer30Minutes.last!
+        // if the last brighness is zero, there is a probability that changes autonomously
+        if value == 0.0 && Double.random(in: 0...1) < 0.4 {
+            value = Double.random(in: 0...1).customRound(.toNearestOrAwayFromZero)
+            brightnessValuesPer30Minutes.append(value)
+        }
+        
+        return value
     }
     
     func reset() {
