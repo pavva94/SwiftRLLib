@@ -16,8 +16,8 @@ open class DeepQNetwork {
     private typealias SarsaTuple = SarsaTupleGeneric
     
     /// Name of model's inputs
-    let inputName = "data"
-    let outputName = "actions_true"
+    let inputName = modelInputName
+    let outputName = modelOutputName
     
     let environment: Env
     let fileManager = FileManager.default
@@ -79,28 +79,28 @@ open class DeepQNetwork {
                                                                in: .userDomainMask).first!
     
     /// The default Model model's file URL.
-    private let defaultModelURL = AppleRLModel.urlOfModelInThisBundle
+    let defaultModelURL = AppleRLModel.urlOfModelInThisBundle
     /// The permanent location of the updated Model model.
-    private var updatedModelURL: URL = appDirectory.appendingPathComponent("personalized.mlmodelc")
+    var updatedModelURL: URL = appDirectory.appendingPathComponent(personalizedModelFileName)
     /// The temporary location of the updated Model model.
-    private var tempUpdatedModelURL: URL = appDirectory.appendingPathComponent("personalized_tmp.mlmodelc")
+    var tempUpdatedModelURL: URL = appDirectory.appendingPathComponent(tempModelFileName)
     /// The permanent location of the updated Target Model model.
-    private var updatedTargetModelURL: URL = appDirectory.appendingPathComponent("personalizedTarget.mlmodelc")
+    var updatedTargetModelURL: URL = appDirectory.appendingPathComponent(personalizedTargetModelFileName)
     
     /// Initialize every variables
-    required public init(env: Env, parameters: Dictionary<String, Any>) {
+    required public init(env: Env, parameters: Dictionary<ModelParameters, Any>) {
         environment = env
 //        self.updatedModelURL = appDirectory.appendingPathComponent("personalized.mlmodelc")
 //        self.tempUpdatedModelURL = appDirectory.appendingPathComponent("personalized_tmp.mlmodelc")
 //        self.updatedTargetModelURL = appDirectory.appendingPathComponent("personalizedTarget.mlmodelc")
         
         self.buffer = ExperienceReplayBuffer()
-        self.epsilon = (parameters["epsilon"] as? Double)!
-        self.gamma = (parameters["gamma"] as? Double)!
+        self.epsilon = (parameters[.epsilon] as? Double)!
+        self.gamma = (parameters[.gamma] as? Double)!
         self.epochs = 10 //(parameters["epochs"] as? Float)!
-        self.learningRate = (parameters["learning_rate"] as? Double)!
+        self.learningRate = (parameters[.learning_rate] as? Double)!
         self.timeIntervalTrainingBackgroundMode = Double(2*60*60) // 2 ore
-        if let val = parameters["timeIntervalBackgroundMode"] {
+        if let val = parameters[.timeIntervalBackgroundMode] {
             self.timeIntervalBackgroundMode = val as! Double
         } else {
             self.timeIntervalBackgroundMode = Double(10*60) // 10 minuti
@@ -108,6 +108,14 @@ open class DeepQNetwork {
         defaultLogger.log("DQN Initialized")
         loadUpdatedModel()
             
+    }
+    
+    open func getDeafultModelURL() -> URL {
+        return defaultModelURL
+    }
+    
+    open func getModelURL() -> URL {
+        return updatedModelURL
     }
     
     /// Create and store SarsaTuple into the buffer
@@ -123,214 +131,9 @@ open class DeepQNetwork {
 ////        deleteFromDataset(id: id, path: databasePath)
 //    }
     
-    /// Epsilon Greedy policy based on class parameters
-    func epsilonGreedy(state: MLMultiArray, greedy: Bool = false) -> Int {
-        if !greedy && Double.random(in: 0..<1) < epsilon {
-            // epsilon choice
-            let choice = Int.random(in: 0..<self.environment.getActionSize())
-            defaultLogger.log("Epsilon Choice \(choice)")
-            return choice
-        }
-        else {
-            let stateValue = MLFeatureValue(multiArray: state)
-            // predict value from model
-            defaultLogger.log("State Value \(convertToArray(from: state))")
-            let stateTarget = liveModel.predictFor(stateValue)
-            
-            defaultLogger.log("Model Choice \(convertToArray(from: stateTarget!.actions).argmax()!)")
-            defaultLogger.log("Model List \(convertToArray(from: stateTarget!.actions))")
-            return convertToArray(from: stateTarget!.actions).argmax()!
-        }
-    }
-    
     /// open function to make a choice about what action do
     open func act(state: MLMultiArray, greedy: Bool = false) -> Int {
         return epsilonGreedy(state: state)
-    }
-    
-    /// Create the MLArrayBatchProvider used to train the MLModel
-    /// It's created using the buffer data,
-    private func createUpdateFeatures() -> MLArrayBatchProvider {
-        // Get the SarsaTuples
-        let data = buffer.batchProvider
-        // Create the variable for the Target
-        var target: MLFeatureValue
-        // Array of MLFeatureProvider that will compose the MLArrayBatchProvider
-        // It's composed by MLDictionaryFeatureProvider that contains the 'data' and the 'actions_true' as a dict
-        var featureProviders = [MLFeatureProvider]()
-        
-        // Iter over data from buffer
-        for d in data {
-            defaultLogger.log("__________\(d.getAction())___________")
-            defaultLogger.log("__________\(d.getState())___________")
-            let state = d.getState()
-            let action = d.getAction()
-            let reward = d.getReward()
-            let nextState = d.getNextState()
-            
-            // Create a MLFeatureValue as input for the model
-            let stateValue = MLFeatureValue(multiArray: state)
-            // predict value
-            let stateTarget = liveModel.predictFor(stateValue)!.actions
-            defaultLogger.log("Predict livemodel \(stateTarget)")
-            
-            if nextState != [] {
-                // Create a MLFeatureValue as input for the target model
-                let nextStateValue = MLFeatureValue(multiArray: nextState)
-                
-                // take value for next state
-                let nextStateActions = updatedModel!.predictFor(nextStateValue)!.actions
-                let nextStateTarget = convertToArray(from: nextStateActions)
-                defaultLogger.log("Predict TargetModel \(nextStateActions)")
-                // Update the taget with the max q-value of next state, using a greedy policy
-                stateTarget[action] = NSNumber(value: Double(reward) + self.gamma * nextStateTarget.max()!)
-            } else {
-                stateTarget[action] = NSNumber(value: Double(reward))
-            }
-
-            defaultLogger.log("target Updated \(stateTarget)")
-            target = MLFeatureValue(multiArray: stateTarget)
-            
-            // Create the final Dictionary to build the input
-            let dataPointFeatures: [String: MLFeatureValue] = [inputName: stateValue,
-                                                            outputName: target]
-
-            if let provider = try? MLDictionaryFeatureProvider(dictionary: dataPointFeatures) {
-             featureProviders.append(provider)
-            }
-         }
-         
-        return MLArrayBatchProvider(array: featureProviders)
-        
-    }
-    
-    open func update() {
-        
-        // Convert the drawings into a batch provider as the update input.
-        let trainingData = createUpdateFeatures()
-        defaultLogger.log("\(trainingData.array)")
-        if trainingData.count == 0 {
-            defaultLogger.info("Training not started caused by no data in buffer")
-            return
-        }
-        
-        if !self.isReadyForTraining {
-            defaultLogger.info("Training not started caused by too little data in buffer")
-            return
-        }
-        
-        // This is how we can change the hyperparameters before training. If you
-        // don't do this, the defaults as defined in the mlmodel file are used.
-        // Note that the values you choose here must match what is allowed in the
-        // mlmodel file, or else Core ML throws an exception.
-        let parameters: [MLParameterKey: Any] = [
-            .epochs: self.epochs,
-            //.seed: 1234,
-            .miniBatchSize: self.miniBatchSize,
-            .learningRate: self.learningRate,
-            //.shuffle: false,
-        ]
-
-        let config = MLModelConfiguration()
-        config.computeUnits = .all
-        config.parameters = parameters
-        
-        // The URL of the currently active Model.
-        let usingUpdatedModel = updatedModel != nil
-        let currentModelURL = usingUpdatedModel ? updatedModelURL : defaultModelURL
-        defaultLogger.log("currentModelURL \(currentModelURL)")
-        
-        DispatchQueue.global(qos: .userInitiated).async {
-            AppleRLModel.updateModel(at: currentModelURL,
-                                        with: trainingData,
-                                        parameters: config,
-                                        progressHandler: self.progressHandler,
-                                     completionHandler: self.updateModelCompletionHandler)
-        }
-    }
-    
-    /// The closure an MLUpdateTask calls when it finishes updating the model.
-    func updateModelCompletionHandler(updateContext: MLUpdateContext) {
-        if updateContext.task.state == .failed {
-            defaultLogger.log("Failed")
-            defaultLogger.log("\(updateContext.task.error!.localizedDescription)")
-            return
-          }
-        // Save the updated model to the file system.
-        saveUpdatedModel(updateContext)
-
-        // Begin using the saved updated model.
-        loadUpdatedModel()
-        
-        // reset the buffer only after the model trained for sure
-        buffer.reset()
-        
-        // Test performance
-        Tester.checkCorrectPrediction(environment: environment, urlModel: self.getModelURL())
-
-        // Inform the calling View Controller when the update is complete
-        DispatchQueue.main.async { defaultLogger.log("Trained") }
-    }
-    
-    let progressHandler = { (context: MLUpdateContext) in
-        switch context.event {
-        case .trainingBegin:
-            defaultLogger.info("Training begin")
-
-        case .miniBatchEnd:
-            let batchIndex = context.metrics[.miniBatchIndex] as! Int
-//            let batchLoss = context.metrics[.lossValue] as! Double
-//            defaultLogger.log("Mini batch \(batchIndex), loss: \(batchLoss)")
-
-        case .epochEnd:
-            let epochIndex = context.metrics[.epochIndex] as! Int
-            let trainLoss = context.metrics[.lossValue] as! Double
-            defaultLogger.info("Epoch \(epochIndex) Loss \(trainLoss)")
-            
-            
-        default:
-            defaultLogger.log("Unknown event")
-        }
-    }
-    
-    @objc open func batchUpdate(batchSize: Int = 32) {
-        
-        // Convert the drawings into a batch provider as the update input.
-        let trainingData = createUpdateFeatures()
-//        defaultLogger.log(trainingData.array)
-        
-        if trainingData.count == 0 {
-            defaultLogger.info("Training not started, caused by no data in buffer")
-            return
-        }
-        
-        // This is how we can change the hyperparameters before training. If you
-        // don't do this, the defaults as defined in the mlmodel file are used.
-        // Note that the values you choose here must match what is allowed in the
-        // mlmodel file, or else Core ML throws an exception.
-        let parameters: [MLParameterKey: Any] = [
-            .epochs: self.epochs,
-            //.seed: 1234,
-            .miniBatchSize: 8,
-            .learningRate: self.learningRate,
-            //.shuffle: false,
-        ]
-
-        let config = MLModelConfiguration()
-        config.computeUnits = .all
-        config.parameters = parameters
-        
-        /// The URL of the currently active Model.
-        let usingUpdatedModel = updatedModel != nil
-        let currentModelURL = usingUpdatedModel ? updatedModelURL : defaultModelURL
-        
-        DispatchQueue.global(qos: .userInitiated).async {
-            AppleRLModel.updateModel(at: currentModelURL,
-                                        with: trainingData,
-                                        parameters: config,
-                                        progressHandler: self.progressHandler,
-                                     completionHandler: self.updateModelCompletionHandler)
-        }
     }
     
     @objc open func listen() {
@@ -357,30 +160,6 @@ open class DeepQNetwork {
         self.buffer.setLastData(SarsaTuple(state: newState, action: action, reward: 0.0))
     }
     
-    open func startListen(interval: Int) {
-        stopListen()
-        guard self.timerListen == nil else { return }
-        self.timerListen = Timer.scheduledTimer(timeInterval: TimeInterval(interval), target: self, selector: #selector(self.listen), userInfo: nil, repeats: true)
-    }
-    
-    open func stopListen() {
-        guard timerListen != nil else { return }
-        timerListen?.invalidate()
-        timerListen = nil
-    }
-    
-    open func startTrain(interval: Int) {
-        stopTrain()
-        guard self.timerTrain == nil else { return }
-        self.timerTrain = Timer.scheduledTimer(timeInterval: TimeInterval(interval), target: self, selector: #selector(self.batchUpdate), userInfo: nil, repeats: true)
-    }
-
-    open func stopTrain() {
-        guard timerTrain != nil else { return }
-        timerTrain?.invalidate()
-        timerTrain = nil
-    }
-    
     open func save() {
         defaultLogger.log("Save")
         fatalError("Save is only allowed after an Update")
@@ -392,134 +171,6 @@ open class DeepQNetwork {
         self.loadUpdatedModel()
         
     }
-    
-    private func saveUpdatedModel(_ updateContext: MLUpdateContext, _ testPerformance: Bool = false) {
-        let updatedModel = updateContext.model
-        
-        do {
-            // Create a directory for the updated model.
-            try fileManager.createDirectory(at: tempUpdatedModelURL,
-                                            withIntermediateDirectories: true,
-                                            attributes: nil)
-            defaultLogger.log("filemanagerCreateed")
-            
-            // Save the updated model to temporary filename.
-            try updatedModel.write(to: tempUpdatedModelURL)
-            
-            defaultLogger.log("modelwritten")
-            
-            // Replace any previously updated model with this one.
-            _ = try fileManager.replaceItemAt(updatedModelURL,
-                                              withItemAt: tempUpdatedModelURL)
-            
-            defaultLogger.log("Updated model saved to:\n\t\(self.updatedModelURL)")
-        } catch let error {
-            defaultLogger.error("Could not save updated model to the file system: \(error.localizedDescription)")
-            return
-        }
-        defaultLogger.log("Saved Model")
-    }
-    
-    
-    /// Loads the updated Model, if available.
-    /// - Tag: LoadUpdatedModel
-    private func loadUpdatedModel() {
-        guard FileManager.default.fileExists(atPath: updatedModelURL.path) else {
-            // The updated model is not present at its designated path.
-            defaultLogger.info("The updated model is not present at its designated path.")
-            return
-        }
-        
-        // Create an instance of the updated model.
-        guard let model = try? AppleRLModel(contentsOf: updatedModelURL) else {
-            defaultLogger.error("Error loading the Model")
-            return
-        }
-        
-        // Use this updated model to make predictions in the future.
-        updatedModel = model
-        defaultLogger.log("Model Loaded")
-        
-        // Align target model after epochsAlignTarget updates
-        if self.countTargetUpdate >= self.epochsAlignTarget {
-            targetModel = model
-            do {
-                // Save the updated model to temporary filename.
-            
-                // Replace any previously updated model with this one.
-                // Firtly i need to remove the last targetModel and then copy the new one
-                try fileManager.removeItem(at: updatedTargetModelURL)
-                try fileManager.copyItem(at: updatedModelURL, to: updatedTargetModelURL)
-//                _ = try fileManager.replaceItemAt(updatedTargetModelURL,
-//                                                  withItemAt: updatedModelURL)
-            } catch {
-                defaultLogger.error("Target model not saved")
-            }
-            self.countTargetUpdate = 0
-            defaultLogger.log("Target model updated")
-        }
-        self.countTargetUpdate += 1
-        
-    }
-    
-    open func handleAppRefreshTask(task: BGAppRefreshTask) {
-        defaultLogger.log("Handling Listen ask")
-        task.expirationHandler = {
-            task.setTaskCompleted(success: false)
-        }
-      
-      
-//    NotificationCenter.default.post(name: .newPokemonFetched,
-//                                    object: self,
-//                                    userInfo: ["pokemon": pokemon])
-        self.listen()
-        task.setTaskCompleted(success: true)
-      
-        scheduleBackgroundSensorFetch()
-    }
-
-    public func scheduleBackgroundSensorFetch() {
-        defaultLogger.log("Background fetch activate")
-        let sensorFetchTask = BGAppRefreshTaskRequest(identifier: "com.pavesialessandro.applerl.backgroundListen")
-        sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalBackgroundMode) // launch at least every x minutes
-        do {
-            try BGTaskScheduler.shared.submit(sensorFetchTask)
-            defaultLogger.log("task scheduled")
-        } catch {
-            defaultLogger.error("Unable to submit task: \(error.localizedDescription)")
-        }
-    }
-    
-    open func handleTrainingTask(task: BGProcessingTask) {
-        defaultLogger.log("Handling Training task")
-        task.expirationHandler = {
-            task.setTaskCompleted(success: false)
-        }
-        
-        self.update()
-        task.setTaskCompleted(success: true)
-      
-      
-        scheduleBackgroundTrainingFetch()
-    }
-
-    public func scheduleBackgroundTrainingFetch() {
-        defaultLogger.log("backgroundmode training activate")
-        
-        let request = BGProcessingTaskRequest(identifier: "com.pavesialessandro.applerl.backgroundTrain")
-//        request.requiresNetworkConnectivity = true // Need to true if your task need to network process. Defaults to false.
-        request.requiresExternalPower = true // Need to true if your task requires a device connected to power source. Defaults to false.
-
-        request.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalTrainingBackgroundMode) // Process after x minutes.
-
-        do {
-            try BGTaskScheduler.shared.submit(request)
-            defaultLogger.log("training task scheduled")
-        } catch {
-            defaultLogger.error("Unable to submit task: \(error.localizedDescription)")
-        }
-    }
-    
     
 }
 
