@@ -136,40 +136,44 @@ open class Env {
     
     open func read() -> [Double] {
         var data: [Double] = []
-        
-        var params: Dictionary<String, Double> = [:]
-        
-        for s in self.sensors {
-            params[s.name] = s.read()[0]
-            if s.name == "brightness" {
-                let val = BatterySimulator.simulateBrightness()
-                params[s.name] = val
-                continue
+        if useSimulator {
+            var params: Dictionary<String, Double> = [:]
+            
+            for s in self.sensors {
+                params[s.name] = s.read()[0]
+                if s.name == "brightness" {
+                    let val = BatterySimulator.simulateBrightness()
+                    params[s.name] = val
+                    continue
+                }
+            }
+            
+            for s in self.sensors {
+                print(s)
+                if s.name == "battery" {
+                    data.append(BatterySimulator.simulateBattery(params: params))
+                    continue
+                }
+                let sensorData = s.read()
+                for sd in sensorData {
+                    data.append(sd)
+                }
+            }
+            
+            print("params \(params)")
+        } else {
+            for s in self.sensors {
+                print(s)
+                let sensorData = s.read()
+                for sd in sensorData {
+                    data.append(sd)
+                }
             }
         }
-        
-        for s in self.sensors {
-            print(s)
-            if s.name == "battery" {
-                data.append(BatterySimulator.simulateBattery(params: params))
-                continue
-            }
-            if s.name == "brightness" {
-                let val = BatterySimulator.simulateBrightness()
-                data.append(val)
-                continue
-            }
-            let sensorData = s.read()
-            for sd in sensorData {
-                data.append(sd)
-            }
-        }
-        
-        print("params \(params)")
         return data
     }
     
-open func act(state: [Double], action: Int) -> Void { // return the reward that is always int?
+    open func act(state: [Double], action: Int) -> Void { // return the reward that is always int?
         // here define the action, selected by the id number
         // Be sure to set an id to each action
         // search action based on Id

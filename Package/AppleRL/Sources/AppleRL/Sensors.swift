@@ -99,7 +99,10 @@ open class BrightnessSensor: Sensor {
     }
     
     open override func read() -> [Double] {
-        return preprocessing(value: UIScreen.main.brightness)
+        if useSimulator {
+            return [BatterySimulator.simulateBrightness()]
+        }
+        return preprocessing(value: UIScreen.main.brightness)   
     }
     
     open override func preprocessing(value: Any) -> [Double] {
@@ -165,8 +168,12 @@ open class ClockSensor: Sensor {
         let hour = calendar.component(.hour, from: date)
         let minute = calendar.component(.minute, from: date)
         let second = calendar.component(.second, from: date)
-//        return preprocessing(value: [Double(Int.random(in: 0...24)), Double(Int.random(in: 0...60)), Double(Int.random(in: 0...60))])
+        if useSimulator {
+            return BatterySimulator.simulateClock()
+        }
+        return preprocessing(value: [Double(Int.random(in: 0...24)), Double(Int.random(in: 0...60)), Double(Int.random(in: 0...60))])
         return preprocessing(value: [Double(hour), Double(minute), Double(second)])
+        
     }
     
     open override func preprocessing(value: Any) -> [Double] {
@@ -308,8 +315,8 @@ open class LowPowerModeSensor: Sensor {
     
     open override func read() -> [Double] {
         let lowerPowerEnabled = ProcessInfo.processInfo.isLowPowerModeEnabled
-        return  preprocessing(value: Bool.random())
-//        return preprocessing(value: lowerPowerEnabled)
+//        return  preprocessing(value: Bool.random())
+        return preprocessing(value: lowerPowerEnabled)
     }
     
     open override func preprocessing(value: Any) -> [Double] {
