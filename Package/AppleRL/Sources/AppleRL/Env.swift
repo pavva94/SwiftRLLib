@@ -148,10 +148,16 @@ open class Env {
                 }
             }
             
+            // if battery is under zero then it is the final state
+            let batteryValue = BatterySimulator.simulateBattery(params: params)
+            if batteryValue <= 0.0 {
+                return []
+            }
+            
             for s in self.sensors {
                 print(s)
                 if s.name == "battery" {
-                    data.append(BatterySimulator.simulateBattery(params: params))
+                    data.append(batteryValue)
                     continue
                 }
                 let sensorData = s.read()

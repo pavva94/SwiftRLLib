@@ -139,6 +139,23 @@ open class DeepQNetwork {
     @objc open func listen() {
         // read new state and do things like act
         let state = environment.read()
+        
+        // check if state is terminal
+        if state == [] {
+            do {
+                defaultLogger.log("Terminal State reached")
+                let newState = try MLMultiArray([Double]())
+                let reward = environment.reward(state: convertToArray(from: self.buffer.lastData.getState()), action: self.buffer.lastData.getAction(), nextState: state)
+                self.store(state: self.buffer.lastData.getState(), action: self.buffer.lastData.getAction(), reward: reward, nextState: newState)
+                // wait the overriding of last tuple to save current tuple
+                self.buffer.isEmpty = true
+                return
+            } catch {
+                defaultLogger.error("Error saving terminal state: \(error.localizedDescription)")
+                return
+            }
+        }
+        
         let newState = convertToMLMultiArrayFloat(from:state)
         defaultLogger.log("Listen State: \(state)")
         let action = self.act(state: newState)
