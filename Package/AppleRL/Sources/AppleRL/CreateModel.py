@@ -112,5 +112,5 @@ def create_model(type, layers, unit_per_layer, input_shape):
 
 if __name__ == "__main__":
     print("Create NN")
-    create_model("DQN", ["dense", "dense", "dense"], [64, 32, 3], (4, ))
+    create_model("DQN", ["dense", "dense"], [8, 3], (4, ))
     print("End")
