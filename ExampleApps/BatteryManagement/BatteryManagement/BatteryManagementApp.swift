@@ -119,22 +119,22 @@ let locationManager = LocationManagerRL()
 struct BatteryManagementApp: App {
     
     init(){
-//        resetDatabase(path: "database.json")
-//        resetDatabase(path: "buffer.json")
-//        print("Background tasks registered")
-//        BGTaskScheduler.shared.register(
-//          forTaskWithIdentifier: backgroundListenURL,
-//          using: nil) { (task) in
-//            print("Listen Task handler")
-//              qnet.handleAppRefreshTask(task: task as! BGAppRefreshTask)
-//        }
-//
-//        BGTaskScheduler.shared.register(
-//          forTaskWithIdentifier: backgroundTrainURL,
-//          using: nil) { (task) in
-//            print("Background Task handler")
-//              qnet.handleTrainingTask(task: task as! BGProcessingTask)
-//        }
+        resetDatabase(path: "database.json")
+        resetDatabase(path: "buffer.json")
+        print("Background tasks registered")
+        BGTaskScheduler.shared.register(
+          forTaskWithIdentifier: backgroundListenURL,
+          using: nil) { (task) in
+            print("Listen Task handler")
+              qnet.handleAppRefreshTask(task: task as! BGAppRefreshTask)
+        }
+
+        BGTaskScheduler.shared.register(
+          forTaskWithIdentifier: backgroundTrainURL,
+          using: nil) { (task) in
+            print("Background Task handler")
+              qnet.handleTrainingTask(task: task as! BGProcessingTask)
+        }
         
     }
     
@@ -146,53 +146,8 @@ struct BatteryManagementApp: App {
     
     func initializeRL() {
         if firstOpen {
-//            let state = environment.read()
-////            resetDatabase(path: "database.json")
-//            let MLState = convertToMLMultiArrayFloat(from:state)
-//            print("Listen: \(state)")
-//            let action = qnet.act(state: MLState)
-//            print("Action: \(action)")
-            
-//            var reward: Double = 0.0
-//            // reward +1 when:
-            // is night (>23.30) and the agent want to activate or leave if it is already active the LPM
-            // the battery is under 25% and activate
-            // i'm at home and activate
-            // it's morning and the battery is over 50%
-            
-            // reward -1 when:
-            // deactivate at night
-            // activate outside with high battery (>60%)
-            // deactivate with low battery (<25%)
-            
-//            let lat = state[0]
-//            let long = state[1]
-//            let battery = state[2]
-//            let hourRL = state[3]
-//            let lowPowerMode = state[6]
-//
-//
-//            if hourRL > 23 && ( (lowPowerMode == 1.0 && action == 1) || (lowPowerMode == 0.0 && action == 2)) {
-//                reward = 1.0
-//            } else if battery <= 25.0 && action == 2 {
-//                reward = 1.0
-//            } else if hourRL > 7 && battery >= 50 && ( (lowPowerMode == 1.0 && action == 0) || (lowPowerMode == 0.0 && action == 1)) {
-//                reward = 1.0
-//            } else if hourRL > 23 && (lowPowerMode == 1.0 && action == 2) {
-//                reward = -1.0
-//            } else if battery > 60.0 && action == 2 {
-//                reward = -1.0
-//            } else if battery <= 25 && ( (lowPowerMode == 1.0 && action == 0) || (lowPowerMode == 0.0 && action == 1)) {
-//                reward = -1.0
-//            }
-//
-//
-//
-//            qnet.store(state: MLState, action: action, reward: reward, nextState: MLState)
-            
-            
-            qnet.startListen(interval: 5)
-            qnet.startTrain(interval: 30)
+            qnet.startListen(interval: 30)
+            qnet.startTrain(interval: 330)
 //            BGTaskScheduler.shared.cancelAllTaskRequests()
 //            qnet.scheduleBackgroundSensorFetch()
 //            qnet.scheduleBackgroundTrainingFetch()
@@ -201,14 +156,6 @@ struct BatteryManagementApp: App {
             print("------------- \(qnet.getModelURL())")
             Tester.checkCorrectPrediction(environment: environment, urlModel: qnet.getModelURL())
             print("-------------")
-//            Tester.checkCorrectPrediction(environment: environment, urlModel: qnet.getModelURL())
-//            print("-------------")
-//            Tester.checkCorrectPrediction(environment: environment, urlModel: qnet.getModelURL())
-//            print("-------------")
-//            Tester.checkCorrectPrediction(environment: environment, urlModel: qnet.getModelURL())
-//            print("-------------")
-//            Tester.checkCorrectPrediction(environment: environment, urlModel: qnet.getModelURL())
-//            print("-------------")
             }
         firstOpen = false
         
