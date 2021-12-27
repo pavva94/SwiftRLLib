@@ -148,12 +148,11 @@ open class DeepQNetwork {
         defaultLogger.log("Buffer count \(self.buffer.count)")
         // then we are done with the current tuple we can take care of finish the last one
         if !self.buffer.isEmpty {
-            let newNextState = convertToMLMultiArrayFloat(from:state)
             defaultLogger.log("Listen Old State: \(self.buffer.lastData.getState())")
             // retrieve the reward based on the old state, the current state and the action done in between
             let reward = environment.reward(state: convertToArray(from: self.buffer.lastData.getState()), action: self.buffer.lastData.getAction(), nextState: state)
             
-            self.store(state: self.buffer.lastData.getState(), action: self.buffer.lastData.getAction(), reward: reward, nextState: newNextState)
+            self.store(state: self.buffer.lastData.getState(), action: self.buffer.lastData.getAction(), reward: reward, nextState: newState)
         }
         
         // wait the overriding of last tuple to save current tuple

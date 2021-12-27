@@ -26,7 +26,7 @@ let package = Package(
         .target(
             name: "AppleRL",
             dependencies: [],
-            resources: [.copy("Models/AppleRLModel.mlmodelc")]),
+            resources: []),
         .testTarget(
             name: "AppleRLTests",
             dependencies: ["AppleRL"]),

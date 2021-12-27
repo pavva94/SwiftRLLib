@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  AppleRLModel+Predict.swift
 //  
 //
 //  Created by Alessandro Pavesi on 27/12/21.
@@ -41,7 +41,6 @@ extension AppleRLModel {
         guard let input = value.multiArrayValue else {
             fatalError("Could not extract multiArray from the feature value")
         }
-        defaultLogger.log("idvboweiryvowrtiywrtipyvbtwrovwbrtp \(input)")
         // Use the Model to predict a label for the drawing.
         guard let prediction = try? prediction(data: input)
         else {
@@ -49,9 +48,6 @@ extension AppleRLModel {
             return nil
         }
         
-        // return prediction
-//        defaultLogger.log(type(of:prediction))
-//        defaultLogger.log("\(convertToArray(from: prediction.actions))")
         return prediction
     }
 }

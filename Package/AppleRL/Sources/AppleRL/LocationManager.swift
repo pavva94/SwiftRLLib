@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  LocationManager.swift
 //  
 //
 //  Created by Alessandro Pavesi on 14/12/21.

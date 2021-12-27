@@ -37,6 +37,7 @@ open class Simulator {
     func simulateBattery(params: Dictionary<String, Double>) -> Double {
         print(params)
         var accessoriesConsumption = 0.0
+        print("Clock: \(clockHoursValues[self.simStep]): \(clockMinutesValues[self.simStep])")
         print("batteryValuesPer30Minutes: \(batteryValuesPer30Minutes)")
         print("brightnessValuesPer30Minutes: \(brightnessValuesPer30Minutes)")
         for (key, value) in params {
@@ -51,14 +52,12 @@ open class Simulator {
         let newBatteryValue = (Double(currentBattery) - (baseConsumption + accessoriesConsumption)).customRound(.toNearestOrAwayFromZero)
         batteryValuesPer30Minutes.append(newBatteryValue)
         
-        if self.currentBattery <= 0.0 || newBatteryValue <= 0.0 {
+        if self.currentBattery <= 0.0 || newBatteryValue <= 0.0 || self.simStep >= clockHoursValues.count {
             reset()
             return 0.0
         }
         
         self.simStep += 1
-        
-        
         
         return newBatteryValue
     }
