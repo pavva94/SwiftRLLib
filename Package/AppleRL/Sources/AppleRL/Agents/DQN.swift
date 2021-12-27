@@ -43,36 +43,36 @@ open class DeepQNetwork {
     
     
     /// The updated Model model.
-    private var updatedModel: AppleRLModel?
+    var updatedModel: AppleRLModel?
     /// The default Model model.
-    private var defaultModel: AppleRLModel {
-        do {
-            return try AppleRLModel(configuration: .init())
-        } catch {
-            fatalError("Couldn't load AppleRLModel due to: \(error.localizedDescription)")
-        }
-    }
+//    private var defaultModel: AppleRLModel {
+//        do {
+//            return try AppleRLModel(configuration: .init())
+//        } catch {
+//            fatalError("Couldn't load AppleRLModel due to: \(error.localizedDescription)")
+//        }
+//    }
     
     /// Target model, a clone of the live model
-    private var targetModel: AppleRLModel?
+    var targetModel: AppleRLModel?
     /// The default TargetModel model.
-    private var defaultTargetModel: AppleRLModel {
-        do {
-            return try AppleRLModel(configuration: .init())
-        } catch {
-            fatalError("Couldn't load AppleRLModel due to: \(error.localizedDescription)")
-        }
-    }
+//    private var defaultTargetModel: AppleRLModel {
+//        do {
+//            return try AppleRLModel(configuration: .init())
+//        } catch {
+//            fatalError("Couldn't load AppleRLModel due to: \(error.localizedDescription)")
+//        }
+//    }
 
     /// The Model model currently in use.
-    private var liveModel: AppleRLModel {
-        updatedModel ?? defaultModel
-    }
+//    private var liveModel: AppleRLModel {
+//        updatedModel ?? defaultModel
+//    }
     
     /// The TargetModel model currently in use.
-    private var liveTargetModel: AppleRLModel {
-        targetModel ?? defaultTargetModel
-    }
+//    private var liveTargetModel: AppleRLModel {
+//        targetModel ?? defaultTargetModel
+//    }
     
     /// The location of the app's Application Support directory for the user.
     private static let appDirectory = FileManager.default.urls(for: .applicationSupportDirectory,
