@@ -113,11 +113,15 @@ extension DeepQNetwork {
     
     /// The closure an MLUpdateTask calls when it finishes updating the model.
     func updateModelCompletionHandler(updateContext: MLUpdateContext) {
+        
+        defaultLogger.log("Training completed with state \(updateContext.task.state.rawValue)")
         if updateContext.task.state == .failed {
             defaultLogger.log("Failed")
             defaultLogger.log("\(updateContext.task.error!.localizedDescription)")
             return
           }
+        
+        self.countTargetUpdate += 1
         
         // Save the updated model to the file system.
         saveUpdatedModel(updateContext)

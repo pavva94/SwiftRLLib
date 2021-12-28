@@ -71,28 +71,28 @@ extension DeepQNetwork {
             }
         }
         
-            if !fileManager.fileExists(atPath: updatedTargetModelURL.path) {
-                defaultLogger.info("The target updated model is not present at its designated path.")
-                do {
-                    let updatedModelParentURL = updatedTargetModelURL.deletingLastPathComponent()
-                    try fileManager.createDirectory(
-                        at: updatedModelParentURL,
-                        withIntermediateDirectories: true,
-                        attributes: nil)
-    
-                    let toTemp = updatedModelParentURL
-                        .appendingPathComponent(defaultModelURL.lastPathComponent)
-                    try fileManager.copyItem(
-                        at: defaultModelURL,
-                        to: toTemp)
-                    try fileManager.moveItem(
-                        at: toTemp,
-                        to: updatedTargetModelURL)
-                } catch {
-                    print("Error: \(error)")
-                    return
-                }
-                }
+        if !fileManager.fileExists(atPath: updatedTargetModelURL.path) {
+            defaultLogger.info("The target updated model is not present at its designated path.")
+            do {
+                let updatedModelParentURL = updatedTargetModelURL.deletingLastPathComponent()
+                try fileManager.createDirectory(
+                    at: updatedModelParentURL,
+                    withIntermediateDirectories: true,
+                    attributes: nil)
+
+                let toTemp = updatedModelParentURL
+                    .appendingPathComponent(defaultModelURL.lastPathComponent)
+                try fileManager.copyItem(
+                    at: defaultModelURL,
+                    to: toTemp)
+                try fileManager.moveItem(
+                    at: toTemp,
+                    to: updatedTargetModelURL)
+            } catch {
+                print("Error: \(error)")
+                return
+            }
+        }
         
         // Create an instance of the updated model.
         guard let model = try? AppleRLModel(contentsOf: updatedModelURL) else {
@@ -105,25 +105,22 @@ extension DeepQNetwork {
         defaultLogger.log("Model Loaded")
         
         // Align target model after epochsAlignTarget updates
-            if self.countTargetUpdate >= self.epochsAlignTarget || targetModel == nil {
-                targetModel = model
-                do {
-                    // Save the updated model to temporary filename.
-    
-                    // Replace any previously updated model with this one.
-                    // Firtly i need to remove the last targetModel and then copy the new one
-                    try fileManager.removeItem(at: updatedTargetModelURL)
-                    try fileManager.copyItem(at: updatedModelURL, to: updatedTargetModelURL)
-    //                _ = try fileManager.replaceItemAt(updatedTargetModelURL,
-    //                                                  withItemAt: updatedModelURL)
-                } catch {
-                    defaultLogger.error("Target model not saved \(error.localizedDescription)")
-                }
-                self.countTargetUpdate = 0
-                defaultLogger.log("Target model updated")
-            } else {
-                self.countTargetUpdate += 1
+        if self.countTargetUpdate >= self.epochsAlignTarget || targetModel == nil {
+            targetModel = model
+            do {
+                // Save the updated model to temporary filename.
+
+                // Replace any previously updated model with this one.
+                // Firtly i need to remove the last targetModel and then copy the new one
+                try fileManager.removeItem(at: updatedTargetModelURL)
+                try fileManager.copyItem(at: updatedModelURL, to: updatedTargetModelURL)
+//                _ = try fileManager.replaceItemAt(updatedTargetModelURL,
+//                                                  withItemAt: updatedModelURL)
+            } catch {
+                defaultLogger.error("Target model not saved \(error.localizedDescription)")
             }
-        
+            self.countTargetUpdate = 0
+            defaultLogger.log("Target model updated")
+        }
     }
 }
