@@ -64,7 +64,7 @@ extension DeepQNetwork {
             }
          }
          
-        return MLArrayBatchProvider(array: featureProviders)
+        return MLArrayBatchProvider(array: featureProviders.shuffled())
         
     }
     
