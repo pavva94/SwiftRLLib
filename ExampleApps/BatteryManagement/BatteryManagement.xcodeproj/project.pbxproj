@@ -18,7 +18,7 @@
 		73793FE127678A5500A79709 /* AppleRL in Frameworks */ = {isa = PBXBuildFile; productRef = 73793FE027678A5500A79709 /* AppleRL */; };
 		73793FE4276797FC00A79709 /* Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73793FE3276797FC00A79709 /* Row.swift */; };
 		73793FE62767983700A79709 /* Detail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73793FE52767983700A79709 /* Detail.swift */; };
-		73CE27792779C71500994D67 /* AppleRLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 73CE27782779C71500994D67 /* AppleRLModel.mlmodel */; };
+		73F5CE55277B053300423076 /* AppleRLModel.mlmodelc in Resources */ = {isa = PBXBuildFile; fileRef = 73F5CE54277B053300423076 /* AppleRLModel.mlmodelc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +55,7 @@
 		73793FE3276797FC00A79709 /* Row.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Row.swift; sourceTree = "<group>"; };
 		73793FE52767983700A79709 /* Detail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Detail.swift; sourceTree = "<group>"; };
 		73CE27782779C71500994D67 /* AppleRLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = AppleRLModel.mlmodel; sourceTree = "<group>"; };
+		73F5CE54277B053300423076 /* AppleRLModel.mlmodelc */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppleRLModel.mlmodelc; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +113,7 @@
 				73793FB02767887E00A79709 /* BatteryManagementApp.swift */,
 				73793FB22767887E00A79709 /* ContentView.swift */,
 				73CE27782779C71500994D67 /* AppleRLModel.mlmodel */,
+				73F5CE54277B053300423076 /* AppleRLModel.mlmodelc */,
 				73793FB42767888000A79709 /* Assets.xcassets */,
 				73793FB62767888000A79709 /* Preview Content */,
 				73793FDD27678A0600A79709 /* AppActions.swift */,
@@ -271,6 +273,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				73793FB82767888000A79709 /* Preview Assets.xcassets in Resources */,
+				73F5CE55277B053300423076 /* AppleRLModel.mlmodelc in Resources */,
 				73793FB52767888000A79709 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -296,7 +299,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				73CE27792779C71500994D67 /* AppleRLModel.mlmodel in Sources */,
 				73793FE4276797FC00A79709 /* Row.swift in Sources */,
 				73793FE62767983700A79709 /* Detail.swift in Sources */,
 				73793FB32767887E00A79709 /* ContentView.swift in Sources */,
