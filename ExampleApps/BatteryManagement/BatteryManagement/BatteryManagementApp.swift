@@ -26,6 +26,11 @@ class Env1: Env {
         
 //        print(state)
         
+        if nextState == [] {
+            print("the battery is dead: -20")
+            return -20
+        }
+        
         let lat = state[0]
         let long = state[1]
         let battery = state[0]
@@ -63,10 +68,7 @@ class Env1: Env {
 //            print("the battery is under 20% and the agent want to deactivate: -10")
 //            reward += -10
         }
-        if battery < 0.0 {
-            print("the battery is dead: -20")
-            reward += -20
-        }
+        
         if brightness < 0.1 && action != 1 {
             print("Do not modify the brightness when closed: -20")
             reward += -20
@@ -83,34 +85,9 @@ class Env1: Env {
     }
 }
 
-//class DQN1: DeepQNetwork {
-//    @objc open override func listen() {
-//        let state = environment.read()
-//        let mlstate = convertToMLMultiArrayFloat(from:state)
-//        print("New Listen: \(state)")
-//        let action = self.act(state: mlstate)
-//        print("New Action: \(action)")
-//        let reward = environment.reward(state: state, action: action)
-//        print("New Reward: \(reward)")
-//
-//        // adjust the nextState
-//        var nextState = state
-//        if action == 0 { // action deactivate
-//            nextState[6] = 0.0
-//        } else if action == 2 { // action activate
-//            nextState[6] = 1.0
-//        }
-//        let mlNextState = convertToMLMultiArrayFloat(from:nextState)
-//        // in-App use means the user needs to give a reward using the app and only then the SarsaTuple is saved and used for training
-//        // here the online-use
-////        let newNextState = convertToMLMultiArrayFloat(from:next_state)
-//        self.store(state: mlstate, action: action, reward: reward, nextState: mlNextState)
-//    }
-//}
-
 let actionsArray: [Action] = [BrightnessDecrese(), BrightnessLeaveIt(), BrightnessIncrese()]
 var environment: Env = Env1(sensors: ["battery", "clock", "brightness"], actions: actionsArray, actionSize: 3)
-let params: Dictionary<ModelParameters, Any> = [.epsilon: Double(0.3), .learning_rate: Double(0.15), .gamma: Double(0.5), .timeIntervalBackgroundMode: Double(30*60)]
+let params: Dictionary<ModelParameters, Any> = [.epsilon: Double(0.3), .learning_rate: Double(0.0001), .gamma: Double(0.99), .timeIntervalBackgroundMode: Double(30*60)]
 let qnet: DeepQNetwork = DeepQNetwork(env: environment, parameters: params)
 var firstOpen = true
 let locationManager = LocationManagerRL()
@@ -119,8 +96,8 @@ let locationManager = LocationManagerRL()
 struct BatteryManagementApp: App {
     
     init(){
-        resetDatabase(path: "database.json")
-        resetDatabase(path: "buffer.json")
+//        resetDatabase(path: "database.json")
+//        resetDatabase(path: "buffer.json")
         print("Background tasks registered")
         BGTaskScheduler.shared.register(
           forTaskWithIdentifier: backgroundListenURL,
@@ -146,8 +123,8 @@ struct BatteryManagementApp: App {
     
     func initializeRL() {
         if firstOpen {
-            qnet.startListen(interval: 30)
-            qnet.startTrain(interval: 330)
+            qnet.startListen(interval: 4)
+            qnet.startTrain(interval: 650)
 //            BGTaskScheduler.shared.cancelAllTaskRequests()
 //            qnet.scheduleBackgroundSensorFetch()
 //            qnet.scheduleBackgroundTrainingFetch()
