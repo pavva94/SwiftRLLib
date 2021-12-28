@@ -41,13 +41,14 @@ extension AppleRLModel {
         guard let input = value.multiArrayValue else {
             fatalError("Could not extract multiArray from the feature value")
         }
+        defaultLogger.log("AppleRLModel input \(convertToArray(from: input))")
         // Use the Model to predict a label for the drawing.
         guard let prediction = try? prediction(data: input)
         else {
             defaultLogger.error("Prediction not found")
             return nil
         }
-        
+        defaultLogger.log("AppleRLModel Prediction \(convertToArray(from: prediction.actions))")
         return prediction
     }
 }
