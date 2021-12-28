@@ -16,6 +16,10 @@ public func convertToArray(from mlMultiArray: MLMultiArray) -> [Double] {
     // Get length
     let length = mlMultiArray.count
     
+    if length == 0 {
+        return []
+    }
+    
     // Set content of multi array to our out put array
     for i in 0...length - 1 {
         array.append(Double(truncating: mlMultiArray[i]))
