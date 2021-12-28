@@ -144,13 +144,15 @@ extension DeepQNetwork {
             let batchIndex = context.metrics[.miniBatchIndex] as! Int
 //            let batchLoss = context.metrics[.lossValue] as! Double
 //            defaultLogger.log("Mini batch \(batchIndex), loss: \(batchLoss)")
+            print("batchIndex: \(batchIndex)")
+            Tester.readWeights(currentModel: context.model)
 
         case .epochEnd:
             let epochIndex = context.metrics[.epochIndex] as! Int
             let trainLoss = context.metrics[.lossValue] as! Double
             defaultLogger.info("Epoch \(epochIndex) Loss \(trainLoss)")
             
-            self.readWeights(context: context)
+            Tester.readWeights(currentModel: context.model)
             
         default:
             defaultLogger.log("Unknown event")
@@ -194,27 +196,5 @@ extension DeepQNetwork {
                                         progressHandler: self.progressHandler,
                                      completionHandler: self.updateModelCompletionHandler)
         }
-    }
-    
-    
-    private func readWeights(context: MLUpdateContext, names: [String] = ["dense_1", "dense_2", "dense_3"]) {
-        
-        defaultLogger.log("parameters: \(context.parameters)")
-        defaultLogger.log("parameters: \(context.model.modelDescription)")
-        do {
-            for name in names {
-                let weights: MLMultiArray = try context.model.parameterValue(for: MLParameterKey.weights.scoped(to: name)) as! MLMultiArray
-                defaultLogger.log("weights \(name): \(convertToArray(from: weights))")
-    //            weights = try context.model.parameterValue(for: MLParameterKey.weights.scoped(to: "dense_2")) as! MLMultiArray
-    //            defaultLogger.log("weights dense_2: \(convertToArray(from: weights))")
-    //            weights = try context.model.parameterValue(for: MLParameterKey.weights.scoped(to: "dense_3")) as! MLMultiArray
-    //            defaultLogger.log("weights dense_3: \(convertToArray(from: weights))")
-    //            weights = try context.model.parameterValue(for: MLParameterKey.weights.scoped(to: "dense_4")) as! MLMultiArray
-    //            defaultLogger.log("weights dense_4: \(convertToArray(from: weights))")
-            }
-        } catch {
-            defaultLogger.error("Error getting weights: \(error.localizedDescription)")
-        }
-        
     }
 }
