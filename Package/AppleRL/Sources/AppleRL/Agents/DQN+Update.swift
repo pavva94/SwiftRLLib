@@ -100,7 +100,7 @@ extension DeepQNetwork {
         config.parameters = parameters
         
         defaultLogger.log("currentModelURL \(self.updatedModelURL)")
-        loadUpdatedModel()
+//        loadUpdatedModel()
         
         DispatchQueue.global(qos: .userInitiated).async {
             AppleRLModel.updateModel(at: self.updatedModelURL,
@@ -185,7 +185,7 @@ extension DeepQNetwork {
         config.parameters = parameters
         defaultLogger.log("currentModelURL \(self.updatedModelURL)")
         
-        loadUpdatedModel()
+//        loadUpdatedModel()
         
         DispatchQueue.global(qos: .userInitiated).async {
             AppleRLModel.updateModel(at: self.updatedModelURL,
