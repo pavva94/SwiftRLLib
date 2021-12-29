@@ -27,8 +27,8 @@ class Env1: Env {
 //        print(state)
         
         if nextState == [] {
-            print("the battery is dead: -20")
-            return -20
+            print("the battery is dead: reward based on simstep")
+            return Double(BatterySimulator.getSimStep()) * 10
         }
         
         let lat = state[0]

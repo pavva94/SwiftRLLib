@@ -34,6 +34,10 @@ open class Simulator {
         brightnessValuesPer30Minutes = [Double.random(in: 0...1).customRound(.toNearestOrAwayFromZero)]
     }
     
+    public func getSimStep() -> Int {
+        return self.simStep
+    }
+    
     func simulateBattery(params: Dictionary<String, Double>) -> Double {
         print(params)
         var accessoriesConsumption = 0.0
