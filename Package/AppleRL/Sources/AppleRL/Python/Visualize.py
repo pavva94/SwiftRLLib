@@ -4,7 +4,9 @@ import pandas as pd
 import numpy as np
 
 
-path = 'database.json'
+pathDatabase = 'database.json'
+pathTxt = 'batteryValues.txt'
+pathRandomTxt = 'batteryValuesRandomNew.txt'
 
 
 
@@ -46,6 +48,36 @@ def dataProcessing(data):
     print(df.head())
     return df
 
+def readTxt(pathTxt):
+    text = []
+    with open(pathTxt) as f:
+        line = f.readline()
+        while line:
+            line = f.readline()
+            print(line)
+            text.append(line)
+
+        f.close()
+
+    # count = 0
+    # for line in lines:
+    #     count += 1
+    #     print(f'line {count}: {line}')
+    #     text.append(lines)
+    print(len(text))
+    return text
+
+
+def txtProcessing(text):
+    interestingLines = []
+    for i in range(0, len(text)):
+        if "[100.0]" in text[i] and i-1 >= 0:
+            l = eval(text[i-1].replace("batteryValuesPer30Minutes: ", ""))
+            print(l)
+            interestingLines.append(len(l))
+    return interestingLines
+
+
 def plotRewards(data, filename="GraphRewards"):
     plt.figure()
     plt.plot(data)
@@ -69,10 +101,15 @@ def plotActions(data, filename="GraphActions"):
     plt.close()
 
 def main():
-    data = readDataset(path)
-    df = dataProcessing(data)
-    plotRewards(df['reward'])
-    plotActions(df['action'])
+    # data = readDataset(path)
+    # df = dataProcessing(data)
+    # plotRewards(df['reward'])
+    # plotActions(df['action'])
+    data = readTxt(pathRandomTxt)
+    df = txtProcessing(data)
+    print(df)
+    plotRewards(df, filename="LenghtBatteryLifeRandom")
+    # plotActions(df['action'])
 
 
 if __name__ == '__main__':
