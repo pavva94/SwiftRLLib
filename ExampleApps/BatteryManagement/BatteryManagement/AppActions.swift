@@ -127,8 +127,11 @@ open class BrightnessIncrese: Action {
     
     public func exec() {
         print(description)
-//        UIScreen.main.brightness = UIScreen.main.brightness + 0.2
-        BatterySimulator.actOverBrightness(value: +0.2)
+        if !useSimulator {
+            UIScreen.main.brightness = UIScreen.main.brightness + 0.2
+        } else {
+            BatterySimulator.actOverBrightness(value: +0.2)
+        }
     }
 }
 
@@ -153,7 +156,10 @@ open class BrightnessDecrese: Action {
     
     public func exec() {
         print(description)
-//        UIScreen.main.brightness = UIScreen.main.brightness - 0.2
-        BatterySimulator.actOverBrightness(value: -0.2)
+        if !useSimulator {
+            UIScreen.main.brightness = UIScreen.main.brightness - 0.2
+        } else {
+            BatterySimulator.actOverBrightness(value: -0.2)
+        }
     }
 }
