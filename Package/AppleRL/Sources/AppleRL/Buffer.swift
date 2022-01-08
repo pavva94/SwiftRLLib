@@ -102,11 +102,11 @@ public struct ExperienceReplayBuffer {
     /// Override last data, this means the tuple si done so save it also in the database
 //    mutating func overrideLastOne(tuple: SarsaTupleGeneric) -> Void {
 //        trainingData[trainingData.count-1] = tuple
-//        var idCounter: Int = self.defaults.integer(forKey: "idCounter")
-//        let temp = DatabaseData(id: idCounter, state: convertToArray(from: tuple.getState()), action: tuple.getAction(), reward: tuple.getReward(), nextState: convertToArray(from: tuple.getNextState()))
+//        var idBufferCounter: Int = self.defaults.integer(forKey: "idBufferCounter")
+//        let temp = DatabaseData(id: idBufferCounter, state: convertToArray(from: tuple.getState()), action: tuple.getAction(), reward: tuple.getReward(), nextState: convertToArray(from: tuple.getNextState()))
 //        
-//        idCounter += 1
-//        self.defaults.set(idCounter, forKey: "idCounter")
+//        idBufferCounter += 1
+//        self.defaults.set(idBufferCounter, forKey: "idBufferCounter")
 //        addDataToDatabase(temp, bufferPath)
 //        
 //        self.lastState = tuple
@@ -122,18 +122,24 @@ public struct ExperienceReplayBuffer {
     /// Adds a drawing to the private array, but only if the type requires more.
     mutating func addData(_ data: SarsaTupleGeneric) {
         trainingData.append(data)
-        var idCounter: Int = self.defaults.integer(forKey: "idCounter")
-        let temp = DatabaseData(id: idCounter, state: convertToArray(from: data.getState()), action: data.getAction(), reward: data.getReward(), nextState: convertToArray(from: data.getNextState()))
+        var idBufferCounter: Int = self.defaults.integer(forKey: "idBufferCounter")
+        var temp = DatabaseData(id: idBufferCounter, state: convertToArray(from: data.getState()), action: data.getAction(), reward: data.getReward(), nextState: convertToArray(from: data.getNextState()))
         
-        idCounter += 1
-        self.defaults.set(idCounter, forKey: "idCounter")
+        idBufferCounter += 1
+        self.defaults.set(idBufferCounter, forKey: "idBufferCounter")
         addDataToDatabase(temp, bufferPath)
+        
+        var idDatabaseCounter: Int = self.defaults.integer(forKey: "idDatabaseCounter")
+        temp = DatabaseData(id: idDatabaseCounter, state: convertToArray(from: data.getState()), action: data.getAction(), reward: data.getReward(), nextState: convertToArray(from: data.getNextState()))
+        
+        idDatabaseCounter += 1
+        self.defaults.set(idDatabaseCounter, forKey: "idDatabaseCounter")
         addDataToDatabase(temp, databasePath)
     }
     
     mutating func reset() {
         self.trainingData = []
-        self.defaults.set(0, forKey: "idCounter")
+        self.defaults.set(0, forKey: "idBufferCounter")
         resetDatabase(path: bufferPath)
         do {
             let db = loadDatabase(bufferPath)

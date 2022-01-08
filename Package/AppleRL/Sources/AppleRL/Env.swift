@@ -34,7 +34,7 @@ open class Env {
     ]
     
     let defaults = UserDefaults.standard
-    var idCounter: Int
+//    var idCounter: Int
     
     private var sensors: [Sensor]
     private var actions: [Action]
@@ -48,7 +48,7 @@ open class Env {
         self.stateSize = 0
         self.sensors = []
         self.actions = actions
-        self.idCounter = self.defaults.integer(forKey: "idCounter")
+//        self.idCounter = self.defaults.integer(forKey: "idCounter")
         
         var sensorsList: [String] = []
         
@@ -175,6 +175,7 @@ open class Env {
                     data.append(sd)
                 }
             }
+            print("Env Listen: \(data)")
         }
         return data
     }
