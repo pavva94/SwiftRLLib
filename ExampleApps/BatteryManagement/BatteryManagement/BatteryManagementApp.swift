@@ -27,7 +27,7 @@ class Env1: Env {
 //        print(state)
         
         if nextState == [] {
-            print("the battery is dead: reward based on simstep")
+            print("the battery is dead: reward based on simstep: \(BatterySimulator.getSimStep())")
             return Double(BatterySimulator.getSimStep()) * 10
         }
         
@@ -59,7 +59,7 @@ class Env1: Env {
 
         
         // Case 1: if i'm watching ntflix (20% of the time) and the agent want to decrese brightness, NOT permitted -10
-        if watchingNetflix < 0.2 && action == 2 && [18.0, 19.0].contains(hourRL){
+        if watchingNetflix < 0.2 && action == 2 && [18.0, 18.30, 19.0].contains(hourRL){
             print("i'm watching netflix: -10")
             reward += -10
 //        }
@@ -87,7 +87,7 @@ class Env1: Env {
 
 let actionsArray: [Action] = [BrightnessDecrese(), BrightnessLeaveIt(), BrightnessIncrese()]
 var environment: Env = Env1(sensors: ["battery", "clock", "brightness"], actions: actionsArray, actionSize: 3)
-let params: Dictionary<ModelParameters, Any> = [.epsilon: Double(0.3), .learning_rate: Double(0.0001), .gamma: Double(0.99), .timeIntervalBackgroundMode: Double(30*60)]
+let params: Dictionary<ModelParameters, Any> = [.epsilon: Double(0.3), .learning_rate: Double(0.0001), .gamma: Double(0.9), .timeIntervalBackgroundMode: Double(30*60)]
 let qnet: DeepQNetwork = DeepQNetwork(env: environment, parameters: params)
 var firstOpen = true
 let locationManager = LocationManagerRL()
@@ -123,8 +123,8 @@ struct BatteryManagementApp: App {
     
     func initializeRL() {
         if firstOpen {
-            qnet.startListen(interval: 4)
-            qnet.startTrain(interval: 650)
+            qnet.startListen(interval: 5*60)
+            qnet.startTrain(interval: 100*60)
 //            BGTaskScheduler.shared.cancelAllTaskRequests()
 //            qnet.scheduleBackgroundSensorFetch()
 //            qnet.scheduleBackgroundTrainingFetch()
