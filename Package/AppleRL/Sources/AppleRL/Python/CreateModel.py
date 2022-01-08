@@ -37,6 +37,30 @@ def convert_model_to_mlmodel(model, updatable_layers, output_shape):
     builder.inspect_optimizer()
     builder.inspect_loss_layers()
     builder.inspect_updatable_layers()
+#
+#    Set random weights and bias
+#    model = coremltools.models.MLModel("HandsTuri.mlmodel")
+#    model.short_description = ""
+#    spec = model._spec
+#    layer = spec.neuralNetworkClassifier.layers[-2]
+#
+#    W_old = np.array(layer.innerProduct.weights.floatValue)
+#    B_old = np.array(layer.innerProduct.bias.floatValue)
+#
+#    fan_in = layer.innerProduct.inputChannels
+#    bound = np.sqrt(6.0 / fan_in)
+#    W_new = np.random.uniform(-bound, bound, W_old.shape)
+#
+#    bound = 1 / np.sqrt(fan_in)
+#    B_new = np.random.uniform(-bound, bound, B_old.shape)
+#
+#    layer.innerProduct.weights.ClearField("floatValue")
+#    layer.innerProduct.weights.floatValue.extend(W_new)
+#
+#    layer.innerProduct.bias.ClearField("floatValue")
+#    layer.innerProduct.bias.floatValue.extend(B_new)
+#
+#    coremltools.utils.save_spec(spec, "HandsEmpty.mlmodel")
 
 #    # or save the keras model in SavedModel directory format and then convert
 #    tf_keras_model.save('tf_keras_model')
