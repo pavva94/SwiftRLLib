@@ -162,7 +162,7 @@ open class Env {
                 }
                 let sensorData = s.read()
                 for sd in sensorData {
-                    data.append(sd)
+                    data.append(sd.customRound(.toNearestOrAwayFromZero))
                 }
             }
             
@@ -172,7 +172,7 @@ open class Env {
                 print(s)
                 let sensorData = s.read()
                 for sd in sensorData {
-                    data.append(sd)
+                    data.append(sd.customRound(.toNearestOrAwayFromZero))
                 }
             }
             print("Env Listen: \(data)")
