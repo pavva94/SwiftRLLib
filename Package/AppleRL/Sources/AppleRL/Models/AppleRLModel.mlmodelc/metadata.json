@@ -114,8 +114,8 @@
     },
     "generatedClassName" : "AppleRLModel",
     "neuralNetworkLayerTypeHistogram" : {
-      "InnerProduct" : 4,
-      "ActivationReLU" : 3
+      "InnerProduct" : 3,
+      "ActivationReLU" : 2
     },
     "trainingInputSchema" : [
       {
