@@ -51,21 +51,21 @@ struct Detail: View {
         return "No Description"
     }
     
-    func openMap() -> Void {
-        let latitude: CLLocationDegrees = data.state[0]
-        let longitude: CLLocationDegrees = data.state[1]
-        let regionDistance:CLLocationDistance = 10000
-        let coordinates = CLLocationCoordinate2DMake(latitude, longitude)
-        let regionSpan = MKCoordinateRegion(center: coordinates, latitudinalMeters: regionDistance, longitudinalMeters: regionDistance)
-        let options = [
-            MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center),
-            MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span)
-        ]
-        let placemark = MKPlacemark(coordinate: coordinates, addressDictionary: nil)
-        let mapItem = MKMapItem(placemark: placemark)
-        mapItem.name = "Selected Position"
-        mapItem.openInMaps(launchOptions: options)
-    }
+//    func openMap() -> Void {
+//        let latitude: CLLocationDegrees = data.state[0]
+//        let longitude: CLLocationDegrees = data.state[1]
+//        let regionDistance:CLLocationDistance = 10000
+//        let coordinates = CLLocationCoordinate2DMake(latitude, longitude)
+//        let regionSpan = MKCoordinateRegion(center: coordinates, latitudinalMeters: regionDistance, longitudinalMeters: regionDistance)
+//        let options = [
+//            MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center),
+//            MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span)
+//        ]
+//        let placemark = MKPlacemark(coordinate: coordinates, addressDictionary: nil)
+//        let mapItem = MKMapItem(placemark: placemark)
+//        mapItem.name = "Selected Position"
+//        mapItem.openInMaps(launchOptions: options)
+//    }
 
     var body: some View {
         ScrollView {
@@ -73,23 +73,23 @@ struct Detail: View {
                 Text("ID \(String(data.id))")
                     .font(.title)
                 
-                HStack (
-                    alignment: .top,
-                    spacing: 10
-                ) {
-                    Text("State -> Coordinates")
-                    Text(String(format: "%.1f", data.state[0]))
-                    Text(String(format: "%.1f", data.state[1]))
-                    Button("Open in Maps", action: openMap)
-                }.font(.subheadline)
-                .foregroundColor(.secondary)
+//                HStack (
+//                    alignment: .top,
+//                    spacing: 10
+//                ) {
+//                    Text("State -> Coordinates")
+//                    Text(String(format: "%.1f", data.state[0]))
+//                    Text(String(format: "%.1f", data.state[1]))
+//                    Button("Open in Maps", action: openMap)
+//                }.font(.subheadline)
+//                .foregroundColor(.secondary)
                 
                 HStack (
                     alignment: .top,
                     spacing: 10
                 ) {
                     Text("State -> Battery")
-                    Text(String(format: "%.1f", data.state[2]))
+                    Text(String(format: "%.1f", data.state[0]))
                 }.font(.subheadline)
                 .foregroundColor(.secondary)
                 HStack (
@@ -97,17 +97,17 @@ struct Detail: View {
                     spacing: 10
                 ) {
                     Text("State -> Clock")
-                    Text("\(Int(data.state[3])): \(Int(data.state[4])). \(Int(data.state[5]))")
+                    Text("\(Int(data.state[1])): \(Int(data.state[2]))")
                 }.font(.subheadline)
                 .foregroundColor(.secondary)
-                HStack (
-                    alignment: .top,
-                    spacing: 10
-                ) {
-                    Text("State -> LowPowerMode")
-                    Text("\(Int(data.state[6]))")
-                }.font(.subheadline)
-                .foregroundColor(.secondary)
+//                HStack (
+//                    alignment: .top,
+//                    spacing: 10
+//                ) {
+//                    Text("State -> LowPowerMode")
+//                    Text("\(Int(data.state[6]))")
+//                }.font(.subheadline)
+//                .foregroundColor(.secondary)
 
 //                Divider()
                 
@@ -130,23 +130,23 @@ struct Detail: View {
                 .foregroundColor(.secondary)
                 
                 
-                HStack (
-                    alignment: .top,
-                    spacing: 10
-                ) {
-                    Text("State -> Coordinates")
-                    Text(String(format: "%.1f", data.nextState[0]))
-                    Text(String(format: "%.1f", data.nextState[1]))
-                    Button("Open in Maps", action: openMap)
-                }.font(.subheadline)
-                .foregroundColor(.secondary)
+//                HStack (
+//                    alignment: .top,
+//                    spacing: 10
+//                ) {
+//                    Text("State -> Coordinates")
+//                    Text(String(format: "%.1f", data.nextState[0]))
+//                    Text(String(format: "%.1f", data.nextState[1]))
+//                    Button("Open in Maps", action: openMap)
+//                }.font(.subheadline)
+//                .foregroundColor(.secondary)
                 
                 HStack (
                     alignment: .top,
                     spacing: 10
                 ) {
                     Text("State -> Battery")
-                    Text(String(format: "%.1f", data.nextState[2]))
+                    Text(String(format: "%.1f", data.nextState[0]))
                 }.font(.subheadline)
                 .foregroundColor(.secondary)
                 HStack (
@@ -154,7 +154,7 @@ struct Detail: View {
                     spacing: 10
                 ) {
                     Text("State -> Clock")
-                    Text("\(Int(data.nextState[3])): \(Int(data.nextState[4]))")
+                    Text("\(Int(data.nextState[1])): \(Int(data.nextState[2]))")
                 }.font(.subheadline)
                 .foregroundColor(.secondary)
                 
