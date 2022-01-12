@@ -21,13 +21,16 @@ open class DeepQNetwork {
     
     let environment: Env
     let fileManager = FileManager.default
+    let defaults = UserDefaults.standard
     
     /// Timers for ListenMode
     var timerListen : Timer? = nil { willSet { timerListen?.invalidate() }}
     var timerTrain : Timer? = nil { willSet { timerTrain?.invalidate() }}
     
     /// Training parameters
-    var learningRate: Double
+    var learningRate: [Double]
+    var learningRateMode: Bool
+    var trainingCounter: Int
     var epochs: Double
     var epsilon: Double
     var gamma: Double
@@ -98,7 +101,17 @@ open class DeepQNetwork {
         self.epsilon = (parameters[.epsilon] as? Double)!
         self.gamma = (parameters[.gamma] as? Double)!
         self.epochs = 10 //(parameters["epochs"] as? Float)!
-        self.learningRate = (parameters[.learning_rate] as? Double)!
+        self.trainingCounter = self.defaults.integer(forKey: "trainingCounter")
+        
+        do {
+            try self.learningRate = [(parameters[.learning_rate] as? Double)!]
+            self.learningRateMode = false
+        } catch {
+            self.learningRate = (parameters[.learning_rate] as? [Double])!
+            self.learningRateMode = true
+        }
+        
+//        self.learningRate = (parameters[.learning_rate] as? [Double])!
         self.timeIntervalTrainingBackgroundMode = Double(2*60*60) // 2 ore
         if let val = parameters[.timeIntervalBackgroundMode] {
             self.timeIntervalBackgroundMode = val as! Double

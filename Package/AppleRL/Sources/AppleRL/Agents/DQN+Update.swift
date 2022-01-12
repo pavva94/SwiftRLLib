@@ -91,7 +91,9 @@ extension DeepQNetwork {
             .epochs: self.epochs,
             .seed: 1234,
             .miniBatchSize: self.miniBatchSize,
-            .learningRate: self.learningRate,
+            .learningRate: self.learningRateMode ? self.learningRate[
+                    self.trainingCounter<self.learningRate.count ? self.trainingCounter: self.learningRate.last
+                ] : self.learningRate[0],
             .shuffle: true,
         ]
 
@@ -122,6 +124,8 @@ extension DeepQNetwork {
           }
         
         self.countTargetUpdate += 1
+        self.trainingCounter += 1
+        self.defaults.set(self.trainingCounter, forKey: "trainingCounter")
         
         // Save the updated model to the file system.
         saveUpdatedModel(updateContext)
@@ -145,14 +149,14 @@ extension DeepQNetwork {
 //            let batchLoss = context.metrics[.lossValue] as! Double
 //            defaultLogger.log("Mini batch \(batchIndex), loss: \(batchLoss)")
             print("batchIndex: \(batchIndex)")
-            Tester.readWeights(currentModel: context.model)
+//            Tester.readWeights(currentModel: context.model)
 
         case .epochEnd:
             let epochIndex = context.metrics[.epochIndex] as! Int
             let trainLoss = context.metrics[.lossValue] as! Double
             defaultLogger.info("Epoch \(epochIndex) Loss \(trainLoss)")
             
-            Tester.readWeights(currentModel: context.model)
+//            Tester.readWeights(currentModel: context.model)
             
         default:
             defaultLogger.log("Unknown event")
@@ -178,7 +182,7 @@ extension DeepQNetwork {
             .epochs: self.epochs,
             .seed: 1234,
             .miniBatchSize: 8,
-            .learningRate: self.learningRate,
+            .learningRate: self.learningRateMode ? self.learningRate[self.trainingCounter] : self.learningRate[0],
             .shuffle: true,
         ]
 
