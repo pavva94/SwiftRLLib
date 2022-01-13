@@ -27,6 +27,7 @@ open class Env {
         "speed",
         "city",
         "country",
+        "locked",
 //        "proximity",
         "gyroscope",
         "barometer",
@@ -108,6 +109,9 @@ open class Env {
                 
             case "altitude":
                 sens = AltitudeSensor()
+                
+            case "locked":
+                sens = LockedSensor()
                
             default:
                 defaultLogger.log("Sensor not valid: \(st)")

@@ -171,13 +171,12 @@ open class ClockSensor: Sensor {
         if useSimulator {
             return BatterySimulator.simulateClock()
         }
-        return preprocessing(value: [Double(Int.random(in: 0...24)), Double(Int.random(in: 0...60)), Double(Int.random(in: 0...60))])
+        
         return preprocessing(value: [Double(hour), Double(minute), Double(second)])
         
     }
     
     open override func preprocessing(value: Any) -> [Double] {
-        
         // define range of 30 minute
         let hms = value as! [Double]
         var newHms = [hms[0], 0.0]
@@ -303,6 +302,26 @@ open class LocationSensor: Sensor {
     
     public override func preprocessing(value: Any) -> [Double] {
         return value as! [Double]
+    }
+}
+
+open class LockedSensor: Sensor {
+    
+    init() {
+        super.init(name: "locked", stateSize: 1)
+    }
+    
+    open override func read() -> [Double] {
+        return preprocessing(value: UIApplication.shared.isProtectedDataAvailable)
+    }
+    
+    open override func preprocessing(value: Any) -> [Double] {
+        if value as! Bool {
+            return [Double(0)]
+        } else {
+            return [Double(1)]
+        }
+        
     }
 }
 
