@@ -28,15 +28,16 @@ open class Sensor {
     var name: String
     var stateSize: Int
     
-    init(name : String = "Sensor", stateSize: Int) {
+    public init(name : String = "Sensor", stateSize: Int) {
         self.name = name
         self.stateSize = stateSize
     }
 
-    func read() -> [Double] {
+    open func read() -> [Double] {
         fatalError("read() has not been implemented")
     }
-    func preprocessing(value: Any) -> [Double] {
+    
+    open func preprocessing(value: Any) -> [Double] {
         fatalError("preprocessing() has not been implemented")
     }
 
