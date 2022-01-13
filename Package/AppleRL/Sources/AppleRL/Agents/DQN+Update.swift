@@ -92,7 +92,7 @@ extension DeepQNetwork {
             .seed: 1234,
             .miniBatchSize: self.miniBatchSize,
             .learningRate: self.learningRateMode ? self.learningRate[
-                    self.trainingCounter<self.learningRate.count ? self.trainingCounter: self.learningRate.last
+                    self.trainingCounter<self.learningRate.count ? self.trainingCounter: self.learningRate.count-1
                 ] : self.learningRate[0],
             .shuffle: true,
         ]
@@ -182,7 +182,9 @@ extension DeepQNetwork {
             .epochs: self.epochs,
             .seed: 1234,
             .miniBatchSize: 8,
-            .learningRate: self.learningRateMode ? self.learningRate[self.trainingCounter] : self.learningRate[0],
+            .learningRate: self.learningRateMode ? self.learningRate[
+                        self.trainingCounter<self.learningRate.count ? self.trainingCounter: self.learningRate.count-1
+                    ] : self.learningRate[0],
             .shuffle: true,
         ]
 
