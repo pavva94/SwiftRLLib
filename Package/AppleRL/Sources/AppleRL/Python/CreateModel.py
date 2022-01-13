@@ -109,25 +109,14 @@ def create_dqn(layers, unit_per_layer, input_shape):
     mlmodel.save('AppleRLModel.mlmodel')
     return q_net, updatable_layers
 
-def create_ppo(layers, unit_per_layer, input_shape):
-    pass
-
-def create_ac(layers, unit_per_layer, input_shape):
-    pass
-
-
 
 def create_model(type, layers, unit_per_layer, input_shape):
     print("Type selected: " + type)
     if type == "DQN":
-            mlmodel, updatable_layers = create_dqn(layers, unit_per_layer, input_shape)
-    elif type == "PPO":
-            mlmodel, updatable_layers =  create_ppo(layers, unit_per_layer, input_shape)
-    elif type == "A2C":
-            mlmodel, updatable_layers =  create_ac(layers, unit_per_layer, input_shape)
+        mlmodel, updatable_layers = create_dqn(layers, unit_per_layer, input_shape)
     else:
-            print("Wrong Type. Admitted: DQN, PPO, A2C")
-            return
+        print("Wrong Type. Admitted: DQN")
+        return
     
     convert_model_to_mlmodel(mlmodel, updatable_layers, unit_per_layer[-1])
     print("Model Created")
@@ -136,5 +125,5 @@ def create_model(type, layers, unit_per_layer, input_shape):
 
 if __name__ == "__main__":
     print("Create NN")
-    create_model("DQN", ["dense", "dense"], [8, 3], (4, ))
+    create_model("DQN", ["dense", "dense"], [16, 8, 2], (8, ))
     print("End")

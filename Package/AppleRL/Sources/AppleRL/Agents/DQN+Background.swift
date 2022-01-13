@@ -51,11 +51,11 @@ extension DeepQNetwork {
     }
 
     public func scheduleBackgroundTrainingFetch() {
-        defaultLogger.log("backgroundmode training activate")
+        defaultLogger.log("backgroundmode training activation")
         
         let request = BGProcessingTaskRequest(identifier: backgroundTrainURL)
 //        request.requiresNetworkConnectivity = true // Need to true if your task need to network process. Defaults to false.
-        request.requiresExternalPower = true // Need to true if your task requires a device connected to power source. Defaults to false.
+        request.requiresExternalPower = false // Need to true if your task requires a device connected to power source. Defaults to false.
 
         request.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalTrainingBackgroundMode) // Process after x minutes.
 
