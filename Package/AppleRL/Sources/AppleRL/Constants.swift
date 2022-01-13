@@ -8,7 +8,7 @@
 import Foundation
 
 /// URLS for the background train tasks
-public let backgroundTrainURL: String = "com.pavesialessandro.applerl.backgroundLTrain"
+public let backgroundTrainURL: String = "com.pavesialessandro.applerl.backgroundTrain"
 /// URLS for the background listen tasks
 public let backgroundListenURL: String = "com.pavesialessandro.applerl.backgroundListen"
 
@@ -33,4 +33,4 @@ public enum ModelParameters {
 }
 
 /// Boolean indicating the use or not of the Simulator
-let useSimulator = true
+public let useSimulator = false
