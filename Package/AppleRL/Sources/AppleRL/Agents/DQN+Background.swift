@@ -28,7 +28,7 @@ extension DeepQNetwork {
     public func scheduleBackgroundSensorFetch() {
         defaultLogger.log("Background fetch activate")
         let sensorFetchTask = BGAppRefreshTaskRequest(identifier: backgroundListenURL)
-        sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalBackgroundMode) // launch at least every x minutes
+        sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: TimeInterval(self.timeIntervalBackgroundMode)) // launch at least every x minutes
         do {
             try BGTaskScheduler.shared.submit(sensorFetchTask)
             defaultLogger.log("task scheduled")
@@ -57,7 +57,7 @@ extension DeepQNetwork {
 //        request.requiresNetworkConnectivity = true // Need to true if your task need to network process. Defaults to false.
         request.requiresExternalPower = false // Need to true if your task requires a device connected to power source. Defaults to false.
 
-        request.earliestBeginDate = Date(timeIntervalSinceNow: self.timeIntervalTrainingBackgroundMode) // Process after x minutes.
+        request.earliestBeginDate = Date(timeIntervalSinceNow: TimeInterval(self.timeIntervalTrainingBackgroundMode)) // Process after x minutes.
 
         do {
             try BGTaskScheduler.shared.submit(request)

@@ -13,7 +13,7 @@ open class DeepQNetwork {
     /// Define the buffer
     open var buffer: ExperienceReplayBuffer
     /// Define the SarsaTuple type
-    private typealias SarsaTuple = SarsaTupleGeneric
+    typealias SarsaTuple = SarsaTupleGeneric
     
     /// Name of model's inputs
     let inputName = modelInputName
@@ -31,8 +31,8 @@ open class DeepQNetwork {
     var learningRate: [Double]
     var learningRateDecayMode: Bool
     var trainingCounter: Int
-    var timeIntervalBackgroundMode: Double
-    var timeIntervalTrainingBackgroundMode: Double
+    var timeIntervalBackgroundMode: Int
+    var timeIntervalTrainingBackgroundMode: Int
     var epochs: Int = 10
     var epsilon: Double = 0.3
     var gamma: Double = 0.9
@@ -81,11 +81,11 @@ open class DeepQNetwork {
             self.learningRateDecayMode = true
         }
         
-        self.timeIntervalTrainingBackgroundMode = Double(2*60*60) // 2 ore
+        self.timeIntervalTrainingBackgroundMode = 2*60*60 // 2 ore
         if let val = parameters[.timeIntervalBackgroundMode] {
-            self.timeIntervalBackgroundMode = val as! Double
+            self.timeIntervalBackgroundMode = val as! Int
         } else {
-            self.timeIntervalBackgroundMode = Double(10*60) // 10 minuti
+            self.timeIntervalBackgroundMode = 10*60 // 10 minuti
         }
         defaultLogger.log("DQN Initialized")
         loadUpdatedModel()
@@ -128,6 +128,27 @@ open class DeepQNetwork {
         // Read from file
         self.loadUpdatedModel()
         
+    }
+    
+    open func observe(_ mode: ObserveMode, repeat: Bool = true) {
+        if mode == ObserveMode.timer {
+            self.startListen(interval: self.timeIntervalBackgroundMode)
+            self.startTrain(interval: self.timeIntervalTrainingBackgroundMode)
+        } else if mode == ObserveMode.background {
+            BGTaskScheduler.shared.cancelAllTaskRequests()
+            self.scheduleBackgroundSensorFetch()
+            self.scheduleBackgroundTrainingFetch()
+        } else if mode == ObserveMode.both {
+            self.startListen(interval: self.timeIntervalBackgroundMode)
+            self.startTrain(interval: self.timeIntervalTrainingBackgroundMode)
+            BGTaskScheduler.shared.cancelAllTaskRequests()
+            self.scheduleBackgroundSensorFetch()
+            self.scheduleBackgroundTrainingFetch()
+        } else {
+            print("Observe Mode Wrong")
+            return
+        }
+        print("Observe Started")
     }
     
 }

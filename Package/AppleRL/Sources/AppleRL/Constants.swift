@@ -33,5 +33,11 @@ public enum ModelParameters {
     case timeIntervalBackgroundMode
 }
 
+public enum ObserveMode {
+    case timer
+    case background
+    case both
+}
+
 /// Boolean indicating the use or not of the Simulator
 public let useSimulator = false
