@@ -29,53 +29,26 @@ open class DeepQNetwork {
     
     /// Training parameters
     var learningRate: [Double]
-    var learningRateMode: Bool
+    var learningRateDecayMode: Bool
     var trainingCounter: Int
-    var epochs: Double
-    var epsilon: Double
-    var gamma: Double
     var timeIntervalBackgroundMode: Double
     var timeIntervalTrainingBackgroundMode: Double
+    var epochs: Int = 10
+    var epsilon: Double = 0.3
+    var gamma: Double = 0.9
     var miniBatchSize: Int = 8
     
     var countTargetUpdate: Int = 0
     let epochsAlignTarget: Int = 10
     
     /// A Boolean that indicates whether the instance has all the required data: 2 times the minibatch size
-    var isReadyForTraining: Bool { buffer.count >= miniBatchSize * 2 }
-    
+    var isReadyForTraining: Bool { buffer.count >= miniBatchSize * epochs }
     
     /// The updated Model model.
     var updatedModel: AppleRLModel?
-    /// The default Model model.
-//    private var defaultModel: AppleRLModel {
-//        do {
-//            return try AppleRLModel(configuration: .init())
-//        } catch {
-//            fatalError("Couldn't load AppleRLModel due to: \(error.localizedDescription)")
-//        }
-//    }
-    
+   
     /// Target model, a clone of the live model
     var targetModel: AppleRLModel?
-    /// The default TargetModel model.
-//    private var defaultTargetModel: AppleRLModel {
-//        do {
-//            return try AppleRLModel(configuration: .init())
-//        } catch {
-//            fatalError("Couldn't load AppleRLModel due to: \(error.localizedDescription)")
-//        }
-//    }
-
-    /// The Model model currently in use.
-//    private var liveModel: AppleRLModel {
-//        updatedModel ?? defaultModel
-//    }
-    
-    /// The TargetModel model currently in use.
-//    private var liveTargetModel: AppleRLModel {
-//        targetModel ?? defaultTargetModel
-//    }
     
     /// The location of the app's Application Support directory for the user.
     private static let appDirectory = FileManager.default.urls(for: .applicationSupportDirectory,
@@ -93,25 +66,21 @@ open class DeepQNetwork {
     /// Initialize every variables
     required public init(env: Env, parameters: Dictionary<ModelParameters, Any>) {
         environment = env
-//        self.updatedModelURL = appDirectory.appendingPathComponent("personalized.mlmodelc")
-//        self.tempUpdatedModelURL = appDirectory.appendingPathComponent("personalized_tmp.mlmodelc")
-//        self.updatedTargetModelURL = appDirectory.appendingPathComponent("personalizedTarget.mlmodelc")
         
         self.buffer = ExperienceReplayBuffer()
-        self.epsilon = (parameters[.epsilon] as? Double)!
-        self.gamma = (parameters[.gamma] as? Double)!
-        self.epochs = 10 //(parameters["epochs"] as? Float)!
+        self.epsilon = parameters.keys.contains(.epsilon) ? (parameters[.epsilon] as? Double)! : self.epsilon
+        self.gamma = parameters.keys.contains(.gamma) ? (parameters[.gamma] as? Double)! : self.gamma
+        self.epochs = parameters.keys.contains(.epochs) ? (parameters[.epochs] as? Int)! : self.epochs
         self.trainingCounter = self.defaults.integer(forKey: "trainingCounter")
         
         do {
             try self.learningRate = [(parameters[.learning_rate] as? Double)!]
-            self.learningRateMode = false
+            self.learningRateDecayMode = false
         } catch {
             self.learningRate = (parameters[.learning_rate] as? [Double])!
-            self.learningRateMode = true
+            self.learningRateDecayMode = true
         }
         
-//        self.learningRate = (parameters[.learning_rate] as? [Double])!
         self.timeIntervalTrainingBackgroundMode = Double(2*60*60) // 2 ore
         if let val = parameters[.timeIntervalBackgroundMode] {
             self.timeIntervalBackgroundMode = val as! Double
@@ -147,46 +116,6 @@ open class DeepQNetwork {
     /// open function to make a choice about what action do
     open func act(state: MLMultiArray, greedy: Bool = false) -> Int {
         return epsilonGreedy(state: state)
-    }
-    
-    @objc open func listen() {
-        // read new state and do things like act
-        let state = environment.read()
-        
-        // check if state is terminal
-        if state == [] {
-            do {
-                defaultLogger.log("Terminal State reached")
-                let newState = try MLMultiArray([Double]())
-                let reward = environment.reward(state: convertToArray(from: self.buffer.lastData.getState()), action: self.buffer.lastData.getAction(), nextState: state)
-                self.store(state: self.buffer.lastData.getState(), action: self.buffer.lastData.getAction(), reward: reward, nextState: newState)
-                // wait the overriding of last tuple to save current tuple
-                self.buffer.isEmpty = true
-                return
-            } catch {
-                defaultLogger.error("Error saving terminal state: \(error.localizedDescription)")
-                return
-            }
-        }
-        
-        let newState = convertToMLMultiArrayFloat(from:state)
-        defaultLogger.log("Listen State: \(state)")
-        let action = self.act(state: newState)
-        environment.act(state: state, action: action)
-
-        
-        defaultLogger.log("Buffer count \(self.buffer.count)")
-        // then we are done with the current tuple we can take care of finish the last one
-        if !self.buffer.isEmpty {
-            defaultLogger.log("Listen Old State: \(self.buffer.lastData.getState())")
-            // retrieve the reward based on the old state, the current state and the action done in between
-            let reward = environment.reward(state: convertToArray(from: self.buffer.lastData.getState()), action: self.buffer.lastData.getAction(), nextState: state)
-            
-            self.store(state: self.buffer.lastData.getState(), action: self.buffer.lastData.getAction(), reward: reward, nextState: newState)
-        }
-        
-        // wait the overriding of last tuple to save current tuple
-        self.buffer.setLastData(SarsaTuple(state: newState, action: action, reward: 0.0))
     }
     
     open func save() {

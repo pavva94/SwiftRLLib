@@ -28,6 +28,7 @@ let modelOutputName = "actions_true"
 public enum ModelParameters {
     case epsilon
     case gamma
+    case epochs
     case learning_rate
     case timeIntervalBackgroundMode
 }
