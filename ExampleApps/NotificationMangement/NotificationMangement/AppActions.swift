@@ -80,7 +80,7 @@ open class Send: Action {
         // Define the custom actions.
         let acceptAction = UNNotificationAction(identifier: "Read",
               title: "Read",
-              options: [.foreground])
+              options: [])
 //        let declineAction = UNNotificationAction(identifier: "DECLINE_ACTION",
 //              title: "Decline",
 //              options: [])

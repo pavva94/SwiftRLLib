@@ -34,11 +34,16 @@ class NotificationDelegate: NSObject, ObservableObject, UNUserNotificationCenter
         // Perform the task associated with the action.
        switch response.actionIdentifier {
        case "Read":
-           print("READDDEDEEDEDE")
+           print("Read Clicked")
            newSensor.addRead()
            break
-     
+       case "com.apple.UNNotificationDismissActionIdentifier":
+           print("AppleWatch read")
+           newSensor.addRead()
+           break
         default:
+           print("Unknown Action Identifier")
+           print("\(response.actionIdentifier)")
            break
        }
         
@@ -51,8 +56,7 @@ class NotificationDelegate: NSObject, ObservableObject, UNUserNotificationCenter
              withCompletionHandler completionHandler:
                 @escaping (UNNotificationPresentationOptions) -> Void) {
 
-        print("READED FOREGROUND")
-        newSensor.addRead()
+        print("Notification Foreground Handler")
         // Play a sound to let the user know about the invitation.
         completionHandler(.sound)
     }
@@ -100,6 +104,8 @@ struct NotificationMangementApp: App {
         func initializeRL() {
             print("App opened")
             if firstOpen {
+//                resetDatabase(path: "database.json")
+//                resetDatabase(path: "buffer.json")
                 qnet.observe(.both)
 //                qnet.startListen(interval: 30)
 ////                qnet.startTrain(interval: 10*60)
