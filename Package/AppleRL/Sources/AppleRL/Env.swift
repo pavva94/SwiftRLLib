@@ -39,16 +39,18 @@ open class Env {
     
     private var sensors: [Sensor]
     private var actions: [Action]
+    private var rewards: [Reward]
     private var actionSize: Int
     private var stateSize: Int
     
     
-    public init(sensors: [String], actions: [Action], actionSize: Int) {
+    public init(sensors: [String], actions: [Action], rewards: [Reward], actionSize: Int) {
         
         self.actionSize = actionSize
         self.stateSize = 0
         self.sensors = []
         self.actions = actions
+        self.rewards = rewards
 //        self.idCounter = self.defaults.integer(forKey: "idCounter")
         
         var sensorsList: [String] = []
@@ -211,8 +213,13 @@ open class Env {
     }
     
     open func reward(state: [Double], action: Int, nextState: [Double]) -> Double {
-        defaultLogger.error("reward() has not been implemented")
-        return 0.0
+        
+        var totalReward: Double = 0
+        for savedReward in self.rewards {
+            totalReward += savedReward.exec(state: state, action: action, nextState: nextState)
+        }
+        
+        return totalReward.customRound(.toNearestOrAwayFromZero)
     }
 
     
