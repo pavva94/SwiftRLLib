@@ -82,8 +82,8 @@ open class DeepQNetwork {
         }
         
         self.timeIntervalTrainingBackgroundMode = 2*60*60 // 2 ore
-        if let val = parameters[.timeIntervalBackgroundMode] {
-            self.timeIntervalBackgroundMode = val as! Int
+        if parameters.keys.contains(.timeIntervalBackgroundMode) {
+            self.timeIntervalBackgroundMode = parameters[.timeIntervalBackgroundMode] as! Int
         } else {
             self.timeIntervalBackgroundMode = 10*60 // 10 minuti
         }
