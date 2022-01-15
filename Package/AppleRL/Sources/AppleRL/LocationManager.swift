@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  LocationManager.swift
 //  
 //
 //  Created by Alessandro Pavesi on 14/12/21.
@@ -7,14 +7,14 @@
 
 import CoreLocation
 
-class LocationManagerRL: NSObject, ObservableObject, CLLocationManagerDelegate {
+open class LocationManagerRL: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var authorizationStatus: CLAuthorizationStatus
     @Published var lastSeenLocation: CLLocation?
     @Published var currentPlacemark: CLPlacemark?
     
     private let locationManager: CLLocationManager
     
-    override init() {
+    public override init() {
         locationManager = CLLocationManager()
         authorizationStatus = locationManager.authorizationStatus
         
@@ -29,11 +29,11 @@ class LocationManagerRL: NSObject, ObservableObject, CLLocationManagerDelegate {
         locationManager.requestWhenInUseAuthorization()
     }
     
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+    public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         authorizationStatus = manager.authorizationStatus
     }
     
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         lastSeenLocation = locations.first
         fetchCountryAndCity(for: locations.first)
     }

@@ -8,13 +8,17 @@
 import Foundation
 import CoreML
 
-func convertToArray(from mlMultiArray: MLMultiArray) -> [Double] {
+public func convertToArray(from mlMultiArray: MLMultiArray) -> [Double] {
     
     // Init our output array
     var array: [Double] = []
     
     // Get length
     let length = mlMultiArray.count
+    
+    if length == 0 {
+        return []
+    }
     
     // Set content of multi array to our out put array
     for i in 0...length - 1 {
@@ -24,7 +28,7 @@ func convertToArray(from mlMultiArray: MLMultiArray) -> [Double] {
     return array
 }
 
-func convertToMLMultiArrayFloat<S>(from singleArray: [S]) -> MLMultiArray{
+public func convertToMLMultiArrayFloat<S>(from singleArray: [S]) -> MLMultiArray{
     var featureMultiArray: MLMultiArray
     do {
         featureMultiArray = try MLMultiArray(shape: [NSNumber(value: singleArray.count)], dataType: MLMultiArrayDataType.double)

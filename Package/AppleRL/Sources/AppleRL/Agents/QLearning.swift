@@ -54,8 +54,8 @@ open class QLearning {
         self.path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("QLearningOrientation.plist")
     }
 
-    func store(state: Int, action: Int, reward: Double) {
-        let tuple = SarsaTuple(state: convertToMLMultiArrayFloat(from:[state]), action: action, reward: reward)
+    func store(state: Int, action: Int, reward: Double, nextState: Double) {
+        let tuple = SarsaTuple(state: convertToMLMultiArrayFloat(from:[state]), action: action, reward: reward, nextState: convertToMLMultiArrayFloat(from:[nextState]))
         buffer.addData(tuple)
     }
 
@@ -140,9 +140,21 @@ open class QLearning {
         defaultLogger.log("\(state)")
         let action = self.act(state: Int(state))
         environment.act(state: [state], action: action)
-        let reward = environment.reward(state: [state], action: action)
-        //let next_state = result.1
-        self.store(state: Int(state), action: action, reward: reward)
+//        let reward = environment.reward(state: [state], action: action)
+//        //let next_state = result.1
+//        self.store(state: Int(state), action: action, reward: reward)
+        
+        if self.buffer.count > 0 {
+            // then we are done with the current tuple we can take care of finish the last one
+            let last_state = self.buffer.lastData
+    //        let newNextState = convertToMLMultiArrayFloat(from:state)
+            // retrieve the reward based on the old state, the current state and the action done in between
+            let reward = environment.reward(state: convertToArray(from: last_state.getState()), action: last_state.getAction(), nextState: [state])
+            self.store(state: Int(convertToArray(from: last_state.getState())[0]), action: last_state.getAction(), reward: reward, nextState: state)
+        }
+        
+        // wait the overriding of last tuple to save current tuple
+//        self.buffer.addData(SarsaTuple(state: convertToMLMultiArrayFloat(from: [state]), action: action, reward: 0.0))
     }
 
     open func startListen(interval: Int) {

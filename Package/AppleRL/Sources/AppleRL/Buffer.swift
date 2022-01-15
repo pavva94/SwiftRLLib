@@ -44,21 +44,34 @@ public struct ExperienceReplayBuffer {
     /// Collection of the training drawings
     private var trainingData = [SarsaTupleGeneric]()
     
+    public var isEmpty = true
+    
+    /// The last state
+    var lastData: SarsaTupleGeneric
+    
     init() {
         do {
             let db = loadDatabase(bufferPath)
             for data in db {
                 trainingData.append(SarsaTupleGeneric(state: try MLMultiArray(data.state), action: data.action, reward: data.reward))
             }
+            if trainingData.isEmpty {
+                lastData = SarsaTupleGeneric(state: try MLMultiArray([0]), action: 0, reward: 0.0)
+            } else {
+                lastData = trainingData.last!
+                isEmpty = false
+            }
             print("buffer ready: \(trainingData.count)")
         } catch {
             defaultLogger.error("Error during initialization of buffer: \(error.localizedDescription)")
+            fatalError()
         }
     }
     
     var count: Int {
         return trainingData.count
     }
+    
     
     var batchProvider: [SarsaTupleGeneric] { return trainingData }
     
@@ -84,20 +97,49 @@ public struct ExperienceReplayBuffer {
 //        
 //       return MLArrayBatchProvider(array: featureProviders)
 //    }
+
+    
+    /// Override last data, this means the tuple si done so save it also in the database
+//    mutating func overrideLastOne(tuple: SarsaTupleGeneric) -> Void {
+//        trainingData[trainingData.count-1] = tuple
+//        var idBufferCounter: Int = self.defaults.integer(forKey: "idBufferCounter")
+//        let temp = DatabaseData(id: idBufferCounter, state: convertToArray(from: tuple.getState()), action: tuple.getAction(), reward: tuple.getReward(), nextState: convertToArray(from: tuple.getNextState()))
+//        
+//        idBufferCounter += 1
+//        self.defaults.set(idBufferCounter, forKey: "idBufferCounter")
+//        addDataToDatabase(temp, bufferPath)
+//        
+//        self.lastState = tuple
+//    }
+    
+    mutating func setLastData(_ data: SarsaTupleGeneric) {
+        if isEmpty {
+            isEmpty = false
+        }
+        lastData = data
+    }
            
     /// Adds a drawing to the private array, but only if the type requires more.
     mutating func addData(_ data: SarsaTupleGeneric) {
         trainingData.append(data)
-        var idCounter: Int = self.defaults.integer(forKey: "idCounter")
-        let temp = DatabaseData(id: idCounter, state: convertToArray(from: data.getState()), action: data.getAction(), reward: data.getReward())
+        var idBufferCounter: Int = self.defaults.integer(forKey: "idBufferCounter")
+        var temp = DatabaseData(id: idBufferCounter, state: convertToArray(from: data.getState()), action: data.getAction(), reward: data.getReward(), nextState: convertToArray(from: data.getNextState()))
         
-        idCounter += 1
-        self.defaults.set(idCounter, forKey: "idCounter")
+        idBufferCounter += 1
+        self.defaults.set(idBufferCounter, forKey: "idBufferCounter")
         addDataToDatabase(temp, bufferPath)
+        
+        var idDatabaseCounter: Int = self.defaults.integer(forKey: "idDatabaseCounter")
+        temp = DatabaseData(id: idDatabaseCounter, state: convertToArray(from: data.getState()), action: data.getAction(), reward: data.getReward(), nextState: convertToArray(from: data.getNextState()))
+        
+        idDatabaseCounter += 1
+        self.defaults.set(idDatabaseCounter, forKey: "idDatabaseCounter")
+        addDataToDatabase(temp, databasePath)
     }
     
     mutating func reset() {
         self.trainingData = []
+        self.defaults.set(0, forKey: "idBufferCounter")
         resetDatabase(path: bufferPath)
         do {
             let db = loadDatabase(bufferPath)

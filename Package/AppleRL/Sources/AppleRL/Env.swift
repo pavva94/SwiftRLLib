@@ -27,6 +27,7 @@ open class Env {
         "speed",
         "city",
         "country",
+        "locked",
 //        "proximity",
         "gyroscope",
         "barometer",
@@ -34,21 +35,23 @@ open class Env {
     ]
     
     let defaults = UserDefaults.standard
-    var idCounter: Int
+//    var idCounter: Int
     
     private var sensors: [Sensor]
     private var actions: [Action]
+    private var rewards: [Reward]
     private var actionSize: Int
     private var stateSize: Int
     
     
-    public init(sensors: [String], actions: [Action], actionSize: Int) {
+    public init(sensors: [String], actions: [Action], rewards: [Reward], actionSize: Int) {
         
         self.actionSize = actionSize
         self.stateSize = 0
         self.sensors = []
         self.actions = actions
-        self.idCounter = self.defaults.integer(forKey: "idCounter")
+        self.rewards = rewards
+//        self.idCounter = self.defaults.integer(forKey: "idCounter")
         
         var sensorsList: [String] = []
         
@@ -108,6 +111,9 @@ open class Env {
                 
             case "altitude":
                 sens = AltitudeSensor()
+                
+            case "locked":
+                sens = LockedSensor()
                
             default:
                 defaultLogger.log("Sensor not valid: \(st)")
@@ -136,19 +142,51 @@ open class Env {
     
     open func read() -> [Double] {
         var data: [Double] = []
-        
-        for s in self.sensors {
-            print(s)
-            let sensorData = s.read()
-            for sd in sensorData {
-                data.append(sd)
+        if useSimulator {
+            var params: Dictionary<String, Double> = [:]
+            
+            for s in self.sensors {
+                params[s.name] = s.read()[0]
+                if s.name == "brightness" {
+                    let val = BatterySimulator.simulateBrightness()
+                    params[s.name] = val
+                    continue
+                }
             }
+            
+            // if battery is under zero then it is the final state
+            let batteryValue = BatterySimulator.simulateBattery(params: params)
+            if batteryValue <= 0.0 {
+                return []
+            }
+            
+            for s in self.sensors {
+                print(s)
+                if s.name == "battery" {
+                    data.append(batteryValue)
+                    continue
+                }
+                let sensorData = s.read()
+                for sd in sensorData {
+                    data.append(sd.customRound(.toNearestOrAwayFromZero))
+                }
+            }
+            
+            print("params \(params)")
+        } else {
+            for s in self.sensors {
+                print(s)
+                let sensorData = s.read()
+                for sd in sensorData {
+                    data.append(sd.customRound(.toNearestOrAwayFromZero))
+                }
+            }
+            print("Env Listen: \(data)")
         }
-        
         return data
     }
     
-open func act(state: [Double], action: Int) -> Void { // return the reward that is always int?
+    open func act(state: [Double], action: Int) -> Void { // return the reward that is always int?
         // here define the action, selected by the id number
         // Be sure to set an id to each action
         // search action based on Id
@@ -165,16 +203,23 @@ open func act(state: [Double], action: Int) -> Void { // return the reward that 
         if !actionFound {
             defaultLogger.log("Action not found: \(action)")
         } else {
-            let data: DatabaseData = DatabaseData(id: idCounter, state: state, action: action, reward: 0.0)
-            addDataToDatabase(data, databasePath)
-            self.idCounter += 1
-            self.defaults.set(idCounter, forKey: "idCounter")
-            defaultLogger.log("database saved, idCounter \(self.idCounter)")
+//            let data: DatabaseData = DatabaseData(id: idCounter, state: state, action: action, reward: 0.0)
+//            addDataToDatabase(data, databasePath)
+//            self.idCounter += 1
+//            self.defaults.set(idCounter, forKey: "idCounter")
+//            defaultLogger.log("database saved, idCounter \(self.idCounter)")
+            defaultLogger.log("Action found: \(action)")
         }
     }
     
-    open func reward(state: [Double], action: Int) -> Double {
-        fatalError("reward() has not been implemented")
+    open func reward(state: [Double], action: Int, nextState: [Double]) -> Double {
+        
+        var totalReward: Double = 0
+        for savedReward in self.rewards {
+            totalReward += savedReward.exec(state: state, action: action, nextState: nextState)
+        }
+        
+        return totalReward.customRound(.toNearestOrAwayFromZero)
     }
 
     

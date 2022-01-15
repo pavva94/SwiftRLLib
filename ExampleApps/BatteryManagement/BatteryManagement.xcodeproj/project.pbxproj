@@ -18,8 +18,7 @@
 		73793FE127678A5500A79709 /* AppleRL in Frameworks */ = {isa = PBXBuildFile; productRef = 73793FE027678A5500A79709 /* AppleRL */; };
 		73793FE4276797FC00A79709 /* Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73793FE3276797FC00A79709 /* Row.swift */; };
 		73793FE62767983700A79709 /* Detail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73793FE52767983700A79709 /* Detail.swift */; };
-		73793FF22767A30F00A79709 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73793FF12767A30F00A79709 /* LocationManager.swift */; };
-		73793FF42767B6A900A79709 /* AppleRLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 73793FF32767B6A900A79709 /* AppleRLModel.mlmodel */; };
+		73BFF542278C2D670025EA53 /* AppleRLModel.mlmodelc in Resources */ = {isa = PBXBuildFile; fileRef = 73BFF541278C2D670025EA53 /* AppleRLModel.mlmodelc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,8 +54,7 @@
 		73793FE227678A7500A79709 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		73793FE3276797FC00A79709 /* Row.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Row.swift; sourceTree = "<group>"; };
 		73793FE52767983700A79709 /* Detail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Detail.swift; sourceTree = "<group>"; };
-		73793FF12767A30F00A79709 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
-		73793FF32767B6A900A79709 /* AppleRLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = AppleRLModel.mlmodel; sourceTree = "<group>"; };
+		73BFF541278C2D670025EA53 /* AppleRLModel.mlmodelc */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppleRLModel.mlmodelc; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,13 +111,12 @@
 				73793FE227678A7500A79709 /* Info.plist */,
 				73793FB02767887E00A79709 /* BatteryManagementApp.swift */,
 				73793FB22767887E00A79709 /* ContentView.swift */,
+				73BFF541278C2D670025EA53 /* AppleRLModel.mlmodelc */,
 				73793FB42767888000A79709 /* Assets.xcassets */,
-				73793FF32767B6A900A79709 /* AppleRLModel.mlmodel */,
 				73793FB62767888000A79709 /* Preview Content */,
 				73793FDD27678A0600A79709 /* AppActions.swift */,
 				73793FE3276797FC00A79709 /* Row.swift */,
 				73793FE52767983700A79709 /* Detail.swift */,
-				73793FF12767A30F00A79709 /* LocationManager.swift */,
 			);
 			path = BatteryManagement;
 			sourceTree = "<group>";
@@ -256,7 +253,6 @@
 			);
 			mainGroup = 73793FA42767887D00A79709;
 			packageReferences = (
-				73D87E4427688FB700D5B913 /* XCRemoteSwiftPackageReference "SwiftLocation" */,
 			);
 			productRefGroup = 73793FAE2767887E00A79709 /* Products */;
 			projectDirPath = "";
@@ -275,6 +271,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				73793FB82767888000A79709 /* Preview Assets.xcassets in Resources */,
+				73BFF542278C2D670025EA53 /* AppleRLModel.mlmodelc in Resources */,
 				73793FB52767888000A79709 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -300,10 +297,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				73793FF42767B6A900A79709 /* AppleRLModel.mlmodel in Sources */,
 				73793FE4276797FC00A79709 /* Row.swift in Sources */,
 				73793FE62767983700A79709 /* Detail.swift in Sources */,
-				73793FF22767A30F00A79709 /* LocationManager.swift in Sources */,
 				73793FB32767887E00A79709 /* ContentView.swift in Sources */,
 				73793FB12767887E00A79709 /* BatteryManagementApp.swift in Sources */,
 				73793FDE27678A0600A79709 /* AppActions.swift in Sources */,
@@ -659,17 +654,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		73D87E4427688FB700D5B913 /* XCRemoteSwiftPackageReference "SwiftLocation" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/malcommac/SwiftLocation.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		73793FE027678A5500A79709 /* AppleRL */ = {

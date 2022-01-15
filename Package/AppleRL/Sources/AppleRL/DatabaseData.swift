@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  DatabaseData.swift
 //  
 //
 //  Created by Alessandro Pavesi on 29/11/21.
@@ -12,5 +12,6 @@ public struct DatabaseData: Hashable, Codable, Identifiable {
     public var state: [Double]
     public var action: Int
     public var reward: Double
+    public var nextState: [Double]
     
 }

@@ -7,8 +7,10 @@ Storage for model data.
 
 import Foundation
 
-
+/// Database used to check all the action done by the agent
 let databasePath: String = "database.json"
+
+/// Permanent store of the buffer
 let bufferPath: String = "buffer.json"
 
 public func loadDatabase(_ path: String) -> [DatabaseData] {
@@ -34,7 +36,9 @@ public func loadDatabase(_ path: String) -> [DatabaseData] {
 
     do {
         let decoder = JSONDecoder()
-        return try decoder.decode([DatabaseData].self, from: data)
+        let finalData = try decoder.decode([DatabaseData].self, from: data)
+        defaultLogger.log("Database \(path) count: \(finalData.count)")
+        return finalData
     } catch {
         fatalError("Couldn't parse \(path) as \([DatabaseData].self):\n\(error)")
     }
