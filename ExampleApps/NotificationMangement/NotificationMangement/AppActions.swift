@@ -12,11 +12,15 @@ import UserNotifications
 
 open class ReadNotificationSensor: Sensor {
     
+    let defaults = UserDefaults.standard
     var readedCounter: Double = 0
     var sendedCounter: Double = 0
     
+    
     init() {
         super.init(name: "readNotification", stateSize: 1)
+        readedCounter = self.defaults.double(forKey: "readedCounter")
+        sendedCounter = self.defaults.double(forKey: "sendedCounter")
     }
     
     open override func read() -> [Double] {
@@ -46,11 +50,13 @@ open class ReadNotificationSensor: Sensor {
     public func addRead() {
         print("ADD READ")
         self.readedCounter += 1
+        self.defaults.set(self.readedCounter, forKey: "readedCounter")
     }
     
     public func addSend() {
         print("ADD SEND")
         self.sendedCounter += 1
+        self.defaults.set(self.sendedCounter, forKey: "sendedCounter")
     }
 }
 
