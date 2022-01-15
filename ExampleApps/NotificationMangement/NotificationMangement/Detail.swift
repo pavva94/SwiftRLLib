@@ -47,144 +47,158 @@ struct Detail: View {
             VStack(alignment: .leading) {
                 Text("ID \(String(data.id))")
                     .font(.title)
-                
-                HStack (
-                    alignment: .top,
-                    spacing: 10
-                ) {
-                    Text("State -> Locked")
-                    Text(String(format: "%.1f", data.state[0]))
-                    Text("State -> Coordinates")
-                    Text(String(format: "%.1f", data.state[1]))
-                    Text(String(format: "%.1f", data.state[2]))
-                    Button("Open in Maps", action: openMap)
-                    Text("State -> Battery")
-                    Text(String(format: "%.1f", data.state[3]))
-//                    Text("State -> Clock")
-//                    Text("\(Int(data.state[4])): \(Int(data.state[5]))")
-//                    Text("State -> LowPowerMode")
-//                    Text("\(Int(data.state[6]))")
-//                    Text("State -> ReadNotifications")
-//                    Text("\(Int(data.state[7]))")
-                }.font(.subheadline)
-                .foregroundColor(.secondary)
-                
-//                HStack (
-//                    alignment: .top,
-//                    spacing: 10
-//                ) {
-//                    Text("State -> Coordinates")
-//                    Text(String(format: "%.1f", data.state[1]))
-//                    Text(String(format: "%.1f", data.state[2]))
-//                    Button("Open in Maps", action: openMap)
-//                }.font(.subheadline)
-//                .foregroundColor(.secondary)
-                
-//                HStack (
-//                    alignment: .top,
-//                    spacing: 10
-//                ) {
-//                    Text("State -> Battery")
-//                    Text(String(format: "%.1f", data.state[3]))
-//                }.font(.subheadline)
-//                .foregroundColor(.secondary)
-//                HStack (
-//                    alignment: .top,
-//                    spacing: 10
-//                ) {
-//                    Text("State -> Clock")
-//                    Text("\(Int(data.state[4])): \(Int(data.state[5]))")
-//                }.font(.subheadline)
-//                .foregroundColor(.secondary)
-//                HStack (
-//                    alignment: .top,
-//                    spacing: 10
-//                ) {
-//                    Text("State -> LowPowerMode")
-//                    Text("\(Int(data.state[6]))")
-//                }.font(.subheadline)
-//                .foregroundColor(.secondary)
-                
-//                HStack (
-//                    alignment: .top,
-//                    spacing: 10
-//                ) {
-//                    Text("State -> ReadNotifications")
-//                    Text("\(Int(data.state[7]))")
-//                }.font(.subheadline)
-//                .foregroundColor(.secondary)
+                Group {
+                    HStack (
+                        alignment: .top,
+                        spacing: 10
+                    ) {
+                        Text("State -> Locked")
+                        Text(String(format: "%.1f", data.state[0]))
+    //                    Text("State -> Coordinates")
+    //                    Text(String(format: "%.1f", data.state[1]))
+    //                    Text(String(format: "%.1f", data.state[2]))
+    //                    Button("Open in Maps", action: openMap)
+    //                    Text("State -> Battery")
+    //                    Text(String(format: "%.1f", data.state[3]))
+    //                    Text("State -> Clock")
+    //                    Text("\(Int(data.state[4])): \(Int(data.state[5]))")
+    //                    Text("State -> LowPowerMode")
+    //                    Text("\(Int(data.state[6]))")
+    //                    Text("State -> ReadNotifications")
+    //                    Text("\(Int(data.state[7]))")
+                    }.font(.subheadline)
+                    .foregroundColor(.secondary)
+                    
+                    HStack (
+                        alignment: .top,
+                        spacing: 10
+                    ) {
+                        Text("State -> Coordinates")
+                        Text(String(format: "%.1f", data.state[1]))
+                        Text(String(format: "%.1f", data.state[2]))
+                        Button("Open in Maps", action: openMap)
+                    }.font(.subheadline)
+                    .foregroundColor(.secondary)
+                    
+                    HStack (
+                        alignment: .top,
+                        spacing: 10
+                    ) {
+                        Text("State -> Battery")
+                        Text(String(format: "%.1f", data.state[3]))
+                    }.font(.subheadline)
+                    .foregroundColor(.secondary)
+                    
+                    HStack (
+                        alignment: .top,
+                        spacing: 10
+                    ) {
+                        Text("State -> Clock")
+                        Text("\(Int(data.state[4])): \(Int(data.state[5]))")
+                    }.font(.subheadline)
+                    .foregroundColor(.secondary)
+                    
+                    HStack (
+                        alignment: .top,
+                        spacing: 10
+                    ) {
+                        Text("State -> LowPowerMode")
+                        Text("\(Int(data.state[6]))")
+                    }.font(.subheadline)
+                    .foregroundColor(.secondary)
+                    
+                    HStack (
+                        alignment: .top,
+                        spacing: 10
+                    ) {
+                        Text("State -> ReadNotifications")
+                        Text("\(Int(data.state[7]))")
+                    }.font(.subheadline)
+                    .foregroundColor(.secondary)
+                }
 
                 Divider()
                 
-                HStack (
-                    alignment: .top,
-                    spacing: 10
-                ) {
-                    Text("Action")
-                    Text(getActionDescription(data.action))
-                }.font(.subheadline)
-                .foregroundColor(.secondary)
+                Group {
+                    HStack (
+                        alignment: .top,
+                        spacing: 10
+                    ) {
+                        Text("Action")
+                        Text(getActionDescription(data.action))
+                    }.font(.subheadline)
+                    .foregroundColor(.secondary)
+                    
+                    HStack (
+                        alignment: .top,
+                        spacing: 10
+                    ) {
+                        Text("Reward")
+                        Text(String(format: "%.1f", data.reward))
+                    }.font(.subheadline)
+                    .foregroundColor(.secondary)
+                    
+                    
+    //                HStack (
+    //                    alignment: .top,
+    //                    spacing: 10
+    //                ) {
+    //                    Text("State -> Coordinates")
+    //                    Text(String(format: "%.1f", data.nextState[0]))
+    //                    Text(String(format: "%.1f", data.nextState[1]))
+    //                    Button("Open in Maps", action: openMap)
+    //                }.font(.subheadline)
+    //                .foregroundColor(.secondary)
+                }
                 
-                HStack (
-                    alignment: .top,
-                    spacing: 10
-                ) {
-                    Text("Reward")
-                    Text(String(format: "%.1f", data.reward))
-                }.font(.subheadline)
-                .foregroundColor(.secondary)
-                
-                
-//                HStack (
-//                    alignment: .top,
-//                    spacing: 10
-//                ) {
-//                    Text("State -> Coordinates")
-//                    Text(String(format: "%.1f", data.nextState[0]))
-//                    Text(String(format: "%.1f", data.nextState[1]))
-//                    Button("Open in Maps", action: openMap)
-//                }.font(.subheadline)
-//                .foregroundColor(.secondary)
                 Divider()
                 
-                HStack (
-                    alignment: .top,
-                    spacing: 10
-                ) {
-                    Text("nextState -> Battery")
-                    Text(String(format: "%.1f", data.nextState[0]))
-                }.font(.subheadline)
-                .foregroundColor(.secondary)
-                HStack (
-                    alignment: .top,
-                    spacing: 10
-                ) {
-                    Text("nextState -> Clock")
-                    Text("\(Int(data.nextState[1])): \(Int(data.nextState[2]))")
-                }.font(.subheadline)
-                .foregroundColor(.secondary)
-                
-                
-                
-                
-//                HStack (
-//                    alignment: .top,
-//                    spacing: 10
-//                ) {
-//                    Text("State -> LowPowerMode")
-//                    Text("\(Int(data.nextState[5]))")
-//                }.font(.subheadline)
-//                .foregroundColor(.secondary)
-                
-                
-//                HStack (
-//                    alignment: .top,
-//                    spacing: 50
-//                ) {
-//                    Button("+1", action: a)
-//                    Button("0", action: b)
-//                    Button("-1", action: c)
-//                }
+                Group {
+                    HStack (
+                        alignment: .top,
+                        spacing: 10
+                    ) {
+                        Text("nextState -> Battery")
+                        Text(String(format: "%.1f", data.nextState[3]))
+                    }.font(.subheadline)
+                    .foregroundColor(.secondary)
+                    HStack (
+                        alignment: .top,
+                        spacing: 10
+                    ) {
+                        Text("nextState -> Clock")
+                        Text("\(Int(data.nextState[4])): \(Int(data.nextState[5]))")
+                    }.font(.subheadline)
+                    .foregroundColor(.secondary)
+                    
+                    HStack (
+                        alignment: .top,
+                        spacing: 10
+                    ) {
+                        Text("NextState -> ReadNotifications")
+                        Text("\(Int(data.nextState[7]))")
+                    }.font(.subheadline)
+                    .foregroundColor(.secondary)
+                    
+    //                HStack (
+    //                    alignment: .top,
+    //                    spacing: 10
+    //                ) {
+    //                    Text("State -> LowPowerMode")
+    //                    Text("\(Int(data.nextState[5]))")
+    //                }.font(.subheadline)
+    //                .foregroundColor(.secondary)
+                    
+                    
+    //                HStack (
+    //                    alignment: .top,
+    //                    spacing: 50
+    //                ) {
+    //                    Button("+1", action: a)
+    //                    Button("0", action: b)
+    //                    Button("-1", action: c)
+    //                }
+                }
             }
             .padding()
         }
