@@ -82,23 +82,42 @@ def create_dqn(layers, unit_per_layer, input_shape):
     @param: unit_per_layer   = list of int meaning the units for each layer (e.g. [64, 0, 32, 2])
     @param: input_shape      = tuple with shape of input (e.g. (32, 32, 1))
     """
-    updatable_layers = ["dense_1",]
+    updatable_layers = []
     q_net = Sequential()
     print(len(layers))
-    
-    q_net.add(Dense(unit_per_layer[0], input_shape=input_shape, activation='relu'))
 
-    for i in range(1, len(layers)):
+    for i in range(0, len(layers)-1):
         l = layers[i].lower()
         upl = unit_per_layer[i]
-        if l ==  "dense":
-            layer_name = "dense_" + str(i+1)
+                
+        if i == 0:
+            if l == "dense":
+                layer_name = "dense_" + str(i)
+                q_net.add(Dense(unit_per_layer[0], input_shape=input_shape, activation='relu'))
+                updatable_layers.append(layer_name)
+            if l == "conv2d":
+                layer_name = "conv2d_" + str(i)
+                q_net.add(Conv2D(upl[0], upl[1], activation='relu', dilation_rate=2, name=layer_name, input_shape=input_shape))
+                updatable_layers.append(layer_name)
+            continue
+        
+        if l == "dense":
+            layer_name = "dense_" + str(i)
             q_net.add(Dense(upl, activation='relu', name=layer_name))
+            updatable_layers.append(layer_name)
+        if l == "flatten":
+            layer_name = "flatten_" + str(i)
+            q_net.add(Flatten(name=layer_name))
+#            updatable_layers.append(layer_name)
+        elif l == "conv2d":
+            layer_name = "conv2d_" + str(i)
+            q_net.add(Conv2D(upl[0], upl[1], activation='relu', dilation_rate=2, name=layer_name))
             updatable_layers.append(layer_name)
         else:
             print("Only Dense layer please")
     
-    layer_name = "dense_" + str(len(layers)+1)
+    layer_name = "dense_" + str(len(layers)-1)
+    
     q_net.add(Dense(unit_per_layer[-1], activation='linear', name=layer_name))
     updatable_layers.append(layer_name)
     mlmodel = keras_converter.convert(q_net, input_names=['data'],
@@ -125,5 +144,5 @@ def create_model(type, layers, unit_per_layer, input_shape):
 
 if __name__ == "__main__":
     print("Create NN")
-    create_model("DQN", ["dense", "dense"], [16, 8, 2], (8, ))
+    create_model("DQN", ["conv2d", "conv2d","conv2d", "flatten", "dense", "dense"], [(2, 3), (2, 3), (2, 3), 0, 16, 2], (512, 512, 1))
     print("End")
