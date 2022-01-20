@@ -93,12 +93,13 @@ def create_dqn(layers, unit_per_layer, input_shape):
         if i == 0:
             if l == "dense":
                 layer_name = "dense_" + str(i)
-                q_net.add(Dense(unit_per_layer[0], input_shape=input_shape, activation='relu'))
+                q_net.add(Dense(unit_per_layer[0], input_shape=input_shape, activation='relu', name=layer_name))
                 updatable_layers.append(layer_name)
             if l == "conv2d":
                 layer_name = "conv2d_" + str(i)
                 q_net.add(Conv2D(upl[0], upl[1], activation='relu', dilation_rate=2, name=layer_name, input_shape=input_shape))
                 updatable_layers.append(layer_name)
+                
             continue
         
         if l == "dense":
@@ -144,5 +145,6 @@ def create_model(type, layers, unit_per_layer, input_shape):
 
 if __name__ == "__main__":
     print("Create NN")
-    create_model("DQN", ["conv2d", "conv2d","conv2d", "flatten", "dense", "dense"], [(2, 3), (2, 3), (2, 3), 0, 16, 2], (512, 512, 1))
+#    create_model("DQN", ["conv2d", "conv2d","conv2d", "flatten", "dense", "dense"], [(2, 3), (2, 3), (2, 3), 0, 16, 2], (512, 512, 1))
+    create_model("DQN", ["dense", "dense", "dense", "dense"], [16, 32, 16, 2], (6, ))
     print("End")
