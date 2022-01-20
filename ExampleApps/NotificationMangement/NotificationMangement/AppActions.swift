@@ -13,14 +13,13 @@ import UserNotifications
 open class ReadNotificationSensor: Sensor {
     
     let defaults = UserDefaults.standard
-    var readedCounter: Double = 0
-    var sendedCounter: Double = 0
+    var lastReadedCounter: [Double] = [0]
+    var readedCounter: [Double] = [0]
+    let sendedCounter: Double = 5
     
     
     init() {
         super.init(name: "readNotification", stateSize: 1)
-        readedCounter = self.defaults.double(forKey: "readedCounter")
-        sendedCounter = self.defaults.double(forKey: "sendedCounter")
     }
     
     open override func read() -> [Double] {
@@ -29,7 +28,7 @@ open class ReadNotificationSensor: Sensor {
         if sendedCounter == 0.0 {
             return preprocessing(value: 0.0)
         } else {
-            return preprocessing(value: self.readedCounter/self.sendedCounter)
+            return preprocessing(value: self.readedCounter.reduce(0, +)/self.sendedCounter)
         }
     }
     
@@ -39,8 +38,11 @@ open class ReadNotificationSensor: Sensor {
     }
     
     public func readReadCounter() -> Double {
-        
-        return self.readedCounter
+        return self.readedCounter.reduce(0, +)
+    }
+    
+    public func readLastReadCounter() -> Double {
+        return self.lastReadedCounter.reduce(0, +)
     }
     
     public func readSendCounter() -> Double {
@@ -49,14 +51,13 @@ open class ReadNotificationSensor: Sensor {
     
     public func addRead() {
         print("ADD READ")
-        self.readedCounter += 1
-        self.defaults.set(self.readedCounter, forKey: "readedCounter")
-    }
-    
-    public func addSend() {
-        print("ADD SEND")
-        self.sendedCounter += 1
-        self.defaults.set(self.sendedCounter, forKey: "sendedCounter")
+        self.lastReadedCounter = self.readedCounter
+        if self.readedCounter.count < 5 {
+            self.readedCounter.append(1)
+        } else {
+            self.readedCounter.remove(at: self.readedCounter.count-1)
+            self.readedCounter.append(1)
+        }
     }
 }
 
@@ -109,8 +110,6 @@ open class Send: Action {
                 print("Unable to Add Notification Request (\(error), \(error.localizedDescription))")
             }
         }
-        
-        newSensor.addSend()
     }
 }
 
@@ -133,15 +132,10 @@ open class ReadSendRatio: Reward {
     
     public init() {}
     
-    public var description: String = "NOTSendNotification"
+    public var description: String = "ReadSendRatio"
     
     public func exec(state: [Double], action: Int, nextState: [Double]) -> Double {
         var reward: Double = 0.0
-        
-        if nextState == [] {
-            print("the battery is dead: reward based on simstep: \(BatterySimulator.getSimStep())")
-            return Double(BatterySimulator.getSimStep()) * 10
-        }
         
         // ["locked", "localization", "battery", "clock", "lowPowerMode", "readNotification"]
 //        let lat = state[1]
@@ -151,17 +145,18 @@ open class ReadSendRatio: Reward {
 //        let hourRL = state[4]
 //        let minuteRL = state[5]
 //        let lowPowerMode = state[6]
-        let readNotification = state[7]
+//        let readNotification = state[7]
+//
+//
+//        let nextReadNotification = nextState[7]
         
         
-        let nextReadNotification = nextState[7]
+//        reward = nextReadNotification > readNotification ? +1 : 0
         
-        
-        reward = nextReadNotification > readNotification ? +1 : 0
-        
-        // Final reward based on what the agent need to maximise
-        // here the difference between the current battery value and the battery value of previous state
-//        reward += nextState[0] - battery
+        // if the agent send the notification, reward him with +1 if the user read the notification or -1 otherwise
+        if action == 0 {
+            reward = newSensor.readReadCounter() > newSensor.readLastReadCounter() ? +1 : -1
+        }
         
         print("Final reward: \(reward)")
         

@@ -176,7 +176,7 @@ struct Detail: View {
                         spacing: 10
                     ) {
                         Text("NextState -> ReadNotifications")
-                        Text("\(Int(data.nextState[7]))")
+                        Text("\(Double(data.nextState[7]))")
                     }.font(.subheadline)
                     .foregroundColor(.secondary)
                     

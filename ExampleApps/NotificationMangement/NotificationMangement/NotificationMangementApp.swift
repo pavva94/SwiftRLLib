@@ -13,8 +13,11 @@ import AppleRL
 //let newSensor = ReadNotificationSensor()
 let actionsArray: [Action] = [Send(), NotSend()]
 let rewardsArray: [Reward] = [ReadSendRatio()]
+
+
 var environment: Env = Env(sensors: ["locked", "location", "battery", "clock", "lowPowerMode"], actions: actionsArray, rewards: rewardsArray, actionSize: 2)
 let params: Dictionary<ModelParameters, Any> = [.epsilon: Double(0.4), .learning_rate: Double(0.0001), .gamma: Double(0.9), .timeIntervalBackgroundMode: 1*60]
+
 let qnet: DeepQNetwork = DeepQNetwork(env: environment, parameters: params)
 var firstOpen = true
 
@@ -43,6 +46,7 @@ class NotificationDelegate: NSObject, ObservableObject, UNUserNotificationCenter
            break
         default:
            print("Unknown Action Identifier")
+//           newSensor.addNotRead()
            print("\(response.actionIdentifier)")
            break
        }
@@ -58,6 +62,13 @@ class NotificationDelegate: NSObject, ObservableObject, UNUserNotificationCenter
 
         print("Notification Foreground Handler")
         // Play a sound to let the user know about the invitation.
+        if useSimulator {
+            // simulate behaviour
+            let state = environment.read()
+            if [8.0, 12.0, 13.0, 18.0, 19.0, 20.0].contains(state[4]) && Double.random(in: 0...1) < 0.8 {
+                newSensor.addRead()
+            }
+        }
         completionHandler(.sound)
     }
 }
@@ -103,22 +114,7 @@ struct NotificationMangementApp: App {
         
         func initializeRL() {
             print("App opened")
-            if firstOpen {
-//                resetDatabase(path: "database.json")
-//                resetDatabase(path: "buffer.json")
-                qnet.observe(.both)
-//                qnet.startListen(interval: 30)
-////                qnet.startTrain(interval: 10*60)
-//                BGTaskScheduler.shared.cancelAllTaskRequests()
-//                qnet.scheduleBackgroundSensorFetch()
-//                qnet.scheduleBackgroundTrainingFetch()
-//                print("------------- \(qnet.getDeafultModelURL())")
-//                Tester.checkCorrectPrediction(environment: environment, urlModel: qnet.getDeafultModelURL())
-//                print("------------- \(qnet.getModelURL())")
-//                Tester.checkCorrectPrediction(environment: environment, urlModel: qnet.getModelURL())
-//                print("-------------")
-                }
-            firstOpen = false
+            qnet.observe(.both)
             
         }
 }
