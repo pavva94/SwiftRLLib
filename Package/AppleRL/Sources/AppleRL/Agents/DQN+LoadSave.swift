@@ -40,7 +40,6 @@ extension DeepQNetwork {
 
 
     /// Loads the updated Model, if available.
-    /// - Tag: LoadUpdatedModel
     func loadUpdatedModel() {
     //        guard FileManager.default.fileExists(atPath: updatedModelURL.path) else {
     //            // The updated model is not present at its designated path.

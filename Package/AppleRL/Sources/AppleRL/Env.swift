@@ -10,7 +10,7 @@ import UIKit
 import AVKit
 
 open class Env {
-    var admittedSensors = [
+    var admittedObservableData = [
         "battery",
         "volume",
         "orientation",
@@ -35,39 +35,37 @@ open class Env {
     ]
     
     let defaults = UserDefaults.standard
-//    var idCounter: Int
-    
-    private var sensors: [Sensor]
+
+    private var observableData: [ObservableData]
     private var actions: [Action]
     private var rewards: [Reward]
     private var actionSize: Int
     private var stateSize: Int
     
-    
-    public init(sensors: [String], actions: [Action], rewards: [Reward], actionSize: Int) {
+    /// Initialize the Env with given ObsevrableData, Actions and Rewards
+    /// Passing "All" into the observableData parameter will select all ObservableData implemented
+    public init(observableData: [String], actions: [Action], rewards: [Reward], actionSize: Int) {
         
         self.actionSize = actionSize
         self.stateSize = 0
-        self.sensors = []
+        self.observableData = []
         self.actions = actions
         self.rewards = rewards
-//        self.idCounter = self.defaults.integer(forKey: "idCounter")
         
-        var sensorsList: [String] = []
+        var observableDataList: [String] = []
         
-        if !sensors.isEmpty && sensors[0] == "all" {
-            sensorsList = admittedSensors
+        if !observableData.isEmpty && observableData[0] == "all" {
+            observableDataList = admittedObservableData
         } else {
-            sensorsList = sensors
+            observableDataList = observableData
         }
         
-        // TODO check the sensors with a list of selected/usable sensors
-        for st in sensorsList {
-            if !self.admittedSensors.contains(st) {
-                defaultLogger.log("Sensor not allowed: \(st)")
+        for st in observableDataList {
+            if !self.admittedObservableData.contains(st) {
+                defaultLogger.log("ObservableData not allowed: \(st)")
                 continue
             }
-            var sens: Sensor
+            var sens: ObservableData
             switch st {
             case "battery":
                 UIDevice.current.isBatteryMonitoringEnabled = true
@@ -120,32 +118,36 @@ open class Env {
                 continue
             }
             
-            self.sensors.append(sens)
+            self.observableData.append(sens)
             self.stateSize += sens.stateSize
             
         }
     }
     
+    // Get the action size of the Environment, set by user
     open func getActionSize() -> Int {
         return self.actionSize
     }
     
+    // Get the state size of the environment
     open func getStateSize() -> Int {
         return self.stateSize
     }
     
-    open func addSensor(s: Sensor) {
-        self.admittedSensors.append(s.name)
-        self.sensors.append(s)
+    // Add an ObservableData to the list, in the last position
+    open func addObservableData(s: ObservableData) {
+        self.admittedObservableData.append(s.name)
+        self.observableData.append(s)
         self.stateSize += s.stateSize
     }
     
+    // Call the read() func for each ObsevrableData given
     open func read() -> [Double] {
         var data: [Double] = []
         if useSimulator {
             var params: Dictionary<String, Double> = [:]
             
-            for s in self.sensors {
+            for s in self.observableData {
                 params[s.name] = s.read()[0]
                 if s.name == "brightness" {
                     let val = BatterySimulator.simulateBrightness()
@@ -160,24 +162,24 @@ open class Env {
                 return []
             }
             
-            for s in self.sensors {
+            for s in self.observableData {
                 print(s)
                 if s.name == "battery" {
                     data.append(batteryValue)
                     continue
                 }
-                let sensorData = s.read()
-                for sd in sensorData {
+                let readedData = s.read()
+                for sd in readedData {
                     data.append(sd.customRound(.toNearestOrAwayFromZero))
                 }
             }
             
             print("params \(params)")
         } else {
-            for s in self.sensors {
+            for s in self.observableData {
                 print(s)
-                let sensorData = s.read()
-                for sd in sensorData {
+                let readedData = s.read()
+                for sd in readedData {
                     data.append(sd.customRound(.toNearestOrAwayFromZero))
                 }
             }
@@ -186,7 +188,8 @@ open class Env {
         return data
     }
     
-    open func act(state: [Double], action: Int) -> Void { // return the reward that is always int?
+    /// Function that execute the exec() func of the action choose
+    open func act(state: [Double], action: Int) -> Void {
         // here define the action, selected by the id number
         // Be sure to set an id to each action
         // search action based on Id
@@ -203,15 +206,11 @@ open class Env {
         if !actionFound {
             defaultLogger.log("Action not found: \(action)")
         } else {
-//            let data: DatabaseData = DatabaseData(id: idCounter, state: state, action: action, reward: 0.0)
-//            addDataToDatabase(data, databasePath)
-//            self.idCounter += 1
-//            self.defaults.set(idCounter, forKey: "idCounter")
-//            defaultLogger.log("database saved, idCounter \(self.idCounter)")
             defaultLogger.log("Action found: \(action)")
         }
     }
     
+    /// Function that execute the exec() func of the reward
     open func reward(state: [Double], action: Int, nextState: [Double]) -> Double {
         
         var totalReward: Double = 0

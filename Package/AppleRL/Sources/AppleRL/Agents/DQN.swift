@@ -73,12 +73,17 @@ open class DeepQNetwork {
         self.epochs = parameters.keys.contains(.epochs) ? (parameters[.epochs] as? Int)! : self.epochs
         self.trainingCounter = self.defaults.integer(forKey: "trainingCounter")
         
-        do {
-            try self.learningRate = [(parameters[.learning_rate] as? Double)!]
+        
+        if type(of: parameters[.learning_rate]) == Double.self {
+            self.learningRate = [(parameters[.learning_rate] as? Double)!]
             self.learningRateDecayMode = false
-        } catch {
+        } else if type(of: parameters[.learning_rate]) == [Double].self {
             self.learningRate = (parameters[.learning_rate] as? [Double])!
             self.learningRateDecayMode = true
+        } else {
+            // default learning rate
+            self.learningRate = [0.0001]
+            self.learningRateDecayMode = false
         }
         
         self.timeIntervalTrainingBackgroundMode = 2*60*60 // 2 ore
@@ -136,14 +141,14 @@ open class DeepQNetwork {
             self.startTrain(interval: self.timeIntervalTrainingBackgroundMode)
         } else if mode == ObserveMode.background {
             BGTaskScheduler.shared.cancelAllTaskRequests()
-            self.scheduleBackgroundSensorFetch()
-            self.scheduleBackgroundTrainingFetch()
+            self.scheduleBackgroundFetch()
+            self.scheduleBackgroundTraining()
         } else if mode == ObserveMode.both {
             self.startListen(interval: self.timeIntervalBackgroundMode)
             self.startTrain(interval: self.timeIntervalTrainingBackgroundMode)
             BGTaskScheduler.shared.cancelAllTaskRequests()
-            self.scheduleBackgroundSensorFetch()
-            self.scheduleBackgroundTrainingFetch()
+            self.scheduleBackgroundFetch()
+            self.scheduleBackgroundTraining()
         } else {
             print("Observe Mode Wrong")
             return

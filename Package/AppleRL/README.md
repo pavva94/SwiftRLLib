@@ -14,7 +14,7 @@ To create a simple RL problem using this Package.
 
 Firstly we work on Swift to build the classes:
 - Create at least a class that inherited from Action, include in the exec() function what that action have to do. (What you want, literally)
-- Instanciate the Env class using a list sensors you want to observe, a list of your Actions and defining the action\_size. 
+- Instanciate the Env class using a list ObservableData you want to observe, a list of your Actions and defining the action\_size. 
 - Instanciate what Agent you want (DeepQNetwork or QNetwork) and pass to it the environment.
 
 Then we need to build the Neural Network fitted for our problem:

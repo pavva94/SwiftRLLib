@@ -14,7 +14,7 @@ import CoreLocation
 import Combine
 
 
-open class AmbientLightSensor: Sensor {
+open class AmbientLightSensor: ObservableData {
     init() {
         super.init(name: "ambientLight", stateSize: 1)
     }
@@ -31,7 +31,7 @@ open class AmbientLightSensor: Sensor {
 }
 
 
-open class AltitudeSensor: Sensor {
+open class AltitudeSensor: ObservableData {
     let locationManager = LocationManagerRL()
     
     init() {
@@ -49,7 +49,7 @@ open class AltitudeSensor: Sensor {
 }
 
 
-open class AccelerometerSensor: Sensor {
+open class AccelerometerSensor: ObservableData {
     init() {
         super.init(name: "accelerometer", stateSize: 3)
     }
@@ -77,7 +77,7 @@ open class AccelerometerSensor: Sensor {
 }
 
 
-open class BatterySensor: Sensor {
+open class BatterySensor: ObservableData {
     init() {
         super.init(name: "battery", stateSize: 1)
     }
@@ -92,7 +92,7 @@ open class BatterySensor: Sensor {
     }
 }
 
-open class BrightnessSensor: Sensor {
+open class BrightnessSensor: ObservableData {
     
     init() {
         super.init(name: "brightness", stateSize: 1)
@@ -110,7 +110,7 @@ open class BrightnessSensor: Sensor {
     }
 }
 
-open class BarometerSensor: Sensor {
+open class BarometerSensor: ObservableData {
     private var altimeter: CMAltimeter!
     
     init() {
@@ -138,7 +138,7 @@ open class BarometerSensor: Sensor {
 }
 
 
-open class CitySensor: Sensor {
+open class CitySensor: ObservableData {
     let locationManager = LocationManagerRL()
     
     init() {
@@ -155,7 +155,7 @@ open class CitySensor: Sensor {
     }
 }
 
-open class ClockSensor: Sensor {
+open class ClockSensor: ObservableData {
     
     init() {
         super.init(name: "clock", stateSize: 2)
@@ -179,17 +179,13 @@ open class ClockSensor: Sensor {
     open override func preprocessing(value: Any) -> [Double] {
         // define range of 30 minute
         let hms = value as! [Double]
-        var newHms = [hms[0], 0.0]
-        if hms[1] > 30 {
-            newHms[1] = 30.0
-        }
-        return newHms
+        return [hms[0], hms[1]]
     }
 }
 
 
 
-open class CountrySensor: Sensor {
+open class CountrySensor: ObservableData {
     let locationManager = LocationManagerRL()
     
     init() {
@@ -207,7 +203,7 @@ open class CountrySensor: Sensor {
 }
 
 
-open class DateSensor: Sensor {
+open class DateSensor: ObservableData {
     
     init() {
         super.init(name: "date", stateSize: 3)
@@ -228,7 +224,7 @@ open class DateSensor: Sensor {
     }
 }
 
-open class GyroscopeSensor: Sensor {
+open class GyroscopeSensor: ObservableData {
     init() {
         super.init(name: "gyroscope", stateSize: 3)
     }
@@ -256,7 +252,7 @@ open class GyroscopeSensor: Sensor {
 }
 
 
-open class HourSensor: Sensor {
+open class HourSensor: ObservableData {
     
     init() {
         super.init(name: "hour", stateSize: 3)
@@ -276,7 +272,7 @@ open class HourSensor: Sensor {
 }
 
 
-open class LocationSensor: Sensor {
+open class LocationSensor: ObservableData {
 
     let locationManager = LocationManagerRL()
     
@@ -305,7 +301,7 @@ open class LocationSensor: Sensor {
     }
 }
 
-open class LockedSensor: Sensor {
+open class LockedSensor: ObservableData {
     
     init() {
         super.init(name: "locked", stateSize: 1)
@@ -326,7 +322,7 @@ open class LockedSensor: Sensor {
 }
 
 
-open class LowPowerModeSensor: Sensor {
+open class LowPowerModeSensor: ObservableData {
     
     init() {
         super.init(name: "lowPowerMode", stateSize: 1)
@@ -348,7 +344,7 @@ open class LowPowerModeSensor: Sensor {
 }
 
 
-open class MinuteSensor: Sensor {
+open class MinuteSensor: ObservableData {
     
     init() {
         super.init(name: "minute", stateSize: 3)
@@ -368,7 +364,7 @@ open class MinuteSensor: Sensor {
 }
 
 
-open class OrientationSensor: Sensor {
+open class OrientationSensor: ObservableData {
     init() {
         super.init(name: "orientation", stateSize: 1)
     }
@@ -387,7 +383,7 @@ open class OrientationSensor: Sensor {
     }
 }
 
-open class SecondSensor: Sensor {
+open class SecondSensor: ObservableData {
     
     init() {
         super.init(name: "second", stateSize: 3)
@@ -407,7 +403,7 @@ open class SecondSensor: Sensor {
 }
 
 
-open class SpeedSensor: Sensor {
+open class SpeedSensor: ObservableData {
     let locationManager = LocationManagerRL()
     
     init() {
@@ -425,7 +421,7 @@ open class SpeedSensor: Sensor {
 }
 
 
-open class VolumeSensor: Sensor {
+open class VolumeSensor: ObservableData {
     
     init() {
         super.init(name: "volume", stateSize: 1)

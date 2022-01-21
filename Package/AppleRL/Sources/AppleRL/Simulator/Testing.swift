@@ -36,10 +36,10 @@ open class Testing {
         var errorOld = 0.0
         var errorNew = 0.0
         for i in 0..<oldPredictions.count {
-            let tempOld = oldPredictions[i] as! Double - Double(targetPredictions[i])
+            let tempOld = oldPredictions[i] as! Double - Double(truncating: targetPredictions[i])
             errorOld += tempOld*tempOld
             
-            let tempNew = newPredictions[i] as! Double - Double(targetPredictions[i])
+            let tempNew = newPredictions[i] as! Double - Double(truncating: targetPredictions[i])
             errorNew += tempNew*tempNew
         }
         errorOld /= Double(oldPredictions.count)

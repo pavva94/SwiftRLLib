@@ -11,7 +11,7 @@ final class AppleRLTests: XCTestCase {
     
     func inferenceTest() throws {
         var actionsArray: [Action] = [Action1(), Action2(), Action3()]
-        var e: Env = Env(sensors: ["brightness", "battery", "ambientLight"], actions: actionsArray, actionSize: 3, stateSize: 3)
+        var e: Env = Env(observableData: ["brightness", "battery", "ambientLight"], actions: actionsArray, actionSize: 3, stateSize: 3)
         let params: Dictionary<String, Any> = ["epsilon": Double(0.1), "learning_rate": Double(0.1), "gamma": Double(0.8)]
         let qnet: DeepQNetwork = DeepQNetwork(env: e, parameters: params)
 

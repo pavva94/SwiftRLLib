@@ -14,23 +14,19 @@ extension DeepQNetwork {
         task.expirationHandler = {
             task.setTaskCompleted(success: false)
         }
-      
-      
-//    NotificationCenter.default.post(name: .newPokemonFetched,
-//                                    object: self,
-//                                    userInfo: ["pokemon": pokemon])
+
         self.listen()
         task.setTaskCompleted(success: true)
       
-        scheduleBackgroundSensorFetch()
+        scheduleBackgroundFetch()
     }
 
-    public func scheduleBackgroundSensorFetch() {
+    public func scheduleBackgroundFetch() {
         defaultLogger.log("Background fetch activate")
-        let sensorFetchTask = BGAppRefreshTaskRequest(identifier: backgroundListenURL)
-        sensorFetchTask.earliestBeginDate = Date(timeIntervalSinceNow: TimeInterval(self.timeIntervalBackgroundMode)) // launch at least every x minutes
+        let fetchTask = BGAppRefreshTaskRequest(identifier: backgroundListenURL)
+        fetchTask.earliestBeginDate = Date(timeIntervalSinceNow: TimeInterval(self.timeIntervalBackgroundMode)) // launch at least every x minutes
         do {
-            try BGTaskScheduler.shared.submit(sensorFetchTask)
+            try BGTaskScheduler.shared.submit(fetchTask)
             defaultLogger.log("task scheduled")
         } catch {
             defaultLogger.error("Unable to submit task: \(error.localizedDescription)")
@@ -47,10 +43,10 @@ extension DeepQNetwork {
         task.setTaskCompleted(success: true)
       
       
-        scheduleBackgroundTrainingFetch()
+        scheduleBackgroundTraining()
     }
 
-    public func scheduleBackgroundTrainingFetch() {
+    public func scheduleBackgroundTraining() {
         defaultLogger.log("backgroundmode training activation")
         
         let request = BGProcessingTaskRequest(identifier: backgroundTrainURL)

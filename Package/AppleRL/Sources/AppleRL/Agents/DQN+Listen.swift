@@ -9,6 +9,8 @@ import Foundation
 import CoreML
 
 extension DeepQNetwork {
+    
+    
     @objc open func listen() {
         // read new state and do things like act
         let state = environment.read()
