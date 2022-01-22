@@ -15,6 +15,7 @@ struct Row: View {
         HStack {
             Text("ID")
             Text(String(data.id))
+            Text(" - \(Int(data.nextState[2])): \(Int(data.nextState[3]))")
             Spacer()
         }
     }

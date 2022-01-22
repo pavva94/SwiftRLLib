@@ -12,7 +12,7 @@ import BackgroundTasks
 
 struct ContentView: View {
     var qnet: DeepQNetwork
-    var sensor: Sensor
+    var sensor: ObservableData
     var database: [DatabaseData]
     var body: some View {
         VStack {
@@ -29,8 +29,8 @@ struct ContentView: View {
 
             Button("Schedule Notification") {
                 BGTaskScheduler.shared.cancelAllTaskRequests()
-                qnet.scheduleBackgroundSensorFetch()
-                qnet.scheduleBackgroundTrainingFetch()
+                qnet.scheduleBackgroundFetch()
+                qnet.scheduleBackgroundTraining()
                 
             }
             

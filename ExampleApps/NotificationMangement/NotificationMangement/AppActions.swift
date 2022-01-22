@@ -10,7 +10,7 @@ import AppleRL
 import UserNotifications
 
 
-open class ReadNotificationSensor: Sensor {
+open class ReadNotificationSensor: ObservableData {
     
     let defaults = UserDefaults.standard
     var lastReadedCounter: [Double] = [0]

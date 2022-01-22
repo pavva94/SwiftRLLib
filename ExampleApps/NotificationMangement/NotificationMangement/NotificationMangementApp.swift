@@ -8,14 +8,13 @@
 import SwiftUI
 import BackgroundTasks
 import AppleRL
+import MetricKit
 
-
-//let newSensor = ReadNotificationSensor()
 let actionsArray: [Action] = [Send(), NotSend()]
 let rewardsArray: [Reward] = [ReadSendRatio()]
 
 
-var environment: Env = Env(sensors: ["locked", "location", "battery", "clock", "lowPowerMode"], actions: actionsArray, rewards: rewardsArray, actionSize: 2)
+var environment: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArray, rewards: rewardsArray, actionSize: 2)
 let params: Dictionary<ModelParameters, Any> = [.epsilon: Double(0.4), .learning_rate: Double(0.0001), .gamma: Double(0.9), .timeIntervalBackgroundMode: 1*60]
 
 let qnet: DeepQNetwork = DeepQNetwork(env: environment, parameters: params)
@@ -76,7 +75,7 @@ class NotificationDelegate: NSObject, ObservableObject, UNUserNotificationCenter
 class AppDelegate: NSObject, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        environment.addSensor(s: newSensor)
+        environment.addObservableData(s: newSensor)
         BGTaskScheduler.shared.register(
           forTaskWithIdentifier: backgroundListenURL,
           using: nil) { (task) in
@@ -94,7 +93,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         return true
     }
     
-}          
+}
 
 @main
 struct NotificationMangementApp: App {
@@ -115,9 +114,12 @@ struct NotificationMangementApp: App {
         func initializeRL() {
             print("App opened")
             qnet.observe(.both)
+            let metricManager = MXMetricManager.shared
+            metricManager.add(appleRLMetrics)
             
         }
 }
+
 
 
 

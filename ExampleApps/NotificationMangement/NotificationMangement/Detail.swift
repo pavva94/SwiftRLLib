@@ -69,23 +69,23 @@ struct Detail: View {
                     }.font(.subheadline)
                     .foregroundColor(.secondary)
                     
-                    HStack (
-                        alignment: .top,
-                        spacing: 10
-                    ) {
-                        Text("State -> Coordinates")
-                        Text(String(format: "%.1f", data.state[1]))
-                        Text(String(format: "%.1f", data.state[2]))
-                        Button("Open in Maps", action: openMap)
-                    }.font(.subheadline)
-                    .foregroundColor(.secondary)
+//                    HStack (
+//                        alignment: .top,
+//                        spacing: 10
+//                    ) {
+//                        Text("State -> Coordinates")
+//                        Text(String(format: "%.1f", data.state[1]))
+//                        Text(String(format: "%.1f", data.state[2]))
+//                        Button("Open in Maps", action: openMap)
+//                    }.font(.subheadline)
+//                    .foregroundColor(.secondary)
                     
                     HStack (
                         alignment: .top,
                         spacing: 10
                     ) {
                         Text("State -> Battery")
-                        Text(String(format: "%.1f", data.state[3]))
+                        Text(String(format: "%.1f", data.state[1]))
                     }.font(.subheadline)
                     .foregroundColor(.secondary)
                     
@@ -94,7 +94,7 @@ struct Detail: View {
                         spacing: 10
                     ) {
                         Text("State -> Clock")
-                        Text("\(Int(data.state[4])): \(Int(data.state[5]))")
+                        Text("\(Int(data.state[2])): \(Int(data.state[3]))")
                     }.font(.subheadline)
                     .foregroundColor(.secondary)
                     
@@ -103,7 +103,7 @@ struct Detail: View {
                         spacing: 10
                     ) {
                         Text("State -> LowPowerMode")
-                        Text("\(Int(data.state[6]))")
+                        Text("\(Int(data.state[4]))")
                     }.font(.subheadline)
                     .foregroundColor(.secondary)
                     
@@ -112,7 +112,7 @@ struct Detail: View {
                         spacing: 10
                     ) {
                         Text("State -> ReadNotifications")
-                        Text("\(Int(data.state[7]))")
+                        Text("\(Int(data.state[5]))")
                     }.font(.subheadline)
                     .foregroundColor(.secondary)
                 }
@@ -159,7 +159,7 @@ struct Detail: View {
                         spacing: 10
                     ) {
                         Text("nextState -> Battery")
-                        Text(String(format: "%.1f", data.nextState[3]))
+                        Text(String(format: "%.1f", data.nextState[1]))
                     }.font(.subheadline)
                     .foregroundColor(.secondary)
                     HStack (
@@ -167,7 +167,7 @@ struct Detail: View {
                         spacing: 10
                     ) {
                         Text("nextState -> Clock")
-                        Text("\(Int(data.nextState[4])): \(Int(data.nextState[5]))")
+                        Text("\(Int(data.nextState[2])): \(Int(data.nextState[3]))")
                     }.font(.subheadline)
                     .foregroundColor(.secondary)
                     
@@ -176,7 +176,7 @@ struct Detail: View {
                         spacing: 10
                     ) {
                         Text("NextState -> ReadNotifications")
-                        Text("\(Double(data.nextState[7]))")
+                        Text("\(Double(data.nextState[5]))")
                     }.font(.subheadline)
                     .foregroundColor(.secondary)
                     
