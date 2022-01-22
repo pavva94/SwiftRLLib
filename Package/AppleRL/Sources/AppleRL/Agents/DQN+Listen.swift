@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreML
+import MetricKit
 
 extension DeepQNetwork {
     
@@ -49,5 +50,12 @@ extension DeepQNetwork {
         
         // wait the overriding of last tuple to save current tuple
         self.buffer.setLastData(SarsaTuple(state: newState, action: action, reward: 0.0))
+        
+        // add metrics
+        let listenLogHandle = MXMetricManager.makeLogHandle(category: "Listen")
+        mxSignpost(
+          .event,
+          log: listenLogHandle,
+          name: "Listen")
     }
 }

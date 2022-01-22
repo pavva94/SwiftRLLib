@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreML
+import MetricKit
 
 extension DeepQNetwork {
     
@@ -135,6 +136,12 @@ extension DeepQNetwork {
         
         // reset the buffer only after the model trained for sure
         buffer.reset()
+        
+        let endTrainLogHandle = MXMetricManager.makeLogHandle(category: "Train")
+        mxSignpost(
+            .end,
+          log: endTrainLogHandle,
+          name: "End  Train")
 
         // Inform the calling View Controller when the update is complete
         DispatchQueue.main.async { defaultLogger.log("Trained") }
@@ -194,6 +201,18 @@ extension DeepQNetwork {
         config.computeUnits = .all
         config.parameters = parameters
         defaultLogger.log("currentModelURL \(self.updatedModelURL)")
+        
+        let trainLogHandle = MXMetricManager.makeLogHandle(category: "Train")
+        mxSignpost(
+            .begin,
+          log: trainLogHandle,
+          name: "Train")
+        
+        let startTrainLogHandle = MXMetricManager.makeLogHandle(category: "Train")
+        mxSignpost(
+            .begin,
+          log: startTrainLogHandle,
+          name: "Start Train")
         
         DispatchQueue.global(qos: .userInitiated).async {
             AppleRLModel.updateModel(at: self.updatedModelURL,

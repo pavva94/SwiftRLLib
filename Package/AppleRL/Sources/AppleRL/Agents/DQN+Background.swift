@@ -15,6 +15,7 @@ extension DeepQNetwork {
             task.setTaskCompleted(success: false)
         }
 
+        // Listen the environment
         self.listen()
         task.setTaskCompleted(success: true)
       
@@ -39,6 +40,7 @@ extension DeepQNetwork {
             task.setTaskCompleted(success: false)
         }
         
+        // Update the network
         self.update()
         task.setTaskCompleted(success: true)
       
