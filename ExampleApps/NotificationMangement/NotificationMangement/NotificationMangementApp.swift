@@ -15,7 +15,7 @@ let rewardsArray: [Reward] = [ReadSendRatio()]
 
 
 var environment: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArray, rewards: rewardsArray, actionSize: 2)
-let params: Dictionary<ModelParameters, Any> = [.epsilon: Double(0.4), .learning_rate: Double(0.0001), .gamma: Double(0.9), .timeIntervalBackgroundMode: 1*60]
+let params: Dictionary<ModelParameters, Any> = [.epsilon: Double(0.2), .learning_rate: Double(0.00001), .gamma: Double(0.9), .timeIntervalTrainingBackgroundMode: 5*60]
 
 let qnet: DeepQNetwork = DeepQNetwork(env: environment, parameters: params)
 var firstOpen = true
@@ -64,7 +64,7 @@ class NotificationDelegate: NSObject, ObservableObject, UNUserNotificationCenter
         if useSimulator {
             // simulate behaviour
             let state = environment.read()
-            if [8.0, 12.0, 13.0, 18.0, 19.0, 20.0].contains(state[4]) && Double.random(in: 0...1) < 0.8 {
+            if [8.0, 12.0, 13.0, 18.0, 19.0, 20.0].contains(state[2]) && Double.random(in: 0...1) < 0.9 {
                 newSensor.addRead()
             }
         }
@@ -101,6 +101,8 @@ struct NotificationMangementApp: App {
         
     init(){
         
+        copyFilesFromBundleToDocumentsFolderWith(fileExtension: ".json")
+        copyFilesFromBundleToDocumentsFolderWith(fileExtension: ".mlmodelc")
         
     }
     @StateObject var delegate = NotificationDelegate()
