@@ -46,9 +46,8 @@ extension DeepQNetwork {
     //            defaultLogger.info("The updated model is not present at its designated path.")
     //            return
     //        }
-        
         if !fileManager.fileExists(atPath: updatedModelURL.path) {
-            defaultLogger.info("The updated model is not present at its designated path.")
+            defaultLogger.info("The updated model is not present at its designated path \(self.updatedModelURL.path)")
             do {
                 let updatedModelParentURL = updatedModelURL.deletingLastPathComponent()
                 try fileManager.createDirectory(
@@ -71,7 +70,7 @@ extension DeepQNetwork {
         }
         
         if !fileManager.fileExists(atPath: updatedTargetModelURL.path) {
-            defaultLogger.info("The target updated model is not present at its designated path.")
+            defaultLogger.info("The target updated model is not present at its designated path \(self.updatedModelURL.path)")
             do {
                 let updatedModelParentURL = updatedTargetModelURL.deletingLastPathComponent()
                 try fileManager.createDirectory(
@@ -120,6 +119,19 @@ extension DeepQNetwork {
             }
             self.countTargetUpdate = 0
             defaultLogger.log("Target model updated")
+        }
+    }
+    
+    /// Function to load an external Model, downloaded from CloudKit. The file extension is .mlmodel
+    public func loadFromExternal(_ externalUrl: URL) {
+        do {
+            let compiledModelURL = try MLModel.compileModel(at: externalUrl)
+            let model = try AppleRLModel(contentsOf: compiledModelURL)
+            self.updatedModel = model
+            self.targetModel = model
+            defaultLogger.log("Model and Target uploaded from External Source")
+        } catch {
+            defaultLogger.error("Error in load model from external source: \(error.localizedDescription) ")
         }
     }
 }

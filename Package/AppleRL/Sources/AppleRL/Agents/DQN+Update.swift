@@ -141,7 +141,7 @@ extension DeepQNetwork {
         mxSignpost(
             .end,
           log: endTrainLogHandle,
-          name: "End  Train")
+          name: "End Train")
 
         // Inform the calling View Controller when the update is complete
         DispatchQueue.main.async { defaultLogger.log("Trained") }

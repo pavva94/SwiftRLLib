@@ -31,6 +31,7 @@ public enum ModelParameters {
     case epochs
     case learning_rate
     case timeIntervalBackgroundMode
+    case timeIntervalTrainingBackgroundMode
 }
 
 public enum ObserveMode {

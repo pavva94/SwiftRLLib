@@ -51,7 +51,7 @@ open class DeepQNetwork {
     var targetModel: AppleRLModel?
     
     /// The location of the app's Application Support directory for the user.
-    private static let appDirectory = FileManager.default.urls(for: .applicationSupportDirectory,
+    private static let appDirectory = FileManager.default.urls(for: .documentDirectory,
                                                                in: .userDomainMask).first!
     
     /// The default Model model's file URL.
@@ -86,7 +86,12 @@ open class DeepQNetwork {
             self.learningRateDecayMode = false
         }
         
-        self.timeIntervalTrainingBackgroundMode = 2*60*60 // 2 ore
+        if parameters.keys.contains(.timeIntervalTrainingBackgroundMode) {
+            self.timeIntervalTrainingBackgroundMode = parameters[.timeIntervalTrainingBackgroundMode] as! Int
+        } else {
+            self.timeIntervalTrainingBackgroundMode = 2*60*60 // 2 ore
+        }
+        
         if parameters.keys.contains(.timeIntervalBackgroundMode) {
             self.timeIntervalBackgroundMode = parameters[.timeIntervalBackgroundMode] as! Int
         } else {

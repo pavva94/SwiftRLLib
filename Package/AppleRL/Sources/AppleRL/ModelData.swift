@@ -97,3 +97,34 @@ func addDataToDatabase(_ data: DatabaseData, _ path: String) {
     
     saveDatabase(data: databaseData, path: path)
 }
+
+public func copyFilesFromBundleToDocumentsFolderWith(fileExtension: String) {
+    if let resPath = Bundle.main.resourcePath {
+        do {
+            let dirContents = try FileManager.default.contentsOfDirectory(atPath: resPath)
+            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+            var filteredFiles = dirContents.filter{ $0.contains(fileExtension)}
+            
+            // Remove the Original compiled model 
+            if fileExtension == ".mlmodelc" {
+                if let indexAppleModelc = filteredFiles.firstIndex(of: "AppleRLModel.mlmodelc") {
+                    filteredFiles.remove(at: indexAppleModelc)
+                }
+            }
+            for fileName in filteredFiles {
+                if let documentsURL = documentsURL {
+                    let sourceURL = Bundle.main.bundleURL.appendingPathComponent(fileName)
+                    let destURL = documentsURL.appendingPathComponent(fileName)
+                    do {
+                        try FileManager.default.copyItem(at: sourceURL, to: destURL)
+                        
+                    } catch {
+                        defaultLogger.error("Error during the copy of files \(error.localizedDescription)")
+                    }
+                }
+            }
+        } catch {
+            defaultLogger.error("Error during move of files: \(error.localizedDescription)")
+        }
+    }
+}
