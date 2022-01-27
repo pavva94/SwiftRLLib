@@ -15,7 +15,14 @@ let rewardsArray: [Reward] = [ReadSendRatio()]
 
 
 var environment: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArray, rewards: rewardsArray, actionSize: 2)
-let params: Dictionary<ModelParameters, Any> = [.epsilon: Double(0.2), .learning_rate: Double(0.00001), .gamma: Double(0.9), .timeIntervalTrainingBackgroundMode: 5*60]
+let params: Dictionary<ModelParameters, Any> = [
+    .epsilon: Double(0.2),
+    .batchSize: 32,
+    .learning_rate: Double(0.00001),
+    .gamma: Double(0.9),
+    .timeIntervalBackgroundMode: 1*60,
+    .timeIntervalTrainingBackgroundMode: 2*60
+]
 
 let qnet: DeepQNetwork = DeepQNetwork(env: environment, parameters: params)
 var firstOpen = true
@@ -101,15 +108,15 @@ struct NotificationMangementApp: App {
         
     init(){
         
-        copyFilesFromBundleToDocumentsFolderWith(fileExtension: ".json")
-        copyFilesFromBundleToDocumentsFolderWith(fileExtension: ".mlmodelc")
+//        dataManager.copyFilesFromBundleToDocumentsFolderWith(fileExtension: ".json")
+//        copyFilesFromBundleToDocumentsFolderWith(fileExtension: ".mlmodelc")
         
     }
     @StateObject var delegate = NotificationDelegate()
     
     var body: some Scene {
             WindowGroup {
-                ContentView(qnet: qnet, sensor: newSensor, database: loadDatabase("database.json")).onAppear(perform: initializeRL)
+                ContentView(qnet: qnet, sensor: newSensor, database: dataManager.loadDatabase("database.json")).onAppear(perform: initializeRL)
             }
         }
         

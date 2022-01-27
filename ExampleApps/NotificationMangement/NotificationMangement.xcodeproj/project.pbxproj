@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		73673455279FF20700F1C4D1 /* personalizedTarget.mlmodelc in Resources */ = {isa = PBXBuildFile; fileRef = 73673453279FF20700F1C4D1 /* personalizedTarget.mlmodelc */; };
-		73673456279FF20700F1C4D1 /* personalized.mlmodelc in Resources */ = {isa = PBXBuildFile; fileRef = 73673454279FF20700F1C4D1 /* personalized.mlmodelc */; };
-		73673457279FF93E00F1C4D1 /* AppleRLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 73F1F25C279EAED50064623C /* AppleRLModel.mlmodel */; };
+		7367345B27A163F000F1C4D1 /* AppleRLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 7367345A27A163F000F1C4D1 /* AppleRLModel.mlmodel */; };
 		73B827C3278F09B6006F0F18 /* NotificationMangementApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B827C2278F09B6006F0F18 /* NotificationMangementApp.swift */; };
 		73B827C5278F09B6006F0F18 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B827C4278F09B6006F0F18 /* ContentView.swift */; };
 		73B827C7278F09B8006F0F18 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 73B827C6278F09B8006F0F18 /* Assets.xcassets */; };
@@ -42,8 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		73673453279FF20700F1C4D1 /* personalizedTarget.mlmodelc */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = personalizedTarget.mlmodelc; sourceTree = "<group>"; };
-		73673454279FF20700F1C4D1 /* personalized.mlmodelc */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = personalized.mlmodelc; sourceTree = "<group>"; };
+		7367345A27A163F000F1C4D1 /* AppleRLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = AppleRLModel.mlmodel; sourceTree = "<group>"; };
 		73B827BF278F09B6006F0F18 /* NotificationMangement.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NotificationMangement.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		73B827C2278F09B6006F0F18 /* NotificationMangementApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationMangementApp.swift; sourceTree = "<group>"; };
 		73B827C4278F09B6006F0F18 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -60,7 +57,6 @@
 		73CDD3942790733500127024 /* Detail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Detail.swift; path = NotificationMangement/Detail.swift; sourceTree = SOURCE_ROOT; };
 		73CDD3952790733500127024 /* Row.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Row.swift; path = NotificationMangement/Row.swift; sourceTree = SOURCE_ROOT; };
 		73F1F25A279EA9C80064623C /* buffer.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = buffer.json; sourceTree = "<group>"; };
-		73F1F25C279EAED50064623C /* AppleRLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = AppleRLModel.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,10 +113,8 @@
 				73CDD3912790367300127024 /* NotificationMangement.entitlements */,
 				73B827C2278F09B6006F0F18 /* NotificationMangementApp.swift */,
 				73B827C4278F09B6006F0F18 /* ContentView.swift */,
+				7367345A27A163F000F1C4D1 /* AppleRLModel.mlmodel */,
 				73F1F25A279EA9C80064623C /* buffer.json */,
-				73F1F25C279EAED50064623C /* AppleRLModel.mlmodel */,
-				73673454279FF20700F1C4D1 /* personalized.mlmodelc */,
-				73673453279FF20700F1C4D1 /* personalizedTarget.mlmodelc */,
 				73B827C6278F09B8006F0F18 /* Assets.xcassets */,
 				73CDD3942790733500127024 /* Detail.swift */,
 				73CDD3952790733500127024 /* Row.swift */,
@@ -278,8 +272,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				73B827CA278F09B8006F0F18 /* Preview Assets.xcassets in Resources */,
-				73673456279FF20700F1C4D1 /* personalized.mlmodelc in Resources */,
-				73673455279FF20700F1C4D1 /* personalizedTarget.mlmodelc in Resources */,
 				73F1F25B279EA9C80064623C /* buffer.json in Resources */,
 				73B827C7278F09B8006F0F18 /* Assets.xcassets in Resources */,
 			);
@@ -306,8 +298,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				73673457279FF93E00F1C4D1 /* AppleRLModel.mlmodel in Sources */,
 				73B827C5278F09B6006F0F18 /* ContentView.swift in Sources */,
+				7367345B27A163F000F1C4D1 /* AppleRLModel.mlmodel in Sources */,
 				73B827C3278F09B6006F0F18 /* NotificationMangementApp.swift in Sources */,
 				73CDD3962790733500127024 /* Detail.swift in Sources */,
 				73CDD3972790733500127024 /* Row.swift in Sources */,
