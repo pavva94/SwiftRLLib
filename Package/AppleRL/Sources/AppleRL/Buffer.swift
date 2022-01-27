@@ -54,7 +54,7 @@ public struct ExperienceReplayBuffer {
     init(_ maxBufferLength: Int = 512) {
         self.maxLength = maxBufferLength
         do {
-            let db = loadDatabase(bufferPath)
+            let db = dataManager.loadDatabase(bufferPath)
             for data in db {
                 trainingData.append(SarsaTupleGeneric(state: try MLMultiArray(data.state), action: data.action, reward: data.reward))
             }
@@ -96,27 +96,28 @@ public struct ExperienceReplayBuffer {
         }
         
         trainingData.append(data)
+        
         var idBufferCounter: Int = self.defaults.integer(forKey: "idBufferCounter")
         var temp = DatabaseData(id: idBufferCounter, state: convertToArray(from: data.getState()), action: data.getAction(), reward: data.getReward(), nextState: convertToArray(from: data.getNextState()))
         
         idBufferCounter += 1
         self.defaults.set(idBufferCounter, forKey: "idBufferCounter")
-        addDataToDatabase(temp, bufferPath)
+        dataManager.addDataToDatabase(temp, bufferPath)
         
         var idDatabaseCounter: Int = self.defaults.integer(forKey: "idDatabaseCounter")
         temp = DatabaseData(id: idDatabaseCounter, state: convertToArray(from: data.getState()), action: data.getAction(), reward: data.getReward(), nextState: convertToArray(from: data.getNextState()))
         
         idDatabaseCounter += 1
         self.defaults.set(idDatabaseCounter, forKey: "idDatabaseCounter")
-        addDataToDatabase(temp, databasePath)
+        dataManager.addDataToDatabase(temp, databasePath)
     }
     
     mutating func reset() {
         self.trainingData = []
         self.defaults.set(0, forKey: "idBufferCounter")
-        resetDatabase(path: bufferPath)
+        dataManager.resetDatabase(path: bufferPath)
         do {
-            let db = loadDatabase(bufferPath)
+            let db = dataManager.loadDatabase(bufferPath)
             for data in db {
                 trainingData.append(SarsaTupleGeneric(state: try MLMultiArray(data.state), action: data.action, reward: data.reward))
             }

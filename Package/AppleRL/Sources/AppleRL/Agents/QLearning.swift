@@ -80,7 +80,7 @@ open class QLearning {
 
     open func update() {
 
-        let data = buffer.batchProvider
+        let data = buffer.batchProvider()
 
         var i = 0
         while i < data.count {
@@ -115,7 +115,7 @@ open class QLearning {
     @objc open func batchUpdate(batchSize: Int = 32) {
 
         // TODO this isn't a batchupdate
-        let data = buffer.batchProvider
+        let data = buffer.batchProvider()
 
         var i = 0
         while i < data.count {

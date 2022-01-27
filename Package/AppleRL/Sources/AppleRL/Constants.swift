@@ -19,6 +19,11 @@ let tempModelFileName: String = "personalized_temp.mlmodelc"
 /// Names of models files: target personalized
 let personalizedTargetModelFileName: String = "personalizedTarget.mlmodelc"
 
+/// Database used to check all the action done by the agent
+let databasePath: String = "database.json"
+/// Permanent store of the buffer
+let bufferPath: String = "buffer.json"
+
 /// Name of model's inputs
 let modelInputName = "data"
 /// Name of model's outputs
