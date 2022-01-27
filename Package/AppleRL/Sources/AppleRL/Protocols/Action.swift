@@ -12,7 +12,7 @@ public protocol Action {
     var id: Int { get }
     var description: String { get }
     
-    // Implement also the Init() mark it public
+    // Implement also the Init(), mark it public
 
     func exec()
 }
