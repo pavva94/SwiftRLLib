@@ -143,7 +143,7 @@ extension DeepQNetwork {
         let parameters: [MLParameterKey: Any] = [
             .epochs: self.epochs,
             .seed: 42,
-            .miniBatchSize: 8,
+            .miniBatchSize: self.miniBatchSize,
             .learningRate: self.learningRateDecayMode ? self.learningRate[
                         self.trainingCounter<self.learningRate.count ? self.trainingCounter: self.learningRate.count-1
                     ] : self.learningRate[0],
