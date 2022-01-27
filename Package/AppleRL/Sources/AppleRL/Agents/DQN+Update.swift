@@ -89,9 +89,6 @@ extension DeepQNetwork {
         // Begin using the saved updated model.
         loadUpdatedModel()
         
-        // reset the buffer only after the model trained for sure
-        buffer.reset()
-        
         let endTrainLogHandle = MXMetricManager.makeLogHandle(category: "Train")
         mxSignpost(
             .end,
@@ -119,7 +116,7 @@ extension DeepQNetwork {
             let trainLoss = context.metrics[.lossValue] as! Double
             defaultLogger.info("Epoch \(epochIndex) Loss \(trainLoss)")
             
-            Tester.readWeights(currentModel: context.model)
+//            Tester.readWeights(currentModel: context.model)
             
         default:
             defaultLogger.log("Unknown event")
