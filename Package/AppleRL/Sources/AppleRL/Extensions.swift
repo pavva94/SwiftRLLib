@@ -1,5 +1,5 @@
 //
-//  MLModelExt.swift
+//  Extensions.swift
 //  AppleRL
 //
 //  Created by Alessandro Pavesi on 12/11/21.
@@ -23,6 +23,10 @@ extension Double {
 extension CGFloat {
     var swf: Float { return Float(self) }
     var swd: Double { return Double(self) }
+}
+
+extension Collection {
+    func choose(_ n: Int) -> ArraySlice<Element> { shuffled().prefix(n) }
 }
 
 
