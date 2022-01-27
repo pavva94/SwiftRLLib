@@ -41,6 +41,8 @@ public struct ExperienceReplayBuffer {
     
     let defaults = UserDefaults.standard
     
+    var maxLength: Int = 512
+    
     /// Collection of the training drawings
     private var trainingData = [SarsaTupleGeneric]()
     
@@ -49,7 +51,8 @@ public struct ExperienceReplayBuffer {
     /// The last state
     var lastData: SarsaTupleGeneric
     
-    init() {
+    init(_ maxBufferLength: Int = 512) {
+        self.maxLength = maxBufferLength
         do {
             let db = loadDatabase(bufferPath)
             for data in db {
@@ -72,45 +75,11 @@ public struct ExperienceReplayBuffer {
         return trainingData.count
     }
     
-    
-    var batchProvider: [SarsaTupleGeneric] { return trainingData }
-    
-   /// Creates a batch provider of training data given the contents of `trainingData`.
-   /// - Tag: DrawingBatchProvider
-//    var featureBatchProvider: MLBatchProvider {
-//        var featureProviders = [MLFeatureProvider]()
-//
-//        let inputName = "data"
-//        let outputName = "actions"
-//                
-//        for data in trainingData {
-//            let inputValue = data.featureValue
-//            let outputValue = MLFeatureValue(int64: 0) // TODO the output value needs to be modified
-//            
-//            let dataPointFeatures: [String: MLFeatureValue] = [inputName: inputValue,
-//                                                               outputName: outputValue]
-//            
-//            if let provider = try? MLDictionaryFeatureProvider(dictionary: dataPointFeatures) {
-//                featureProviders.append(provider)
-//            }
-//        }
-//        
-//       return MLArrayBatchProvider(array: featureProviders)
-//    }
-
-    
-    /// Override last data, this means the tuple si done so save it also in the database
-//    mutating func overrideLastOne(tuple: SarsaTupleGeneric) -> Void {
-//        trainingData[trainingData.count-1] = tuple
-//        var idBufferCounter: Int = self.defaults.integer(forKey: "idBufferCounter")
-//        let temp = DatabaseData(id: idBufferCounter, state: convertToArray(from: tuple.getState()), action: tuple.getAction(), reward: tuple.getReward(), nextState: convertToArray(from: tuple.getNextState()))
-//        
-//        idBufferCounter += 1
-//        self.defaults.set(idBufferCounter, forKey: "idBufferCounter")
-//        addDataToDatabase(temp, bufferPath)
-//        
-//        self.lastState = tuple
-//    }
+    /// Creates a batch provider of training data given the contents of `trainingData`.
+    mutating func batchProvider(_ batchSize: Int = 32) -> [SarsaTupleGeneric] {
+        return Array(trainingData.choose(batchSize))
+        
+    }
     
     mutating func setLastData(_ data: SarsaTupleGeneric) {
         if isEmpty {
@@ -121,6 +90,11 @@ public struct ExperienceReplayBuffer {
            
     /// Adds a drawing to the private array, but only if the type requires more.
     mutating func addData(_ data: SarsaTupleGeneric) {
+        if trainingData.count >= self.maxLength {
+            trainingData = Array(trainingData.suffix(from: 1))
+            dataManager.removeFirstDataFromDatabase(bufferPath)
+        }
+        
         trainingData.append(data)
         var idBufferCounter: Int = self.defaults.integer(forKey: "idBufferCounter")
         var temp = DatabaseData(id: idBufferCounter, state: convertToArray(from: data.getState()), action: data.getAction(), reward: data.getReward(), nextState: convertToArray(from: data.getNextState()))
