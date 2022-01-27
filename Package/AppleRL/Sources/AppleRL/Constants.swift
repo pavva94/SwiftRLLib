@@ -34,6 +34,7 @@ public enum ModelParameters {
     case epsilon
     case gamma
     case epochs
+    case batchSize
     case learning_rate
     case timeIntervalBackgroundMode
     case timeIntervalTrainingBackgroundMode

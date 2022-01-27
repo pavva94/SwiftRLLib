@@ -36,13 +36,13 @@ open class DeepQNetwork {
     var epochs: Int = 10
     var epsilon: Double = 0.3
     var gamma: Double = 0.9
-    var miniBatchSize: Int = 8
+    var miniBatchSize: Int = 32
     
     var countTargetUpdate: Int = 0
     let epochsAlignTarget: Int = 10
     
-    /// A Boolean that indicates whether the instance has all the required data: 2 times the minibatch size
-    var isReadyForTraining: Bool { buffer.count >= miniBatchSize * epochs }
+    /// A Boolean that indicates whether the instance has all the required data:  the minibatch size
+    var isReadyForTraining: Bool { buffer.count >= miniBatchSize }
     
     /// The updated Model model.
     var updatedModel: AppleRLModel?
@@ -67,6 +67,7 @@ open class DeepQNetwork {
     required public init(env: Env, parameters: Dictionary<ModelParameters, Any>) {
         environment = env
         
+        self.miniBatchSize = parameters.keys.contains(.batchSize) ? (parameters[.batchSize] as? Int)! : self.miniBatchSize
         self.buffer = ExperienceReplayBuffer()
         self.epsilon = parameters.keys.contains(.epsilon) ? (parameters[.epsilon] as? Double)! : self.epsilon
         self.gamma = parameters.keys.contains(.gamma) ? (parameters[.gamma] as? Double)! : self.gamma
