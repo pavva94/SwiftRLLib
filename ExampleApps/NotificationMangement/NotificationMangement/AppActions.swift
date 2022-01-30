@@ -55,8 +55,18 @@ open class ReadNotificationSensor: ObservableData {
         if self.readedCounter.count < 5 {
             self.readedCounter.append(1)
         } else {
-            self.readedCounter.remove(at: self.readedCounter.count-1)
+            self.readedCounter.remove(at: 0)
             self.readedCounter.append(1)
+        }
+    }
+    public func addNotRead() {
+        print("ADD READ")
+        self.lastReadedCounter = self.readedCounter
+        if self.readedCounter.count < 5 {
+            self.readedCounter.append(0)
+        } else {
+            self.readedCounter.remove(at: 0)
+            self.readedCounter.append(0)
         }
     }
 }
@@ -72,42 +82,62 @@ open class Send: Action {
     
     public func exec() {
         print("SENDIT")
-        let content = UNMutableNotificationContent()
-        content.title = "Do you want a notification?"
-        content.subtitle = "I know you want me"
-        content.sound = UNNotificationSound.default
-        content.categoryIdentifier = "Notification.Category.Read"
+        if !useSimulator {
+            let content = UNMutableNotificationContent()
+            content.title = "Do you want a notification?"
+            content.subtitle = "I know you want me"
+            content.sound = UNNotificationSound.default
+            content.categoryIdentifier = "Notification.Category.Read"
+            
+            // Define the custom actions.
+            let acceptAction = UNNotificationAction(identifier: "Read",
+                  title: "Read",
+                  options: [])
+    //        let declineAction = UNNotificationAction(identifier: "DECLINE_ACTION",
+    //              title: "Decline",
+    //              options: [])
+            // Define the notification type
+            let notificationInviteCategory =
+                  UNNotificationCategory(identifier: "Notification.Category.Read",
+                  actions: [acceptAction, ],
+                  intentIdentifiers: [],
+                  options: .customDismissAction
+            )
+            
+            print("1")
+            // Register the notification type.
+            UNUserNotificationCenter.current().setNotificationCategories([notificationInviteCategory])
+
+            // show this notification five seconds from now
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+
+            // choose a random identifier
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+
+            // add our notification request
+            // Register the notification type.
+            UNUserNotificationCenter.current().add(request) { (error) in
+                if let error = error {
+                    print("Unable to Add Notification Request (\(error), \(error.localizedDescription))")
+                }
+            }
         
-        // Define the custom actions.
-        let acceptAction = UNNotificationAction(identifier: "Read",
-              title: "Read",
-              options: [])
-//        let declineAction = UNNotificationAction(identifier: "DECLINE_ACTION",
-//              title: "Decline",
-//              options: [])
-        // Define the notification type
-        let notificationInviteCategory =
-              UNNotificationCategory(identifier: "Notification.Category.Read",
-              actions: [acceptAction, ],
-              intentIdentifiers: [],
-              options: .customDismissAction
-        )
         
-        print("1")
-        // Register the notification type.
-        UNUserNotificationCenter.current().setNotificationCategories([notificationInviteCategory])
-
-        // show this notification five seconds from now
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-
-        // choose a random identifier
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-
-        // add our notification request
-        // Register the notification type.
-        UNUserNotificationCenter.current().add(request) { (error) in
-            if let error = error {
-                print("Unable to Add Notification Request (\(error), \(error.localizedDescription))")
+        
+        } else {
+            print("Sara readed??")
+            let state = environment.read()
+            if [7.0, 8.0, 12.0, 13.0, 18.0, 19.0, 20.0].contains(state[2])  {
+                if Double.random(in: 0...1) < 0.95 {
+                    print("READED")
+                    newSensor.addRead()
+                } else {
+                    newSensor.addNotRead()
+                }
+            } else if Double.random(in: 0...1) < 0.25{
+                newSensor.addRead()
+            } else {
+                newSensor.addNotRead()
             }
         }
     }
@@ -152,7 +182,7 @@ open class ReadSendRatio: Reward {
         
         
 //        reward = nextReadNotification > readNotification ? +1 : 0
-        
+       
         // if the agent send the notification, reward him with +1 if the user read the notification or -1 otherwise
         if action == 0 {
             reward = newSensor.readReadCounter() > newSensor.readLastReadCounter() ? +1 : -1
