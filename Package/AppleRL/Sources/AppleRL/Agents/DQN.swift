@@ -37,6 +37,7 @@ open class DeepQNetwork {
     var epsilon: Double = 0.3
     var gamma: Double = 0.9
     var miniBatchSize: Int = 32
+    var trainingSetSize: Int = 256
     
     var countTargetUpdate: Int = 0
     let epochsAlignTarget: Int = 10
@@ -67,12 +68,13 @@ open class DeepQNetwork {
     required public init(env: Env, parameters: Dictionary<ModelParameters, Any>) {
         environment = env
         
-        self.miniBatchSize = parameters.keys.contains(.batchSize) ? (parameters[.batchSize] as? Int)! : self.miniBatchSize
-        self.buffer = ExperienceReplayBuffer()
+        self.trainingSetSize = parameters.keys.contains(.trainingSetSize) ? (parameters[.trainingSetSize] as? Int)! : self.trainingSetSize
+        self.buffer = ExperienceReplayBuffer(self.trainingSetSize)
         self.epsilon = parameters.keys.contains(.epsilon) ? (parameters[.epsilon] as? Double)! : self.epsilon
         self.gamma = parameters.keys.contains(.gamma) ? (parameters[.gamma] as? Double)! : self.gamma
         self.epochs = parameters.keys.contains(.epochs) ? (parameters[.epochs] as? Int)! : self.epochs
         self.trainingCounter = self.defaults.integer(forKey: "trainingCounter")
+        self.miniBatchSize = parameters.keys.contains(.batchSize) ? (parameters[.batchSize] as? Int)! : self.miniBatchSize
         
         
         if type(of: parameters[.learning_rate]) == Double.self {

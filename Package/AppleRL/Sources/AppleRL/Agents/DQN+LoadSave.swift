@@ -34,7 +34,7 @@ extension DeepQNetwork {
             defaultLogger.error("Could not save updated model to the file system: \(error.localizedDescription)")
             return
         }
-//        Tester.checkCorrectPrediction(environment: environment, urlModel: self.getModelURL())
+        Tester.checkCorrectPrediction(environment: environment, urlModel: self.getModelURL())
         defaultLogger.log("Saved Model")
     }
 

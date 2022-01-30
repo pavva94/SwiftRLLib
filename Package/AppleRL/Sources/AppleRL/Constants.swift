@@ -35,9 +35,11 @@ public enum ModelParameters {
     case gamma
     case epochs
     case batchSize
+    case trainingSetSize
     case learning_rate
     case timeIntervalBackgroundMode
     case timeIntervalTrainingBackgroundMode
+    case testPerformance
 }
 
 public enum ObserveMode {

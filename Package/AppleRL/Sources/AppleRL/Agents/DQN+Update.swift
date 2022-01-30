@@ -15,7 +15,7 @@ extension DeepQNetwork {
     /// It's created using the buffer data,
     private func createUpdateFeatures() -> MLArrayBatchProvider {
         // Get the SarsaTuples
-        let data = buffer.batchProvider(self.miniBatchSize)
+        let data = buffer.batchProvider()
         // Create the variable for the Target
         var target: MLFeatureValue
         // Array of MLFeatureProvider that will compose the MLArrayBatchProvider

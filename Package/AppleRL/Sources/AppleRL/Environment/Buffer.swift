@@ -42,6 +42,7 @@ public struct ExperienceReplayBuffer {
     let defaults = UserDefaults.standard
     
     var maxLength: Int = 512
+    var batchSize: Int = 256
     
     /// Collection of the training drawings
     private var trainingData = [SarsaTupleGeneric]()
@@ -51,8 +52,10 @@ public struct ExperienceReplayBuffer {
     /// The last state
     var lastData: SarsaTupleGeneric
     
-    init(_ maxBufferLength: Int = 512) {
+    init(_ batchSize: Int = 256, _ maxBufferLength: Int = 512) {
         self.maxLength = maxBufferLength
+        self.batchSize = batchSize
+        
         do {
             let db = dataManager.loadDatabase(bufferPath)
             for data in db {
@@ -76,8 +79,8 @@ public struct ExperienceReplayBuffer {
     }
     
     /// Creates a batch provider of training data given the contents of `trainingData`.
-    mutating func batchProvider(_ batchSize: Int = 32) -> [SarsaTupleGeneric] {
-        return Array(trainingData.choose(batchSize))
+    mutating func batchProvider() -> [SarsaTupleGeneric] {
+        return Array(trainingData.choose(self.batchSize))
         
     }
     

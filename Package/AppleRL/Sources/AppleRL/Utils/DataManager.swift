@@ -120,6 +120,7 @@ public class DataManager {
                         let destURL = documentsURL.appendingPathComponent(fileName)
                         do {
                             try FileManager.default.copyItem(at: sourceURL, to: destURL)
+                            defaultLogger.log("\(fileName) copied.")
                             
                         } catch {
                             defaultLogger.error("Error during the copy of files \(error.localizedDescription)")
