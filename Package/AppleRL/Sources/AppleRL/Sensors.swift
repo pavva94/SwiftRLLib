@@ -7,28 +7,27 @@
 
 import Foundation
 import UIKit
-import SensorKit
 import CoreMotion
 import AVKit
 import CoreLocation
 import Combine
 
 
-open class AmbientLightSensor: ObservableData {
-    init() {
-        super.init(name: "ambientLight", stateSize: 1)
-    }
-    
-    open override func read() -> [Double] {
-        let a = SRAmbientLightSample()
-        let l = a.lux.value
-        return [l]
-    }
-    
-    open override func preprocessing(value: Any) -> [Double] {
-        return [(value as! CGFloat).swd]
-    }
-}
+//open class AmbientLightSensor: ObservableData {
+//    init() {
+//        super.init(name: "ambientLight", stateSize: 1)
+//    }
+//    
+//    open override func read() -> [Double] {
+//        let a = SRAmbientLightSample()
+//        let l = a.lux.value
+//        return [l]
+//    }
+//    
+//    open override func preprocessing(value: Any) -> [Double] {
+//        return [(value as! CGFloat).swd]
+//    }
+//}
 
 
 open class AltitudeSensor: ObservableData {

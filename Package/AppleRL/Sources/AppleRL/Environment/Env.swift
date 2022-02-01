@@ -80,9 +80,9 @@ open class Env {
             case "brightness":
                 sens = BrightnessSensor()
                
-            case "ambientLight":
-                sens = AmbientLightSensor()
-               
+//            case "ambientLight":
+//                sens = AmbientLightSensor()
+//               
             case "clock":
                 sens = ClockSensor()
                 

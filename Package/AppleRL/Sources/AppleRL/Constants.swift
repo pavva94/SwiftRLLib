@@ -49,4 +49,4 @@ public enum ObserveMode {
 }
 
 /// Boolean indicating the use or not of the Simulator
-public let useSimulator = true
+public let useSimulator = false
