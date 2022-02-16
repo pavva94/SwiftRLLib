@@ -20,6 +20,8 @@ open class DeepQNetwork {
     let outputName = modelOutputName
     
     let environment: Env
+    let policy: Policy
+    
     let fileManager = FileManager.default
     let defaults = UserDefaults.standard
     
@@ -34,7 +36,7 @@ open class DeepQNetwork {
     var timeIntervalBackgroundMode: Int
     var timeIntervalTrainingBackgroundMode: Int
     var epochs: Int = 10
-    var epsilon: Double = 0.3
+//    var epsilon: Double = 0.3
     var gamma: Double = 0.9
     var miniBatchSize: Int = 32
     var trainingSetSize: Int = 256
@@ -65,12 +67,13 @@ open class DeepQNetwork {
     var updatedTargetModelURL: URL = appDirectory.appendingPathComponent(personalizedTargetModelFileName)
     
     /// Initialize every variables
-    required public init(env: Env, parameters: Dictionary<ModelParameters, Any>) {
-        environment = env
+    required public init(env: Env, policy: Policy, parameters: Dictionary<ModelParameters, Any>) {
+        self.environment = env
+        self.policy = policy
         
         self.trainingSetSize = parameters.keys.contains(.trainingSetSize) ? (parameters[.trainingSetSize] as? Int)! : self.trainingSetSize
         self.buffer = ExperienceReplayBuffer(self.trainingSetSize)
-        self.epsilon = parameters.keys.contains(.epsilon) ? (parameters[.epsilon] as? Double)! : self.epsilon
+//        self.epsilon = parameters.keys.contains(.epsilon) ? (parameters[.epsilon] as? Double)! : self.epsilon
         self.gamma = parameters.keys.contains(.gamma) ? (parameters[.gamma] as? Double)! : self.gamma
         self.epochs = parameters.keys.contains(.epochs) ? (parameters[.epochs] as? Int)! : self.epochs
         self.trainingCounter = self.defaults.integer(forKey: "trainingCounter")
@@ -128,7 +131,13 @@ open class DeepQNetwork {
     
     /// open function to make a choice about what action do
     open func act(state: MLMultiArray, greedy: Bool = false) -> Int {
-        return epsilonGreedy(state: state)
+        do {
+            let model = try AppleRLModel(contentsOf: updatedModelURL).model
+            return self.policy.exec(model: model, state: state)
+        } catch {
+            defaultLogger.error("\(error.localizedDescription)")
+            fatalError()
+        }
     }
     
     open func save() {

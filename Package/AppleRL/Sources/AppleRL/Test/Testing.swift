@@ -53,30 +53,37 @@ open class Testing {
         // checkCorrectPrediction
         defaultLogger.log("-----checkCorrectPrediction-----")
         do {
-            let newModel = try AppleRLModel(contentsOf: urlModel)
-            print("Same State: [14.0, 11.0, 0.0, 0.6], Correct action: 2") //20% battery -> Decrese = 2, nextState [14.0, 11.0, 0.0, 0.4] = battery -2 - 0.4*10
-            var stateFixed = MLFeatureValue(multiArray:convertToMLMultiArrayFloat(from: [14.0, 11.0, 0.0, 0.6]))
-            print("Optimal Reward: \(environment.reward(state: [14.0, 11.0, 0.0, 0.6], action: 2, nextState: [14.0, 11.0, 0.0, 0.4]))")
-            var actionChoosen = newModel.predictLabelFor(stateFixed)
-            print("Action choosen: \(String(describing: actionChoosen))")
-            var actionListChoosen = newModel.predictFor(stateFixed)
-            print("Action List choosen: \(String(describing: actionListChoosen!.actions))")
-            
-            print("Same State: [45.0, 18.0, 0.0, 0.6], Correct action: 0 o 1") // 45% battery, 18: netflix -> Increase = 0 o Leave 1 nextState [45.0, 18.0, 0.0, 0.6] o [45.0, 18.0, 0.0, 0.8] = battery -2 - 0.6o0.8 *10
-            stateFixed = MLFeatureValue(multiArray:convertToMLMultiArrayFloat(from: [45.0, 18.0, 0.0, 0.6]))
-            print("Reward, action 0: \(environment.reward(state:[45.0, 18.0, 0.0, 0.6], action: 0, nextState: [45.0, 18.0, 0.0, 0.6]))")
-            print("Reward, action 1: \(environment.reward(state:[45.0, 18.0, 0.0, 0.6], action: 1, nextState: [45.0, 18.0, 0.0, 0.8]))")
-                                                                                     
-            actionChoosen = newModel.predictLabelFor(stateFixed)
-            actionListChoosen = newModel.predictFor(stateFixed)
-            print("Action List choosen: \(String(describing: actionListChoosen!.actions))")
-            print("Action choosen: \(String(describing: actionChoosen))")
+//            let newModel = try AppleRLModel(contentsOf: urlModel)
+//            print("Same State: [14.0, 11.0, 0.0, 0.6], Correct action: 2") //20% battery -> Decrese = 2, nextState [14.0, 11.0, 0.0, 0.4] = battery -2 - 0.4*10
+//            var stateFixed = MLFeatureValue(multiArray:convertToMLMultiArrayFloat(from: [14.0, 11.0, 0.0, 0.6]))
+//            print("Optimal Reward: \(environment.reward(state: [14.0, 11.0, 0.0, 0.6], action: 2, nextState: [14.0, 11.0, 0.0, 0.4]))")
+//            var actionChoosen = newModel.predictLabelFor(stateFixed)
+//            print("Action choosen: \(String(describing: actionChoosen))")
+//            var actionListChoosen = newModel.predictFor(stateFixed)
+//            print("Action List choosen: \(String(describing: actionListChoosen!.actions))")
+//
+//            print("Same State: [45.0, 18.0, 0.0, 0.6], Correct action: 0 o 1") // 45% battery, 18: netflix -> Increase = 0 o Leave 1 nextState [45.0, 18.0, 0.0, 0.6] o [45.0, 18.0, 0.0, 0.8] = battery -2 - 0.6o0.8 *10
+//            stateFixed = MLFeatureValue(multiArray:convertToMLMultiArrayFloat(from: [45.0, 18.0, 0.0, 0.6]))
+//            print("Reward, action 0: \(environment.reward(state:[45.0, 18.0, 0.0, 0.6], action: 0, nextState: [45.0, 18.0, 0.0, 0.6]))")
+//            print("Reward, action 1: \(environment.reward(state:[45.0, 18.0, 0.0, 0.6], action: 1, nextState: [45.0, 18.0, 0.0, 0.8]))")
+//
+//            actionChoosen = newModel.predictLabelFor(stateFixed)
+//            actionListChoosen = newModel.predictFor(stateFixed)
+//            print("Action List choosen: \(String(describing: actionListChoosen!.actions))")
+//            print("Action choosen: \(String(describing: actionChoosen))")
+//            [8.0, 12.0, 13.0, 18.0, 19.0, 20.0]
+           let newModel = try AppleRLModel(contentsOf: urlModel)
+           print("Same State: [0.0, 38.0, 20.0, 30.0, 0.0, 0.0], Correct action: 0 -> SENDIT")
+           var stateFixed = MLFeatureValue(multiArray:convertToMLMultiArrayFloat(from: [0.0, 38.0, 20.0, 30.0, 0.0, 0.0]))
+           print("Optimal Reward: \(environment.reward(state: [0.0, 38.0, 20.0, 30.0, 0.0, 0.0], action: 0, nextState: [0.0, 38.0, 20.0, 30.0, 0.0, 0.1]))")
+           var actionChoosen = newModel.predictLabelFor(stateFixed)
+           print("Action choosen: \(String(describing: actionChoosen))")
+           var actionListChoosen = newModel.predictFor(stateFixed)
+           print("Action List choosen: \(String(describing: actionListChoosen!.actions))")
         } catch {
             defaultLogger.error("Error during test: \(error.localizedDescription)")
             return
-        }
-        
-       
+        }      
     }
     
     
