@@ -33,8 +33,8 @@ open class DeepQNetwork {
     var learningRate: [Double]
     var learningRateDecayMode: Bool
     var trainingCounter: Int
-    var timeIntervalBackgroundMode: Int
-    var timeIntervalTrainingBackgroundMode: Int
+    var secondsObserveProcess: Int
+    var secondsTrainProcess: Int
     var epochs: Int = 10
 //    var epsilon: Double = 0.3
     var gamma: Double = 0.9
@@ -92,16 +92,16 @@ open class DeepQNetwork {
             self.learningRateDecayMode = false
         }
         
-        if parameters.keys.contains(.timeIntervalTrainingBackgroundMode) {
-            self.timeIntervalTrainingBackgroundMode = parameters[.timeIntervalTrainingBackgroundMode] as! Int
+        if parameters.keys.contains(.secondsTrainProcess) {
+            self.secondsTrainProcess = parameters[.secondsTrainProcess] as! Int
         } else {
-            self.timeIntervalTrainingBackgroundMode = 2*60*60 // 2 ore
+            self.secondsTrainProcess = 2*60*60 // 2 ore
         }
         
-        if parameters.keys.contains(.timeIntervalBackgroundMode) {
-            self.timeIntervalBackgroundMode = parameters[.timeIntervalBackgroundMode] as! Int
+        if parameters.keys.contains(.secondsObserveProcess) {
+            self.secondsObserveProcess = parameters[.secondsObserveProcess] as! Int
         } else {
-            self.timeIntervalBackgroundMode = 10*60 // 10 minuti
+            self.secondsObserveProcess = 10*60 // 10 minuti
         }
         defaultLogger.log("DQN Initialized")
         loadUpdatedModel()
@@ -154,15 +154,15 @@ open class DeepQNetwork {
     
     open func observe(_ mode: ObserveMode, repeat: Bool = true) {
         if mode == ObserveMode.timer {
-            self.startListen(interval: self.timeIntervalBackgroundMode)
-            self.startTrain(interval: self.timeIntervalTrainingBackgroundMode)
+            self.startListen(interval: self.secondsObserveProcess)
+            self.startTrain(interval: self.secondsTrainProcess)
         } else if mode == ObserveMode.background {
             BGTaskScheduler.shared.cancelAllTaskRequests()
             self.scheduleBackgroundFetch()
             self.scheduleBackgroundTraining()
         } else if mode == ObserveMode.both {
-            self.startListen(interval: self.timeIntervalBackgroundMode)
-            self.startTrain(interval: self.timeIntervalTrainingBackgroundMode)
+            self.startListen(interval: self.secondsObserveProcess)
+            self.startTrain(interval: self.secondsTrainProcess)
             BGTaskScheduler.shared.cancelAllTaskRequests()
             self.scheduleBackgroundFetch()
             self.scheduleBackgroundTraining()
