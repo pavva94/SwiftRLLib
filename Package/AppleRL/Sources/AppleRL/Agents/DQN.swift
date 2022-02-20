@@ -20,6 +20,8 @@ open class DeepQNetwork {
     let outputName = modelOutputName
     
     let environment: Env
+    let policy: Policy
+    
     let fileManager = FileManager.default
     let defaults = UserDefaults.standard
     
@@ -31,10 +33,10 @@ open class DeepQNetwork {
     var learningRate: [Double]
     var learningRateDecayMode: Bool
     var trainingCounter: Int
-    var timeIntervalBackgroundMode: Int
-    var timeIntervalTrainingBackgroundMode: Int
+    var secondsObserveProcess: Int
+    var secondsTrainProcess: Int
     var epochs: Int = 10
-    var epsilon: Double = 0.3
+//    var epsilon: Double = 0.3
     var gamma: Double = 0.9
     var miniBatchSize: Int = 32
     var trainingSetSize: Int = 256
@@ -43,7 +45,7 @@ open class DeepQNetwork {
     let epochsAlignTarget: Int = 10
     
     /// A Boolean that indicates whether the instance has all the required data:  the minibatch size
-    var isReadyForTraining: Bool { buffer.count >= miniBatchSize }
+    var isReadyForTraining: Bool { buffer.count >= trainingSetSize }
     
     /// The updated Model model.
     var updatedModel: AppleRLModel?
@@ -65,12 +67,13 @@ open class DeepQNetwork {
     var updatedTargetModelURL: URL = appDirectory.appendingPathComponent(personalizedTargetModelFileName)
     
     /// Initialize every variables
-    required public init(env: Env, parameters: Dictionary<ModelParameters, Any>) {
-        environment = env
+    required public init(env: Env, policy: Policy, parameters: Dictionary<ModelParameters, Any>) {
+        self.environment = env
+        self.policy = policy
         
         self.trainingSetSize = parameters.keys.contains(.trainingSetSize) ? (parameters[.trainingSetSize] as? Int)! : self.trainingSetSize
         self.buffer = ExperienceReplayBuffer(self.trainingSetSize)
-        self.epsilon = parameters.keys.contains(.epsilon) ? (parameters[.epsilon] as? Double)! : self.epsilon
+//        self.epsilon = parameters.keys.contains(.epsilon) ? (parameters[.epsilon] as? Double)! : self.epsilon
         self.gamma = parameters.keys.contains(.gamma) ? (parameters[.gamma] as? Double)! : self.gamma
         self.epochs = parameters.keys.contains(.epochs) ? (parameters[.epochs] as? Int)! : self.epochs
         self.trainingCounter = self.defaults.integer(forKey: "trainingCounter")
@@ -89,16 +92,16 @@ open class DeepQNetwork {
             self.learningRateDecayMode = false
         }
         
-        if parameters.keys.contains(.timeIntervalTrainingBackgroundMode) {
-            self.timeIntervalTrainingBackgroundMode = parameters[.timeIntervalTrainingBackgroundMode] as! Int
+        if parameters.keys.contains(.secondsTrainProcess) {
+            self.secondsTrainProcess = parameters[.secondsTrainProcess] as! Int
         } else {
-            self.timeIntervalTrainingBackgroundMode = 2*60*60 // 2 ore
+            self.secondsTrainProcess = 2*60*60 // 2 ore
         }
         
-        if parameters.keys.contains(.timeIntervalBackgroundMode) {
-            self.timeIntervalBackgroundMode = parameters[.timeIntervalBackgroundMode] as! Int
+        if parameters.keys.contains(.secondsObserveProcess) {
+            self.secondsObserveProcess = parameters[.secondsObserveProcess] as! Int
         } else {
-            self.timeIntervalBackgroundMode = 10*60 // 10 minuti
+            self.secondsObserveProcess = 10*60 // 10 minuti
         }
         defaultLogger.log("DQN Initialized")
         loadUpdatedModel()
@@ -128,7 +131,13 @@ open class DeepQNetwork {
     
     /// open function to make a choice about what action do
     open func act(state: MLMultiArray, greedy: Bool = false) -> Int {
-        return epsilonGreedy(state: state)
+        do {
+            let model = try AppleRLModel(contentsOf: updatedModelURL).model
+            return self.policy.exec(model: model, state: state)
+        } catch {
+            defaultLogger.error("\(error.localizedDescription)")
+            fatalError()
+        }
     }
     
     open func save() {
@@ -145,15 +154,15 @@ open class DeepQNetwork {
     
     open func observe(_ mode: ObserveMode, repeat: Bool = true) {
         if mode == ObserveMode.timer {
-            self.startListen(interval: self.timeIntervalBackgroundMode)
-            self.startTrain(interval: self.timeIntervalTrainingBackgroundMode)
+            self.startListen(interval: self.secondsObserveProcess)
+            self.startTrain(interval: self.secondsTrainProcess)
         } else if mode == ObserveMode.background {
             BGTaskScheduler.shared.cancelAllTaskRequests()
             self.scheduleBackgroundFetch()
             self.scheduleBackgroundTraining()
         } else if mode == ObserveMode.both {
-            self.startListen(interval: self.timeIntervalBackgroundMode)
-            self.startTrain(interval: self.timeIntervalTrainingBackgroundMode)
+            self.startListen(interval: self.secondsObserveProcess)
+            self.startTrain(interval: self.secondsTrainProcess)
             BGTaskScheduler.shared.cancelAllTaskRequests()
             self.scheduleBackgroundFetch()
             self.scheduleBackgroundTraining()

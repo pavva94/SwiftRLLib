@@ -37,8 +37,8 @@ public enum ModelParameters {
     case batchSize
     case trainingSetSize
     case learning_rate
-    case timeIntervalBackgroundMode
-    case timeIntervalTrainingBackgroundMode
+    case secondsObserveProcess
+    case secondsTrainProcess
     case testPerformance
 }
 
