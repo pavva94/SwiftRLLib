@@ -18,7 +18,7 @@ public protocol Policy {
     func exec(model: MLModel, state: MLMultiArray) -> Int
 }
 
-open class EpsilonGreedy: Policy {
+public class EpsilonGreedy: Policy {
     public var id: Int = 0
     
     public init() {}
@@ -29,10 +29,10 @@ open class EpsilonGreedy: Policy {
     let greedy: Bool = false
     
     public func exec(model: MLModel, state: MLMultiArray) -> Int {
-        
+        defaultLogger.log("\(self.description)")
         if !greedy && Double.random(in: 0..<1) < self.epsilon {
             // epsilon choice
-            let choice = Int.random(in: 0..<3)
+            let choice = Int.random(in: 0..<2)
             defaultLogger.log("Epsilon Choice \(choice)")
             return choice
         }
@@ -40,12 +40,12 @@ open class EpsilonGreedy: Policy {
             let stateValue = MLFeatureValue(multiArray: state)
             // predict value from model
             defaultLogger.log("State Value \(convertToArray(from: state))")
-            let stateTarget = try? model.prediction(from: stateValue as! MLFeatureProvider) // model.predictFor(stateValue)
+            let stateTarget = model.predictForAppleRL(stateValue) // try? model.prediction(from: ) //
             print(stateTarget)
             
 //            defaultLogger.log("Model Choice \(convertToArray(from: stateTarget!.actions).argmax()!)")
 //            defaultLogger.log("Model List \(convertToArray(from: stateTarget!.actions))")
-            return 0 //convertToArray(from: stateTarget!.actions).argmax()!
+            return convertToArray(from: stateTarget!.actions).argmax()!
         }
     }
 }
