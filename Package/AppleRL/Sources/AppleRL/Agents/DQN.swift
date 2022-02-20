@@ -45,7 +45,7 @@ open class DeepQNetwork {
     let epochsAlignTarget: Int = 10
     
     /// A Boolean that indicates whether the instance has all the required data:  the minibatch size
-    var isReadyForTraining: Bool { buffer.count >= miniBatchSize }
+    var isReadyForTraining: Bool { buffer.count >= trainingSetSize }
     
     /// The updated Model model.
     var updatedModel: AppleRLModel?
