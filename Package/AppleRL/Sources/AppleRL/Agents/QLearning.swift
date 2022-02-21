@@ -40,6 +40,9 @@ open class QLearning: Agent {
         self.trainingSetSize = parameters.keys.contains(.trainingSetSize) ? (parameters[.trainingSetSize] as? Int)! : self.trainingSetSize
         self.buffer = ExperienceReplayBuffer(self.trainingSetSize, bufferPath: self.bufferPath, databasePath: self.databasePath)
         
+        self.secondsTrainProcess = parameters.keys.contains(.secondsTrainProcess) ? (parameters[.secondsTrainProcess] as? Int)! : 2*60*60 // 2 ore
+        self.secondsObserveProcess = parameters.keys.contains(.secondsObserveProcess) ? (parameters[.secondsObserveProcess] as? Int)! : 10*60 // 10 minuti
+
         
         self.lr = (parameters[.learning_rate] as? Double)!
         self.gamma = (parameters[.gamma] as? Double)!
@@ -58,7 +61,7 @@ open class QLearning: Agent {
     }
 
     func store(state: Int, action: Int, reward: Double, nextState: Int) {
-        let tuple = SarsaTuple(state: convertToMLMultiArrayFloat(from:[state]), action: action, reward: reward, nextState: convertToMLMultiArrayFloat(from:[nextState]))
+        let tuple = SarsaTuple(state: convertToMLMultiArrayFloat(from:[Double(state)]), action: action, reward: reward, nextState: convertToMLMultiArrayFloat(from:[Double(nextState)]))
         buffer.addData(tuple)
     }
 
@@ -69,7 +72,7 @@ open class QLearning: Agent {
     func epsilonGreedy(state: Int) -> Int {
         if Double.random(in: 0..<1) < epsilon {
             // epsilon choice
-            return Int.random(in: 0..<self.environment.getActionSize()+1)
+            return Int.random(in: 0..<self.environment.getActionSize())
         }
         else {
             return qTable[state].argmax()!
@@ -82,6 +85,7 @@ open class QLearning: Agent {
     }
 
     open override func update() {
+        print("UPDATE")
 
         let data = buffer.batchProvider()
 
@@ -101,7 +105,7 @@ open class QLearning: Agent {
             defaultLogger.log("\(self.qTable)")
             i += 1
         }
-        buffer.reset()
+//        buffer.reset()
 
 
 //        let s:Int = tuple.state, a:Int = tuple.action, r:Int = tuple.reward
@@ -180,18 +184,21 @@ open class QLearning: Agent {
 //        //let next_state = result.1
 //        self.store(state: Int(state), action: action, reward: reward)
         
-        if self.buffer.count > 0 {
+        defaultLogger.log("Buffer count \(self.buffer.count)")
+        if !self.buffer.isEmpty {
             // then we are done with the current tuple we can take care of finish the last one
             let last_data = self.buffer.lastData
     //        let newNextState = convertToMLMultiArrayFloat(from:state)
             // retrieve the reward based on the old state, the current state and the action done in between
+            let lastState = convertToArray(from: last_data.getState())
+            let lastStateId = manageStates(lastState)
             
-            let lastStateId = manageStates(convertToArray(from: last_data.getState()))
             
-            
-            let reward = environment.reward(state:  [Double(lastStateId)], action: last_data.getAction(), nextState: [Double(stateId)])
+            let reward = environment.reward(state: lastState, action: last_data.getAction(), nextState: state)
             self.store(state: lastStateId, action: last_data.getAction(), reward: reward, nextState: stateId)
         }
+        let newState = convertToMLMultiArrayFloat(from: state)
+        self.buffer.setLastData(SarsaTuple(state: newState, action: action, reward: 0.0))
         
         // wait the overriding of last tuple to save current tuple
 //        self.buffer.addData(SarsaTuple(state: convertToMLMultiArrayFloat(from: [state]), action: action, reward: 0.0))
