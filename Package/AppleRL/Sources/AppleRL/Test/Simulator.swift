@@ -67,7 +67,7 @@ open class Simulator {
         return newBatteryValue
     }
     
-    func simulateClock() -> [Double]{
+    func simulateClock() -> [Double] {
         if self.simStep >= self.clockHoursValues.count {
             self.reset()
         }

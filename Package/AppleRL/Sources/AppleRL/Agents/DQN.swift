@@ -7,11 +7,12 @@
 
 import CoreML
 import BackgroundTasks
+import MetricKit
 
 
-open class DeepQNetwork {
+open class DeepQNetwork: Agent {
     /// Define the buffer
-    open var buffer: ExperienceReplayBuffer
+    open var buffer: ExperienceReplayBuffer = ExperienceReplayBuffer()
     /// Define the SarsaTuple type
     typealias SarsaTuple = SarsaTupleGeneric
     
@@ -19,24 +20,16 @@ open class DeepQNetwork {
     let inputName = modelInputName
     let outputName = modelOutputName
     
-    let environment: Env
-    let policy: Policy
-    
-    let fileManager = FileManager.default
-    let defaults = UserDefaults.standard
-    
-    /// Timers for ListenMode
-    var timerListen : Timer? = nil { willSet { timerListen?.invalidate() }}
-    var timerTrain : Timer? = nil { willSet { timerTrain?.invalidate() }}
+    var environment: Env
+    var policy: Policy
     
     /// Training parameters
-    var learningRate: [Double]
-    var learningRateDecayMode: Bool
-    var trainingCounter: Int
-    var secondsObserveProcess: Int
-    var secondsTrainProcess: Int
+    var learningRate: [Double] = [0.0001]
+    var learningRateDecayMode: Bool = false
+    var trainingCounter: Int = 0
+//    var secondsObserveProcess: Int
+//    var secondsTrainProcess: Int
     var epochs: Int = 10
-//    var epsilon: Double = 0.3
     var gamma: Double = 0.9
     var miniBatchSize: Int = 32
     var trainingSetSize: Int = 256
@@ -54,66 +47,85 @@ open class DeepQNetwork {
     var targetModel: AppleRLModel?
     
     /// The location of the app's Application Support directory for the user.
-    private static let appDirectory = FileManager.default.urls(for: .documentDirectory,
+    private let appDirectory = FileManager.default.urls(for: .documentDirectory,
                                                                in: .userDomainMask).first!
     
     /// The default Model model's file URL.
     let defaultModelURL = AppleRLModel.urlOfModelInThisBundle
     /// The permanent location of the updated Model model.
-    var updatedModelURL: URL = appDirectory.appendingPathComponent(personalizedModelFileName)
+    var updatedModelURL: URL = URL(fileURLWithPath: "")
     /// The temporary location of the updated Model model.
-    var tempUpdatedModelURL: URL = appDirectory.appendingPathComponent(tempModelFileName)
+    var tempUpdatedModelURL: URL = URL(fileURLWithPath: "")
     /// The permanent location of the updated Target Model model.
-    var updatedTargetModelURL: URL = appDirectory.appendingPathComponent(personalizedTargetModelFileName)
+    var updatedTargetModelURL: URL = URL(fileURLWithPath: "")
     
     /// Initialize every variables
     required public init(env: Env, policy: Policy, parameters: Dictionary<ModelParameters, Any>) {
         self.environment = env
         self.policy = policy
-        
+        super.init()
+    
+        // General parameter
+        self.modelID = parameters.keys.contains(.agentID) ? (parameters[.agentID] as? Int)! : self.modelID
+        self.bufferPath = parameters.keys.contains(.bufferPath) ? (parameters[.bufferPath] as? String)! : self.bufferPath + String(self.modelID) + dataManagerFileExtension
+        self.databasePath = parameters.keys.contains(.databasePath) ? (parameters[.databasePath] as? String)! : self.databasePath + String(self.modelID) + dataManagerFileExtension
         self.trainingSetSize = parameters.keys.contains(.trainingSetSize) ? (parameters[.trainingSetSize] as? Int)! : self.trainingSetSize
-        self.buffer = ExperienceReplayBuffer(self.trainingSetSize)
-//        self.epsilon = parameters.keys.contains(.epsilon) ? (parameters[.epsilon] as? Double)! : self.epsilon
+        self.buffer = ExperienceReplayBuffer(self.trainingSetSize, bufferPath: self.bufferPath, databasePath: self.databasePath)
+        
+        // Model parameter
         self.gamma = parameters.keys.contains(.gamma) ? (parameters[.gamma] as? Double)! : self.gamma
         self.epochs = parameters.keys.contains(.epochs) ? (parameters[.epochs] as? Int)! : self.epochs
         self.trainingCounter = self.defaults.integer(forKey: "trainingCounter")
         self.miniBatchSize = parameters.keys.contains(.batchSize) ? (parameters[.batchSize] as? Int)! : self.miniBatchSize
-        
-        
+        self.secondsTrainProcess = parameters.keys.contains(.secondsTrainProcess) ? (parameters[.secondsTrainProcess] as? Int)! : 2*60*60 // 2 ore
+        self.secondsObserveProcess = parameters.keys.contains(.secondsObserveProcess) ? (parameters[.secondsObserveProcess] as? Int)! : 10*60 // 10 minuti
+
+        // allows the possibility to use a variable learning rate
         if type(of: parameters[.learning_rate]) == Double.self {
             self.learningRate = [(parameters[.learning_rate] as? Double)!]
             self.learningRateDecayMode = false
         } else if type(of: parameters[.learning_rate]) == [Double].self {
             self.learningRate = (parameters[.learning_rate] as? [Double])!
             self.learningRateDecayMode = true
-        } else {
-            // default learning rate
-            self.learningRate = [0.0001]
-            self.learningRateDecayMode = false
         }
         
-        if parameters.keys.contains(.secondsTrainProcess) {
-            self.secondsTrainProcess = parameters[.secondsTrainProcess] as! Int
-        } else {
-            self.secondsTrainProcess = 2*60*60 // 2 ore
-        }
+        /// The permanent location of the updated Model model.
+        self.updatedModelURL = appDirectory.appendingPathComponent(personalizedModelFileName + String(self.modelID) + modelFileExtension)
+        /// The temporary location of the updated Model model.
+        self.tempUpdatedModelURL = appDirectory.appendingPathComponent(tempModelFileName + String(self.modelID) + modelFileExtension)
+        /// The permanent location of the updated Target Model model.
+        self.updatedTargetModelURL = appDirectory.appendingPathComponent(personalizedTargetModelFileName + String(self.modelID) + modelFileExtension)
         
-        if parameters.keys.contains(.secondsObserveProcess) {
-            self.secondsObserveProcess = parameters[.secondsObserveProcess] as! Int
-        } else {
-            self.secondsObserveProcess = 10*60 // 10 minuti
-        }
+        
+//        if parameters.keys.contains(.secondsTrainProcess) {
+//            self.secondsTrainProcess = parameters[.secondsTrainProcess] as! Int
+//        } else {
+//            self.secondsTrainProcess = 2*60*60
+//        }
+        
+//        if parameters.keys.contains(.secondsObserveProcess) {
+//            self.secondsObserveProcess = parameters[.secondsObserveProcess] as! Int
+//        } else {
+//            self.secondsObserveProcess = 10*60 // 10 minuti
+//        }
         defaultLogger.log("DQN Initialized")
         loadUpdatedModel()
             
     }
     
+    /// Return the default model URL, used at the early stages after the first installation
     open func getDeafultModelURL() -> URL {
         return defaultModelURL
     }
     
+    // Return the model URL, used after the early stages when the app has already trained the network
     open func getModelURL() -> URL {
         return updatedModelURL
+    }
+    
+    // Return the target model URL
+    open func getTargetModelURL() -> URL {
+        return updatedTargetModelURL
     }
     
     /// Create and store SarsaTuple into the buffer
@@ -121,13 +133,6 @@ open class DeepQNetwork {
         let tuple = SarsaTuple(state: state, action: action, reward: reward, nextState: nextState)
         buffer.addData(tuple)
     }
-    
-    /// Create and store SarsaTuple into the buffer and delete from database
-//    open func storeAndDelete(id: Int, state: MLMultiArray, action: Int, reward: Double, nextState: MLMultiArray) {
-//        let tuple = SarsaTuple(state: state, action: action, reward: reward, nextState: nextState)
-//        buffer.addData(tuple)
-////        deleteFromDataset(id: id, path: databasePath)
-//    }
     
     /// open function to make a choice about what action do
     open func act(state: MLMultiArray, greedy: Bool = false) -> Int {
@@ -140,38 +145,116 @@ open class DeepQNetwork {
         }
     }
     
-    open func save() {
+    open override func save() {
         defaultLogger.log("Save")
         fatalError("Save is only allowed after an Update")
     }
     
-    open func load() {
+    open override func load() {
         defaultLogger.log("Load")
         // Read from file
         self.loadUpdatedModel()
         
     }
     
-    open func observe(_ mode: ObserveMode, repeat: Bool = true) {
-        if mode == ObserveMode.timer {
-            self.startListen(interval: self.secondsObserveProcess)
-            self.startTrain(interval: self.secondsTrainProcess)
-        } else if mode == ObserveMode.background {
-            BGTaskScheduler.shared.cancelAllTaskRequests()
-            self.scheduleBackgroundFetch()
-            self.scheduleBackgroundTraining()
-        } else if mode == ObserveMode.both {
-            self.startListen(interval: self.secondsObserveProcess)
-            self.startTrain(interval: self.secondsTrainProcess)
-            BGTaskScheduler.shared.cancelAllTaskRequests()
-            self.scheduleBackgroundFetch()
-            self.scheduleBackgroundTraining()
-        } else {
-            print("Observe Mode Wrong")
+    @objc open override func listen() {
+        // read new state and do things like act
+        let state = environment.read()
+        
+        // check if state is terminal
+        if state == [] {
+            do {
+                defaultLogger.log("Terminal State reached")
+                let newState = try MLMultiArray([Double]())
+                let reward = environment.reward(state: convertToArray(from: self.buffer.lastData.getState()), action: self.buffer.lastData.getAction(), nextState: state)
+                self.store(state: self.buffer.lastData.getState(), action: self.buffer.lastData.getAction(), reward: reward, nextState: newState)
+                // wait the overriding of last tuple to save current tuple
+                self.buffer.isEmpty = true
+                return
+            } catch {
+                defaultLogger.error("Error saving terminal state: \(error.localizedDescription)")
+                return
+            }
+        }
+        
+        let newState = convertToMLMultiArrayFloat(from:state)
+        defaultLogger.log("Listen State: \(state)")
+        let action = self.act(state: newState)
+        environment.act(state: state, action: action)
+
+        
+        defaultLogger.log("Buffer count \(self.buffer.count)")
+        // then we are done with the current tuple we can take care of finish the last one
+        if !self.buffer.isEmpty {
+            defaultLogger.log("Listen Old State: \(self.buffer.lastData.getState())")
+            // retrieve the reward based on the old state, the current state and the action done in between
+            let reward = environment.reward(state: convertToArray(from: self.buffer.lastData.getState()), action: self.buffer.lastData.getAction(), nextState: state)
+            
+            self.store(state: self.buffer.lastData.getState(), action: self.buffer.lastData.getAction(), reward: reward, nextState: newState)
+        }
+        
+        // wait the overriding of last tuple to save current tuple
+        self.buffer.setLastData(SarsaTuple(state: newState, action: action, reward: 0.0))
+        
+        // add metrics
+        let listenLogHandle = MXMetricManager.makeLogHandle(category: "Listen")
+        mxSignpost(
+          .event,
+          log: listenLogHandle,
+          name: "Listen")
+    }
+    
+    // Batch update used by the Timer mode (that needs the function to be @objc)
+    /// Calls the updateModel on the AppleRLModel with data from createUpdateFeatures() and parameter from Env
+    @objc open override func update() {
+        
+        // Convert the drawings into a batch provider as the update input.
+        let trainingData = createUpdateFeatures()
+//        defaultLogger.log(trainingData.array)
+        
+        if trainingData.count == 0 {
+            defaultLogger.info("Training not started, caused by no data in buffer")
             return
         }
+        
+        // This is how we can change the hyperparameters before training. If you
+        // don't do this, the defaults as defined in the mlmodel file are used.
+        // Note that the values you choose here must match what is allowed in the
+        // mlmodel file, or else Core ML throws an exception.
+        let parameters: [MLParameterKey: Any] = [
+            .epochs: self.epochs,
+            .seed: 42,
+            .miniBatchSize: self.miniBatchSize,
+            .learningRate: self.learningRateDecayMode ? self.learningRate[
+                        self.trainingCounter<self.learningRate.count ? self.trainingCounter: self.learningRate.count-1
+                    ] : self.learningRate[0],
+            .shuffle: true,
+        ]
 
-        print("Observe Started")
+        let config = MLModelConfiguration()
+        config.computeUnits = .all
+        config.parameters = parameters
+        defaultLogger.log("currentModelURL \(self.updatedModelURL)")
+        
+        let trainLogHandle = MXMetricManager.makeLogHandle(category: "Train")
+        mxSignpost(
+            .begin,
+          log: trainLogHandle,
+          name: "Train")
+        
+        let startTrainLogHandle = MXMetricManager.makeLogHandle(category: "Train")
+        mxSignpost(
+            .begin,
+          log: startTrainLogHandle,
+          name: "Start Train")
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            AppleRLModel.updateModel(at: self.updatedModelURL,
+                                        with: trainingData,
+                                        parameters: config,
+                                        progressHandler: self.progressHandler,
+                                     completionHandler: self.updateModelCompletionHandler)
+        }
     }
     
 }

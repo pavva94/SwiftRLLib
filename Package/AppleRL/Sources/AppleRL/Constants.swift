@@ -13,16 +13,18 @@ public let backgroundTrainURL: String = "com.pavesialessandro.applerl.background
 public let backgroundListenURL: String = "com.pavesialessandro.applerl.backgroundListen"
 
 /// Names of models files: personalized
-let personalizedModelFileName: String = "personalized.mlmodelc"
+let personalizedModelFileName: String = "personalized"
 /// Names of models files: personalized temp
-let tempModelFileName: String = "personalized_temp.mlmodelc"
+let tempModelFileName: String = "personalized_temp"
 /// Names of models files: target personalized
-let personalizedTargetModelFileName: String = "personalizedTarget.mlmodelc"
+let personalizedTargetModelFileName: String = "personalizedTarget"
+let modelFileExtension: String = ".mlmodelc"
 
 /// Database used to check all the action done by the agent
-let databasePath: String = "database.json"
+let defaultDatabasePath: String = "database"
 /// Permanent store of the buffer
-let bufferPath: String = "buffer.json"
+let defaultBufferPath: String = "buffer"
+let dataManagerFileExtension: String = ".json"
 
 /// Name of model's inputs
 let modelInputName = "data"
@@ -31,6 +33,9 @@ let modelOutputName = "actions_true"
 
 /// Enum of Parameters accepted by the model in Configurations
 public enum ModelParameters {
+    case agentID
+    case bufferPath
+    case databasePath
     case epsilon
     case gamma
     case epochs

@@ -148,7 +148,7 @@ open class Env {
             var params: Dictionary<String, Double> = [:]
             
             for s in self.observableData {
-                params[s.name] = s.read()[0]
+                params[s.name] = s.read([])[0]
                 if s.name == "brightness" {
                     let val = BatterySimulator.simulateBrightness()
                     params[s.name] = val
@@ -163,12 +163,12 @@ open class Env {
             }
             
             for s in self.observableData {
-                print(s)
+//                print(s)
                 if s.name == "battery" {
                     data.append(batteryValue)
                     continue
                 }
-                let readedData = s.read()
+                let readedData = s.read() // TODO PASS THE STATE
                 for sd in readedData {
                     data.append(sd.customRound(.toNearestOrAwayFromZero))
                 }
@@ -176,9 +176,18 @@ open class Env {
             
             print("params \(params)")
         } else {
+            var dataTemp: [Double] = []
+            for s in self.observableData {
+//                print(s)
+                let readedData = s.read([]) 
+                for sd in readedData {
+                    dataTemp.append(sd.customRound(.toNearestOrAwayFromZero))
+                }
+            }
+            
             for s in self.observableData {
                 print(s)
-                let readedData = s.read()
+                let readedData = s.read(dataTemp)
                 for sd in readedData {
                     data.append(sd.customRound(.toNearestOrAwayFromZero))
                 }

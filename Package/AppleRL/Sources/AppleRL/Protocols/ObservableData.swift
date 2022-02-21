@@ -17,7 +17,7 @@ open class ObservableData {
         self.stateSize = stateSize
     }
 
-    open func read() -> [Double] {
+    open func read(_ state: [Double] = []) -> [Double] {
         fatalError("read() has not been implemented")
     }
     

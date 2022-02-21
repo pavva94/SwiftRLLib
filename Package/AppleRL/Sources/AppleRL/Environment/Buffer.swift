@@ -6,33 +6,6 @@
 //
 
 import Foundation
-
-extension Array where Element: Comparable {
-    func argmax() -> Index? {
-        return indices.max(by: { self[$0] < self[$1] })
-    }
-    
-    func argmin() -> Index? {
-        return indices.min(by: { self[$0] < self[$1] })
-    }
-}
-
-extension Array {
-    func argmax(by areInIncreasingOrder: (Element, Element) throws -> Bool) rethrows-> Index? {
-        return try indices.max { (i, j) throws -> Bool in
-            try areInIncreasingOrder(self[i], self[j])
-        }
-    }
-    
-    func argmin(by areInIncreasingOrder: (Element, Element) throws -> Bool) rethrows-> Index? {
-        return try indices.min { (i, j) throws -> Bool in
-            try areInIncreasingOrder(self[i], self[j])
-        }
-    }
-}
-
-// public typealias sarTuple = (state: Int, action: Int, reward: Int)
-
 import SwiftUI
 import CoreML
 
@@ -41,6 +14,8 @@ public struct ExperienceReplayBuffer {
     
     let defaults = UserDefaults.standard
     
+    var bufferPath: String = defaultBufferPath
+    var databasePath: String = defaultDatabasePath
     var maxLength: Int = 512
     var batchSize: Int = 256
     
@@ -52,7 +27,9 @@ public struct ExperienceReplayBuffer {
     /// The last state
     var lastData: SarsaTupleGeneric
     
-    init(_ batchSize: Int = 256, _ maxBufferLength: Int = 512) {
+    init(_ batchSize: Int = 256, _ maxBufferLength: Int = 512, bufferPath: String = defaultBufferPath, databasePath: String = defaultDatabasePath) {
+        self.bufferPath = bufferPath
+        self.databasePath = databasePath
         self.maxLength = maxBufferLength
         self.batchSize = batchSize
         
