@@ -72,7 +72,7 @@ open class Send: Action {
                 } else {
                     newSensor.addNotRead(clock: clock)
                 }
-            } else if Double.random(in: 0...1) < 0.25 {
+            } else if Double.random(in: 0...1) < 0.15 {
                 newSensor.addRead(clock: clock)
                 print("FORTUNE READ")
             } else {
@@ -103,6 +103,18 @@ open class ReadSendRatio: Reward {
     
     public var description: String = "ReadSendRatio"
     
+    var dailyReward = 0.0
+    var countDay = 0.0
+    private func countReward(rew: Double) {
+        if countDay > 48 {
+            countDay = 0
+            print("DailyReward \(dailyReward)")
+            dailyReward = rew
+        } else {
+            dailyReward += rew
+        }
+    }
+    
     public func exec(state: [Double], action: Int, nextState: [Double]) -> Double {
         var reward: Double = 0.0
         
@@ -128,6 +140,7 @@ open class ReadSendRatio: Reward {
         }
         
         print("Final reward: \(reward)")
+        countReward(rew: reward)
         
         return reward.customRound(.toNearestOrAwayFromZero)
     }

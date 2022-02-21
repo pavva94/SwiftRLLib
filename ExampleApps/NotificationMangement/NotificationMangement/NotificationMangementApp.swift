@@ -155,7 +155,7 @@ let paramsQL: Dictionary<ModelParameters, Any> = [
     .batchSize: 32,
     .learning_rate: Double(0.0001),
     .gamma: Double(0.9),
-    .secondsObserveProcess: 3,
+    .secondsObserveProcess: 30,
     .secondsTrainProcess: 10*60
 ]
 
