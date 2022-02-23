@@ -118,7 +118,7 @@ open class WFDeactivate: Action {
     }
 }
 
-open class BrightnessIncrese: Action {
+open class BrightnessIncrese0: Action {
     public var id: Int = 0
     
     public init() {}
@@ -130,7 +130,7 @@ open class BrightnessIncrese: Action {
         if !useSimulator {
             UIScreen.main.brightness = UIScreen.main.brightness + 0.2
         } else {
-            BatterySimulator.actOverBrightness(value: +0.2)
+            environment0.simulator.actOverBrightness(value: +0.2)
         }
     }
 }
@@ -147,7 +147,7 @@ open class BrightnessLeaveIt: Action {
     }
 }
 
-open class BrightnessDecrese: Action {
+open class BrightnessDecrese0: Action {
     public var id: Int = 2
     
     public init() {}
@@ -159,7 +159,142 @@ open class BrightnessDecrese: Action {
         if !useSimulator {
             UIScreen.main.brightness = UIScreen.main.brightness - 0.2
         } else {
-            BatterySimulator.actOverBrightness(value: -0.2)
+            environment0.simulator.actOverBrightness(value: -0.2)
+        }
+    }
+}
+
+
+// ---------------------------
+open class BrightnessIncrese1: Action {
+    public var id: Int = 0
+    
+    public init() {}
+    
+    public var description: String = "Increase Brightness +0.2"
+    
+    public func exec() {
+        print(description)
+        if !useSimulator {
+            UIScreen.main.brightness = UIScreen.main.brightness + 0.2
+        } else {
+            environment1.simulator.actOverBrightness(value: +0.2)
+        }
+    }
+}
+open class BrightnessDecrese1: Action {
+    public var id: Int = 2
+    
+    public init() {}
+    
+    public var description: String = "Decrese the Brightness -0.2"
+    
+    public func exec() {
+        print(description)
+        if !useSimulator {
+            UIScreen.main.brightness = UIScreen.main.brightness - 0.2
+        } else {
+            environment1.simulator.actOverBrightness(value: -0.2)
+        }
+    }
+}
+
+// ---------------------------
+open class BrightnessIncrese2: Action {
+    public var id: Int = 0
+    
+    public init() {}
+    
+    public var description: String = "Increase Brightness +0.2"
+    
+    public func exec() {
+        print(description)
+        if !useSimulator {
+            UIScreen.main.brightness = UIScreen.main.brightness + 0.2
+        } else {
+            environment2.simulator.actOverBrightness(value: +0.2)
+        }
+    }
+}
+open class BrightnessDecrese2: Action {
+    public var id: Int = 2
+    
+    public init() {}
+    
+    public var description: String = "Decrese the Brightness -0.2"
+    
+    public func exec() {
+        print(description)
+        if !useSimulator {
+            UIScreen.main.brightness = UIScreen.main.brightness - 0.2
+        } else {
+            environment2.simulator.actOverBrightness(value: -0.2)
+        }
+    }
+}
+// ---------------------------
+open class BrightnessIncrese3: Action {
+    public var id: Int = 0
+    
+    public init() {}
+    
+    public var description: String = "Increase Brightness +0.2"
+    
+    public func exec() {
+        print(description)
+        if !useSimulator {
+            UIScreen.main.brightness = UIScreen.main.brightness + 0.2
+        } else {
+            environment3.simulator.actOverBrightness(value: +0.2)
+        }
+    }
+}
+open class BrightnessDecrese3: Action {
+    public var id: Int = 2
+    
+    public init() {}
+    
+    public var description: String = "Decrese the Brightness -0.2"
+    
+    public func exec() {
+        print(description)
+        if !useSimulator {
+            UIScreen.main.brightness = UIScreen.main.brightness - 0.2
+        } else {
+            environment3.simulator.actOverBrightness(value: -0.2)
+        }
+    }
+}
+// ---------------------------
+open class BrightnessIncreseQL: Action {
+    public var id: Int = 0
+    
+    public init() {}
+    
+    public var description: String = "Increase Brightness +0.2"
+    
+    public func exec() {
+        print(description)
+        if !useSimulator {
+            UIScreen.main.brightness = UIScreen.main.brightness + 0.2
+        } else {
+            environmentQL.simulator.actOverBrightness(value: +0.2)
+        }
+    }
+}
+open class BrightnessDecreseQL: Action {
+    public var id: Int = 2
+    
+    public init() {}
+    
+    public var description: String = "Decrese the Brightness -0.2"
+    
+    public func exec() {
+        print(description)
+        if !useSimulator {
+            UIScreen.main.brightness = UIScreen.main.brightness - 0.2
+        } else {
+            environmentQL.simulator.actOverBrightness(value: -0.2)
         }
     }
 }

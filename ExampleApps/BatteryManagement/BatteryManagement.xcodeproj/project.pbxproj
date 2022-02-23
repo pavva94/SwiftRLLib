@@ -19,6 +19,7 @@
 		73793FE4276797FC00A79709 /* Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73793FE3276797FC00A79709 /* Row.swift */; };
 		73793FE62767983700A79709 /* Detail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73793FE52767983700A79709 /* Detail.swift */; };
 		73BFF542278C2D670025EA53 /* AppleRLModel.mlmodelc in Resources */ = {isa = PBXBuildFile; fileRef = 73BFF541278C2D670025EA53 /* AppleRLModel.mlmodelc */; };
+		73E6B2FC27C4E24D00E161A5 /* AppRewards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E6B2FB27C4E24D00E161A5 /* AppRewards.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		73793FE3276797FC00A79709 /* Row.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Row.swift; sourceTree = "<group>"; };
 		73793FE52767983700A79709 /* Detail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Detail.swift; sourceTree = "<group>"; };
 		73BFF541278C2D670025EA53 /* AppleRLModel.mlmodelc */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppleRLModel.mlmodelc; sourceTree = "<group>"; };
+		73E6B2FB27C4E24D00E161A5 /* AppRewards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRewards.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 				73793FB42767888000A79709 /* Assets.xcassets */,
 				73793FB62767888000A79709 /* Preview Content */,
 				73793FDD27678A0600A79709 /* AppActions.swift */,
+				73E6B2FB27C4E24D00E161A5 /* AppRewards.swift */,
 				73793FE3276797FC00A79709 /* Row.swift */,
 				73793FE52767983700A79709 /* Detail.swift */,
 			);
@@ -299,6 +302,7 @@
 			files = (
 				73793FE4276797FC00A79709 /* Row.swift in Sources */,
 				73793FE62767983700A79709 /* Detail.swift in Sources */,
+				73E6B2FC27C4E24D00E161A5 /* AppRewards.swift in Sources */,
 				73793FB32767887E00A79709 /* ContentView.swift in Sources */,
 				73793FB12767887E00A79709 /* BatteryManagementApp.swift in Sources */,
 				73793FDE27678A0600A79709 /* AppActions.swift in Sources */,
