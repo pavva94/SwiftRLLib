@@ -60,8 +60,8 @@ open class QLearning: Agent {
         
     }
 
-    func store(state: Int, action: Int, reward: Double, nextState: Int) {
-        let tuple = SarsaTuple(state: convertToMLMultiArrayFloat(from:[Double(state)]), action: action, reward: reward, nextState: convertToMLMultiArrayFloat(from:[Double(nextState)]))
+    func store(state: [Double], action: Int, reward: Double, nextState: [Double]) {
+        let tuple = SarsaTuple(state: convertToMLMultiArrayFloat(from: state), action: action, reward: reward, nextState: convertToMLMultiArrayFloat(from: nextState))
         buffer.addData(tuple)
     }
 
@@ -160,7 +160,11 @@ open class QLearning: Agent {
             
             
             stateId = self.maxStateId
-            self.qTable.append([Double.random(in: 0...1), Double.random(in: 0...1)])
+            var newValue: [Double] = []
+            for _ in 0..<self.environment.getActionSize() {
+                newValue.append(Double.random(in: 0...1))
+            }
+            self.qTable.append(newValue)
             
         }
 //        print(self.states.count)
@@ -173,6 +177,22 @@ open class QLearning: Agent {
     @objc open override func listen() {
         let state = environment.read()
         defaultLogger.log("\(state)")
+        
+        // check if state is terminal
+        if state == [] {
+            do {
+                defaultLogger.log("Terminal State reached")
+                let newState = [Double]()
+                let reward = self.environment.reward(state: convertToArray(from: self.buffer.lastData.getState()), action: self.buffer.lastData.getAction(), nextState: state)
+                self.store(state: convertToArray(from: self.buffer.lastData.getState()), action: self.buffer.lastData.getAction(), reward: reward, nextState: newState)
+                // wait the overriding of last tuple to save current tuple
+                self.buffer.isEmpty = true
+                return
+            } catch {
+                defaultLogger.error("Error saving terminal state: \(error.localizedDescription)")
+                return
+            }
+        }
         
         // use the state dictionary to map the state into a integer
         // transform the env state into a string and takes the integer from the dict
@@ -191,11 +211,11 @@ open class QLearning: Agent {
     //        let newNextState = convertToMLMultiArrayFloat(from:state)
             // retrieve the reward based on the old state, the current state and the action done in between
             let lastState = convertToArray(from: last_data.getState())
-            let lastStateId = manageStates(lastState)
+//            let lastStateId = manageStates(lastState)
             
             
             let reward = environment.reward(state: lastState, action: last_data.getAction(), nextState: state)
-            self.store(state: lastStateId, action: last_data.getAction(), reward: reward, nextState: stateId)
+            self.store(state: lastState, action: last_data.getAction(), reward: reward, nextState: state)
         }
         let newState = convertToMLMultiArrayFloat(from: state)
         self.buffer.setLastData(SarsaTuple(state: newState, action: action, reward: 0.0))
