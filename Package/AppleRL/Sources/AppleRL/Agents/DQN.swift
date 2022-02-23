@@ -159,14 +159,14 @@ open class DeepQNetwork: Agent {
     
     @objc open override func listen() {
         // read new state and do things like act
-        let state = environment.read()
+        let state = self.environment.read()
         
         // check if state is terminal
         if state == [] {
             do {
                 defaultLogger.log("Terminal State reached")
                 let newState = try MLMultiArray([Double]())
-                let reward = environment.reward(state: convertToArray(from: self.buffer.lastData.getState()), action: self.buffer.lastData.getAction(), nextState: state)
+                let reward = self.environment.reward(state: convertToArray(from: self.buffer.lastData.getState()), action: self.buffer.lastData.getAction(), nextState: state)
                 self.store(state: self.buffer.lastData.getState(), action: self.buffer.lastData.getAction(), reward: reward, nextState: newState)
                 // wait the overriding of last tuple to save current tuple
                 self.buffer.isEmpty = true
@@ -180,7 +180,7 @@ open class DeepQNetwork: Agent {
         let newState = convertToMLMultiArrayFloat(from:state)
         defaultLogger.log("Listen State: \(state)")
         let action = self.act(state: newState)
-        environment.act(state: state, action: action)
+        self.environment.act(state: state, action: action)
 
         
         defaultLogger.log("Buffer count \(self.buffer.count)")
@@ -188,7 +188,7 @@ open class DeepQNetwork: Agent {
         if !self.buffer.isEmpty {
             defaultLogger.log("Listen Old State: \(self.buffer.lastData.getState())")
             // retrieve the reward based on the old state, the current state and the action done in between
-            let reward = environment.reward(state: convertToArray(from: self.buffer.lastData.getState()), action: self.buffer.lastData.getAction(), nextState: state)
+            let reward = self.environment.reward(state: convertToArray(from: self.buffer.lastData.getState()), action: self.buffer.lastData.getAction(), nextState: state)
             
             self.store(state: self.buffer.lastData.getState(), action: self.buffer.lastData.getAction(), reward: reward, nextState: newState)
         }
