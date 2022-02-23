@@ -25,12 +25,22 @@ public class EpsilonGreedy: Policy {
     
     public var description: String = "EpsilonGreedy"
     
-    let epsilon: Double = 0.3
     let greedy: Bool = false
+    var step: Int = 0 // save this value?
+    
+    private func defineEpsilon() -> Double {
+        if self.step < 500 {
+            return 0.6
+        } else {
+            return 0.3
+        }
+    }
     
     public func exec(model: MLModel, state: MLMultiArray) -> Int {
         defaultLogger.log("\(self.description)")
-        if !greedy && Double.random(in: 0..<1) < self.epsilon {
+        let currentEpsilon = defineEpsilon()
+        self.step += 1
+        if !greedy && Double.random(in: 0..<1) < currentEpsilon {
             // epsilon choice
             let choice = Int.random(in: 0..<2)
             defaultLogger.log("Epsilon Choice \(choice)")
