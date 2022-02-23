@@ -35,6 +35,7 @@ open class Env {
     ]
     
     let defaults = UserDefaults.standard
+    public let simulator: Simulator
 
     private var observableData: [ObservableData]
     private var actions: [Action]
@@ -51,6 +52,7 @@ open class Env {
         self.observableData = []
         self.actions = actions
         self.rewards = rewards
+        self.simulator = Simulator()
         
         var observableDataList: [String] = []
         
@@ -141,34 +143,67 @@ open class Env {
         self.stateSize += s.stateSize
     }
     
+    private var oldBattery = 0.0
+    
     // Call the read() func for each ObsevrableData given
-    open func read() -> [Double] {
+    open func read(fromAction: Bool = false) -> [Double] {
         var data: [Double] = []
         if useSimulator {
+            // data for the simulator
             var params: Dictionary<String, Double> = [:]
+            // data for the sensors
+            var dataTemp: [Double] = []
             
+            // save as dictionary the observed values for the simulator
             for s in self.observableData {
-                params[s.name] = s.read([])[0]
+                let obsVal = s.read([])
+                
+                for sd in obsVal {
+                    dataTemp.append(sd.customRound(.toNearestOrAwayFromZero))
+                }
+                
                 if s.name == "brightness" {
-                    let val = BatterySimulator.simulateBrightness()
+                    let val = self.simulator.simulateBrightness()
                     params[s.name] = val
                     continue
                 }
+                
+                if s.name == "clock" {
+                    let val = self.simulator.simulateClock()
+                    params[s.name] = val[0]
+                    continue
+                }
+                params[s.name] = obsVal[0]
+            }
+            
+            // simulate some values
+            let clockValue = self.simulator.simulateClock()
+            var batteryValue = 0.0
+            if !fromAction {
+                batteryValue = self.simulator.simulateBattery(params: params)
+                oldBattery = batteryValue
+            } else {
+                batteryValue = oldBattery
             }
             
             // if battery is under zero then it is the final state
-            let batteryValue = BatterySimulator.simulateBattery(params: params)
             if batteryValue <= 0.0 {
                 return []
             }
             
             for s in self.observableData {
 //                print(s)
+                // use simulated data
                 if s.name == "battery" {
                     data.append(batteryValue)
                     continue
                 }
-                let readedData = s.read() // TODO PASS THE STATE
+                if s.name == "clock" {
+                    data.append(clockValue[0])
+                    data.append(clockValue[1])
+                    continue
+                }
+                let readedData = s.read(dataTemp)
                 for sd in readedData {
                     data.append(sd.customRound(.toNearestOrAwayFromZero))
                 }
@@ -176,6 +211,7 @@ open class Env {
             
             print("params \(params)")
         } else {
+            // data for the sensors
             var dataTemp: [Double] = []
             for s in self.observableData {
 //                print(s)
