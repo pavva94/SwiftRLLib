@@ -28,7 +28,7 @@ open class Simulator {
     private var brightnessValuesPer30Minutes: [Double]
     
     init() {
-        clockHoursValues = [1.00, 1.00, 2.00, 2.00, 3.00, 4.00, 4.00, 4.00, 5.00, 5.00, 6.00, 6.00, 7.00, 7.00, 8.00, 8.00, 9.00, 9.00, 10.00, 10.00, 11.00, 11.00, 12.00, 12.00, 13.00, 13.00, 14.00, 14.00, 15.00, 15.00, 16.00, 16.00, 17.00, 17.00, 18.00, 18.00, 19.00, 19.00, 20.00, 20.00, 21.00, 21.00, 22.00, 22.00, 23.00, 23.00]
+        clockHoursValues = [1.00, 1.00, 2.00, 2.00, 3.00, 3.00, 4.00, 4.00, 5.00, 5.00, 6.00, 6.00, 7.00, 7.00, 8.00, 8.00, 9.00, 9.00, 10.00, 10.00, 11.00, 11.00, 12.00, 12.00, 13.00, 13.00, 14.00, 14.00, 15.00, 15.00, 16.00, 16.00, 17.00, 17.00, 18.00, 18.00, 19.00, 19.00, 20.00, 20.00, 21.00, 21.00, 22.00, 22.00, 23.00, 23.00]
         clockMinutesValues = [0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00]
         batteryValuesPer30Minutes = [currentBattery]
         brightnessValuesPer30Minutes = [Double.random(in: 0...1).customRound(.toNearestOrAwayFromZero)]
@@ -67,7 +67,7 @@ open class Simulator {
         return newBatteryValue
     }
     
-    func simulateClock() -> [Double] {
+    public func simulateClock() -> [Double] {
         if self.simStep >= self.clockHoursValues.count {
             self.reset()
         }
@@ -106,4 +106,4 @@ open class Simulator {
     }
 }
 
-public let BatterySimulator = Simulator()
+//public let BatterySimulator = Simulator()
