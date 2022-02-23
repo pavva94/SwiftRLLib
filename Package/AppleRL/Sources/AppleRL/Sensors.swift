@@ -98,9 +98,9 @@ open class BrightnessSensor: ObservableData {
     }
     
     open override func read(_ state: [Double] = []) -> [Double] {
-        if useSimulator {
-            return [BatterySimulator.simulateBrightness()]
-        }
+//        if useSimulator {
+//            return [BatterySimulator.simulateBrightness()]
+//        }
         return preprocessing(value: UIScreen.main.brightness)   
     }
     
@@ -167,9 +167,9 @@ open class ClockSensor: ObservableData {
         let hour = calendar.component(.hour, from: date)
         let minute = calendar.component(.minute, from: date)
         let second = calendar.component(.second, from: date)
-        if useSimulator {
-            return BatterySimulator.simulateClock()
-        }
+//        if useSimulator {
+//            return BatterySimulator.simulateClock()
+//        }
         
         return preprocessing(value: [Double(hour), Double(minute), Double(second)])
         
