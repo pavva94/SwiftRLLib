@@ -96,52 +96,273 @@ open class NotSend: Action {
 }
 
 
-open class ReadSendRatio: Reward {
+
+open class ActionStack: Action {
     public var id: Int = 0
     
     public init() {}
     
-    public var description: String = "ReadSendRatio"
+    public var description: String = "ActionStack"
     
-    var dailyReward = 0.0
-    var countDay = 0.0
-    private func countReward(rew: Double) {
-        if countDay > 48 {
-            countDay = 0
-            print("DailyReward \(dailyReward)")
-            dailyReward = rew
-        } else {
-            dailyReward += rew
-        }
-    }
-    
-    public func exec(state: [Double], action: Int, nextState: [Double]) -> Double {
-        var reward: Double = 0.0
-        
-        // ["locked", "localization", "battery", "clock", "lowPowerMode", "readNotification"]
-//        let lat = state[1]
-//        let long = state[2]
-//        let locked = state[0]
-//        let battery = state[3]
+    public func exec() {
+        print("Sara readed??")
+        let state = environmentNew.read(fromAction: true)
         let hourRL = state[2]
         let minuteRL = state[3]
-//        let lowPowerMode = state[6]
-//        let readNotification = state[7]
-//
-//
-//        let nextReadNotification = nextState[7]
+        let clock = [hourRL, minuteRL]
         
-        
-//        reward = nextReadNotification > readNotification ? +1 : 0
-       
-        // if the agent send the notification, reward him with +1 if the user read the notification or -1 otherwise
-        if action == 0 {
-            reward = newSensor.readReadCounter(clock: [hourRL, minuteRL]) > newSensor.readLastReadCounter(clock: [hourRL, minuteRL]) ? +1 : -1
+        if [7.0, 8.0, 12.0, 13.0, 18.0, 19.0, 20.0].contains(hourRL)  {
+            if Double.random(in: 0...1) < 0.95 {
+                print("READED")
+                newSensorStack.addRead(clock: clock)
+            } else {
+                newSensorStack.addNotRead(clock: clock)
+            }
+        } else if Double.random(in: 0...1) < 0.15 {
+            newSensorStack.addRead(clock: clock)
+            print("FORTUNE READ")
+        } else {
+            newSensorStack.addNotRead(clock: clock)
         }
+    }
+}
+
+open class Action1: Action {
+    public var id: Int = 0
+    
+    public init() {}
+    
+    public var description: String = "Action1"
+    
+    public func exec() {
+        print("Sara readed??")
+        let state = environment.read(fromAction: true)
+        let hourRL = state[2]
+        let minuteRL = state[3]
+        let clock = [hourRL, minuteRL]
         
-        print("Final reward: \(reward)")
-        countReward(rew: reward)
+        if [7.0, 8.0, 12.0, 13.0, 18.0, 19.0, 20.0].contains(hourRL)  {
+            if Double.random(in: 0...1) < 0.95 {
+                print("READED")
+                newSensor.addRead(clock: clock)
+            } else {
+                newSensor.addNotRead(clock: clock)
+            }
+        } else if Double.random(in: 0...1) < 0.15 {
+            newSensor.addRead(clock: clock)
+            print("FORTUNE READ")
+        } else {
+            newSensor.addNotRead(clock: clock)
+        }
+    }
+}
+
+open class Action2: Action {
+    public var id: Int = 0
+    
+    public init() {}
+    
+    public var description: String = "Action2"
+    
+    public func exec() {
+        print("Sara readed??")
+        let state = environment2.read(fromAction: true)
+        let hourRL = state[2]
+        let minuteRL = state[3]
+        let clock = [hourRL, minuteRL]
         
-        return reward.customRound(.toNearestOrAwayFromZero)
+        if [7.0, 8.0, 12.0, 13.0, 18.0, 19.0, 20.0].contains(hourRL)  {
+            if Double.random(in: 0...1) < 0.95 {
+                print("READED")
+                newSensor2.addRead(clock: clock)
+            } else {
+                newSensor2.addNotRead(clock: clock)
+            }
+        } else if Double.random(in: 0...1) < 0.15 {
+            newSensor2.addRead(clock: clock)
+            print("FORTUNE READ")
+        } else {
+            newSensor2.addNotRead(clock: clock)
+        }
+    }
+}
+
+open class Action3: Action {
+    public var id: Int = 0
+    
+    public init() {}
+    
+    public var description: String = "Action3"
+    
+    public func exec() {
+        print("Sara readed??")
+        let state = environment3.read(fromAction: true)
+        let hourRL = state[2]
+        let minuteRL = state[3]
+        let clock = [hourRL, minuteRL]
+        
+        if [7.0, 8.0, 12.0, 13.0, 18.0, 19.0, 20.0].contains(hourRL)  {
+            if Double.random(in: 0...1) < 0.95 {
+                print("READED")
+                newSensor3.addRead(clock: clock)
+            } else {
+                newSensor3.addNotRead(clock: clock)
+            }
+        } else if Double.random(in: 0...1) < 0.15 {
+            newSensor3.addRead(clock: clock)
+            print("FORTUNE READ")
+        } else {
+            newSensor3.addNotRead(clock: clock)
+        }
+    }
+}
+
+open class Action4: Action {
+    public var id: Int = 0
+    
+    public init() {}
+    
+    public var description: String = "Action4"
+    
+    public func exec() {
+        print("Sara readed??")
+        let state = environment4.read(fromAction: true)
+        let hourRL = state[2]
+        let minuteRL = state[3]
+        let clock = [hourRL, minuteRL]
+        
+        if [7.0, 8.0, 12.0, 13.0, 18.0, 19.0, 20.0].contains(hourRL)  {
+            if Double.random(in: 0...1) < 0.95 {
+                print("READED")
+                newSensor4.addRead(clock: clock)
+            } else {
+                newSensor4.addNotRead(clock: clock)
+            }
+        } else if Double.random(in: 0...1) < 0.15 {
+            newSensor4.addRead(clock: clock)
+            print("FORTUNE READ")
+        } else {
+            newSensor4.addNotRead(clock: clock)
+        }
+    }
+}
+
+open class Action5: Action {
+    public var id: Int = 0
+    
+    public init() {}
+    
+    public var description: String = "Action5"
+    
+    public func exec() {
+        print("Sara readed??")
+        let state = environment5.read(fromAction: true)
+        let hourRL = state[2]
+        let minuteRL = state[3]
+        let clock = [hourRL, minuteRL]
+        
+        if [7.0, 8.0, 12.0, 13.0, 18.0, 19.0, 20.0].contains(hourRL)  {
+            if Double.random(in: 0...1) < 0.95 {
+                print("READED")
+                newSensor5.addRead(clock: clock)
+            } else {
+                newSensor5.addNotRead(clock: clock)
+            }
+        } else if Double.random(in: 0...1) < 0.15 {
+            newSensor5.addRead(clock: clock)
+            print("FORTUNE READ")
+        } else {
+            newSensor5.addNotRead(clock: clock)
+        }
+    }
+}
+
+open class Action6: Action {
+    public var id: Int = 0
+    
+    public init() {}
+    
+    public var description: String = "Action1"
+    
+    public func exec() {
+        print("Sara readed??")
+        let state = environment6.read(fromAction: true)
+        let hourRL = state[2]
+        let minuteRL = state[3]
+        let clock = [hourRL, minuteRL]
+        
+        if [7.0, 8.0, 12.0, 13.0, 18.0, 19.0, 20.0].contains(hourRL)  {
+            if Double.random(in: 0...1) < 0.95 {
+                print("READED")
+                newSensor6.addRead(clock: clock)
+            } else {
+                newSensor6.addNotRead(clock: clock)
+            }
+        } else if Double.random(in: 0...1) < 0.15 {
+            newSensor6.addRead(clock: clock)
+            print("FORTUNE READ")
+        } else {
+            newSensor6.addNotRead(clock: clock)
+        }
+    }
+}
+
+open class Action7: Action {
+    public var id: Int = 0
+    
+    public init() {}
+    
+    public var description: String = "Action7"
+    
+    public func exec() {
+        print("Sara readed??")
+        let state = environment7.read(fromAction: true)
+        let hourRL = state[2]
+        let minuteRL = state[3]
+        let clock = [hourRL, minuteRL]
+        
+        if [7.0, 8.0, 12.0, 13.0, 18.0, 19.0, 20.0].contains(hourRL)  {
+            if Double.random(in: 0...1) < 0.95 {
+                print("READED")
+                newSensor7.addRead(clock: clock)
+            } else {
+                newSensor7.addNotRead(clock: clock)
+            }
+        } else if Double.random(in: 0...1) < 0.15 {
+            newSensor7.addRead(clock: clock)
+            print("FORTUNE READ")
+        } else {
+            newSensor7.addNotRead(clock: clock)
+        }
+    }
+}
+
+open class ActionQL: Action {
+    public var id: Int = 0
+    
+    public init() {}
+    
+    public var description: String = "ActionQL"
+    
+    public func exec() {
+        print("Sara readed??")
+        let state = environmentQL.read(fromAction: true)
+        let hourRL = state[2]
+        let minuteRL = state[3]
+        let clock = [hourRL, minuteRL]
+        
+        if [7.0, 8.0, 12.0, 13.0, 18.0, 19.0, 20.0].contains(hourRL)  {
+            if Double.random(in: 0...1) < 0.95 {
+                print("READED")
+                newSensorQL.addRead(clock: clock)
+            } else {
+                newSensorQL.addNotRead(clock: clock)
+            }
+        } else if Double.random(in: 0...1) < 0.15 {
+            newSensorQL.addRead(clock: clock)
+            print("FORTUNE READ")
+        } else {
+            newSensorQL.addNotRead(clock: clock)
+        }
     }
 }

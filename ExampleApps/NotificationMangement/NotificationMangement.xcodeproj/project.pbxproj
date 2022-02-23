@@ -21,6 +21,7 @@
 		73B827F9278F2714006F0F18 /* AppleRL in Frameworks */ = {isa = PBXBuildFile; productRef = 73B827F8278F2714006F0F18 /* AppleRL */; };
 		73CDD3962790733500127024 /* Detail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73CDD3942790733500127024 /* Detail.swift */; };
 		73CDD3972790733500127024 /* Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73CDD3952790733500127024 /* Row.swift */; };
+		73DF97A227C45D5B00608461 /* AppRewards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DF97A127C45D5B00608461 /* AppRewards.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		73CDD3912790367300127024 /* NotificationMangement.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationMangement.entitlements; sourceTree = "<group>"; };
 		73CDD3942790733500127024 /* Detail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Detail.swift; path = NotificationMangement/Detail.swift; sourceTree = SOURCE_ROOT; };
 		73CDD3952790733500127024 /* Row.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Row.swift; path = NotificationMangement/Row.swift; sourceTree = SOURCE_ROOT; };
+		73DF97A127C45D5B00608461 /* AppRewards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRewards.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +125,7 @@
 				73B827C8278F09B8006F0F18 /* Preview Content */,
 				73B827EE278F12E8006F0F18 /* AppActions.swift */,
 				7320E9A527C2AD2200C53AD7 /* AppSensor.swift */,
+				73DF97A127C45D5B00608461 /* AppRewards.swift */,
 			);
 			path = NotificationMangement;
 			sourceTree = "<group>";
@@ -305,6 +308,7 @@
 				7320E9A627C2AD2200C53AD7 /* AppSensor.swift in Sources */,
 				73A47C8E27A42FB5002E3546 /* AppleRLModel.mlmodel in Sources */,
 				73B827C3278F09B6006F0F18 /* NotificationMangementApp.swift in Sources */,
+				73DF97A227C45D5B00608461 /* AppRewards.swift in Sources */,
 				73CDD3962790733500127024 /* Detail.swift in Sources */,
 				73CDD3972790733500127024 /* Row.swift in Sources */,
 				73B827EF278F12E8006F0F18 /* AppActions.swift in Sources */,

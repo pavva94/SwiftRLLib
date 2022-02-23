@@ -60,7 +60,7 @@ open class ReadNotificationSensor: ObservableData {
         }
     }
     public func addNotRead(clock: [Double]) {
-        print("ADD READ")
+        print("ADD NOT READ")
         self.lastReadedCounter = self.readedCounter
         if self.readedCounter.count < 5 {
             self.readedCounter.append(0)
@@ -71,7 +71,7 @@ open class ReadNotificationSensor: ObservableData {
     }
 }
 
-let newSensor = ReadNotificationSensor()
+//let newSensor = ReadNotificationSensor()
 
 
 open class ReadNotificationSensorStack: ObservableData {
@@ -108,14 +108,21 @@ open class ReadNotificationSensorStack: ObservableData {
         }
         
         let hourRL = state[2]
-        let minuteRL = state[3]
+        var minuteRL = state[3]
+        
+        // restrict the range of minutes to 0 and  30
+        if minuteRL>30.0 {
+            minuteRL = 30.0
+        } else {
+            minuteRL = 0.0
+        }
         
         let clockIndex = manageReaded(clock: [hourRL, minuteRL])
         print("readNotification \(self.readedCounter[clockIndex]), \(self.sendedCounter[clockIndex])")
         if sendedCounter[clockIndex]!.reduce(0, +) == 0.0 {
             return preprocessing(value: 0.0)
         } else {
-            return preprocessing(value: self.readedCounter[clockIndex]!.reduce(0, +)/self.sendedCounter[clockIndex]!.reduce(0, +))
+            return preprocessing(value: self.readedCounter[clockIndex]!.reduce(0, +)/5) // To simplify assume that 5 for each half hour was sent, or self.sendedCounter[clockIndex]!.reduce(0, +))
         }
     }
     
@@ -142,10 +149,19 @@ open class ReadNotificationSensorStack: ObservableData {
     public func addSend(clock: [Double]) {
         let clockIndex = manageReaded(clock: clock)
         self.sendedCounter[clockIndex]!.append(1)
+        
+        print("ADD SEND STACK \(clock)")
+        
+        if self.sendedCounter[clockIndex]!.count < 5 {
+            self.sendedCounter[clockIndex]!.append(1)
+        } else {
+            self.sendedCounter[clockIndex]!.remove(at: 0)
+            self.sendedCounter[clockIndex]!.append(1)
+        }
     }
     
     public func addRead(clock: [Double]) {
-        print("ADD READ \(clock)")
+        print("ADD READ STACK \(clock)")
         let clockIndex = manageReaded(clock: clock)
         
         self.lastReadedCounter[clockIndex] = self.readedCounter[clockIndex]
@@ -157,7 +173,7 @@ open class ReadNotificationSensorStack: ObservableData {
         }
     }
     public func addNotRead(clock: [Double]) {
-        print("ADD READ")
+        print("ADD NOT READ STACK")
         let clockIndex = manageReaded(clock: clock)
         self.lastReadedCounter[clockIndex] = self.readedCounter[clockIndex]
         if self.readedCounter[clockIndex]!.count < 5 {
@@ -169,4 +185,4 @@ open class ReadNotificationSensorStack: ObservableData {
     }
 }
 
-let newSensorStack = ReadNotificationSensorStack()
+//let newSensorStack = ReadNotificationSensorStack()
