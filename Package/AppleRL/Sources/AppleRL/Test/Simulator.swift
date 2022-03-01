@@ -10,6 +10,7 @@ import Foundation
 open class Simulator {
     
     private var simStep: Int = 0
+    private var lastSimStep: Int = 0
     private let maxSimStep: Int = 24*2 // one day, divided by 30 minute
     public var maxBattery: Double = 100.0
     public var baseConsumption: Double = 2
@@ -38,9 +39,14 @@ open class Simulator {
         return self.simStep
     }
     
+    public func getLastSimStep() -> Int {
+        return self.lastSimStep
+    }
+    
     func simulateBattery(params: Dictionary<String, Double>) -> Double {
         print(params)
         var accessoriesConsumption = 0.0
+        print("SimStep \(self.simStep)")
         print("Clock: \(clockHoursValues[self.simStep]): \(clockMinutesValues[self.simStep])")
         print("batteryValuesPer30Minutes: \(batteryValuesPer30Minutes)")
         print("brightnessValuesPer30Minutes: \(brightnessValuesPer30Minutes)")
@@ -54,10 +60,13 @@ open class Simulator {
         currentBattery = batteryValuesPer30Minutes[self.simStep]
         print("accessoriesConsumption \(accessoriesConsumption)")
         let newBatteryValue = (Double(currentBattery) - (baseConsumption + accessoriesConsumption)).customRound(.toNearestOrAwayFromZero)
+//        let newBatteryValue = (Double(currentBattery) - accessoriesConsumption).customRound(.toNearestOrAwayFromZero)
+
         print("new battery value \(newBatteryValue)")
         batteryValuesPer30Minutes.append(newBatteryValue)
         
         if self.currentBattery <= 0.0 || newBatteryValue <= 0.0 || self.simStep >= clockHoursValues.count {
+            self.lastSimStep = self.simStep
             reset()
             return 0.0
         }

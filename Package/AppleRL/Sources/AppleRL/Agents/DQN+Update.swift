@@ -32,6 +32,13 @@ extension DeepQNetwork {
             let action = d.getAction()
             let reward = d.getReward()
             let nextState = d.getNextState()
+            var nextStateArray: [Double] = convertToArray(from: d.getNextState())
+            
+            // if use simulator do not use the state with the battery == 0; [1] notification, [0]battery
+            if state[0] == 0 {
+                print("state battery 0: end of the episode")
+                nextStateArray = []
+            }
             
             // Create a MLFeatureValue as input for the model
             let stateValue = MLFeatureValue(multiArray: state)
@@ -39,7 +46,7 @@ extension DeepQNetwork {
             let stateTarget = updatedModel!.predictFor(stateValue)!.actions
             defaultLogger.log("Predict livemodel \(stateTarget)")
             
-            if convertToArray(from: nextState) != [] {
+            if nextStateArray != [] {
                 // Create a MLFeatureValue as input for the target model
                 let nextStateValue = MLFeatureValue(multiArray: nextState)
                 
