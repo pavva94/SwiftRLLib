@@ -53,5 +53,10 @@ public enum ObserveMode {
     case both
 }
 
+public enum WorkMode {
+    case training
+    case inference
+}
+
 /// Boolean indicating the use or not of the Simulator
 public let useSimulator = false

@@ -24,20 +24,35 @@ open class Agent {
     var secondsObserveProcess: Int = 0
     var secondsTrainProcess: Int = 0
     
-    open func observe(_ mode: ObserveMode, repeat: Bool = true) {
+    open func observe(_ mode: ObserveMode, _ type: WorkMode) {
         if mode == ObserveMode.timer {
-            self.startListen(interval: self.secondsObserveProcess)
-            self.startTrain(interval: self.secondsTrainProcess)
+            if type == WorkMode.training {
+                self.startListen(interval: self.secondsObserveProcess)
+                self.startTrain(interval: self.secondsTrainProcess)
+            } else if type == WorkMode.inference {
+                self.startListen(interval: self.secondsObserveProcess)
+            }
         } else if mode == ObserveMode.background {
             BGTaskScheduler.shared.cancelAllTaskRequests()
-            self.scheduleBackgroundFetch()
-            self.scheduleBackgroundTraining()
+            if type == WorkMode.training {
+                self.scheduleBackgroundFetch()
+                self.scheduleBackgroundTraining()
+            } else if type == WorkMode.inference {
+                self.scheduleBackgroundFetch()
+            }
         } else if mode == ObserveMode.both {
-            self.startListen(interval: self.secondsObserveProcess)
-            self.startTrain(interval: self.secondsTrainProcess)
-            BGTaskScheduler.shared.cancelAllTaskRequests()
-            self.scheduleBackgroundFetch()
-            self.scheduleBackgroundTraining()
+            if type == WorkMode.training {
+                self.startListen(interval: self.secondsObserveProcess)
+                self.startTrain(interval: self.secondsTrainProcess)
+                BGTaskScheduler.shared.cancelAllTaskRequests()
+                self.scheduleBackgroundFetch()
+                self.scheduleBackgroundTraining()
+            } else if type == WorkMode.inference {
+                self.startListen(interval: self.secondsObserveProcess)
+                BGTaskScheduler.shared.cancelAllTaskRequests()
+                self.scheduleBackgroundFetch()
+            }
+            
         } else {
             print("Observe Mode Wrong")
             return
