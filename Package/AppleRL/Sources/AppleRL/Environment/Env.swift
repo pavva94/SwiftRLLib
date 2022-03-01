@@ -158,10 +158,6 @@ open class Env {
             for s in self.observableData {
                 let obsVal = s.read([])
                 
-                for sd in obsVal {
-                    dataTemp.append(sd.customRound(.toNearestOrAwayFromZero))
-                }
-                
                 if s.name == "brightness" {
                     let val = self.simulator.simulateBrightness()
                     params[s.name] = val
@@ -171,7 +167,12 @@ open class Env {
                 if s.name == "clock" {
                     let val = self.simulator.simulateClock()
                     params[s.name] = val[0]
+                    dataTemp.append(val[0])
+                    dataTemp.append(val[1])
                     continue
+                }
+                for sd in obsVal {
+                    dataTemp.append(sd.customRound(.toNearestOrAwayFromZero))
                 }
                 params[s.name] = obsVal[0]
             }
@@ -185,22 +186,29 @@ open class Env {
             } else {
                 batteryValue = oldBattery
             }
+            let brightnessValue = self.simulator.simulateBrightness()
             
-            // if battery is under zero then it is the final state
-            if batteryValue <= 0.0 {
-                return []
-            }
+            // override battery value TODO MODIFY IMMIDIATELY AFTER TEST
+            dataTemp[0] = batteryValue
             
             for s in self.observableData {
 //                print(s)
                 // use simulated data
                 if s.name == "battery" {
+                    // if battery is under zero then it is the final state, set the battery value to zero
+                    if batteryValue <= 0.0 {
+                        batteryValue = 0.0
+                    }
                     data.append(batteryValue)
                     continue
                 }
                 if s.name == "clock" {
                     data.append(clockValue[0])
                     data.append(clockValue[1])
+                    continue
+                }
+                if s.name == "brightness" {
+                    data.append(brightnessValue)
                     continue
                 }
                 let readedData = s.read(dataTemp)
@@ -210,6 +218,7 @@ open class Env {
             }
             
             print("params \(params)")
+            print("data \(data)")
         } else {
             // data for the sensors
             var dataTemp: [Double] = []
