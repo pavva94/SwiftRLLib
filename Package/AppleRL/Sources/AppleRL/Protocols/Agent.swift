@@ -24,30 +24,30 @@ open class Agent {
     var secondsObserveProcess: Int = 0
     var secondsTrainProcess: Int = 0
     
-    open func observe(_ mode: ObserveMode, _ type: WorkMode) {
-        if mode == ObserveMode.timer {
-            if type == WorkMode.training {
+    open func observe(_ mode: WorkMode, _ type: AgentMode) {
+        if mode == WorkMode.timer {
+            if type == AgentMode.training {
                 self.startListen(interval: self.secondsObserveProcess)
                 self.startTrain(interval: self.secondsTrainProcess)
-            } else if type == WorkMode.inference {
+            } else if type == AgentMode.inference {
                 self.startListen(interval: self.secondsObserveProcess)
             }
-        } else if mode == ObserveMode.background {
+        } else if mode == WorkMode.background {
             BGTaskScheduler.shared.cancelAllTaskRequests()
-            if type == WorkMode.training {
+            if type == AgentMode.training {
                 self.scheduleBackgroundFetch()
                 self.scheduleBackgroundTraining()
-            } else if type == WorkMode.inference {
+            } else if type == AgentMode.inference {
                 self.scheduleBackgroundFetch()
             }
-        } else if mode == ObserveMode.both {
-            if type == WorkMode.training {
+        } else if mode == WorkMode.both {
+            if type == AgentMode.training {
                 self.startListen(interval: self.secondsObserveProcess)
                 self.startTrain(interval: self.secondsTrainProcess)
                 BGTaskScheduler.shared.cancelAllTaskRequests()
                 self.scheduleBackgroundFetch()
                 self.scheduleBackgroundTraining()
-            } else if type == WorkMode.inference {
+            } else if type == AgentMode.inference {
                 self.startListen(interval: self.secondsObserveProcess)
                 BGTaskScheduler.shared.cancelAllTaskRequests()
                 self.scheduleBackgroundFetch()
