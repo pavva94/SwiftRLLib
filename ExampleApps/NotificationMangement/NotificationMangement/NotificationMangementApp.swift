@@ -38,160 +38,97 @@ import CoreML
 //        }
 //    }
 //}
-let newSensor = ReadNotificationSensor()
-let newSensor2 = ReadNotificationSensor()
-let newSensor3 = ReadNotificationSensor()
-let newSensor4 = ReadNotificationSensor()
-let newSensor5 = ReadNotificationSensor()
-let newSensor6 = ReadNotificationSensor()
-let newSensor7 = ReadNotificationSensor()
+//let newSensor = ReadNotificationSensor()
+//let newSensor2 = ReadNotificationSensor()
+//let newSensor3 = ReadNotificationSensor()
+//let newSensor4 = ReadNotificationSensor()
+//let newSensor5 = ReadNotificationSensor()
+//let newSensor6 = ReadNotificationSensor()
+//let newSensor7 = ReadNotificationSensor()
 let newSensorStack = ReadNotificationSensorStack()
-let newSensorQL = ReadNotificationSensor()
+let newSensorStack2 = ReadNotificationSensorStack()
+//let newSensorQL = ReadNotificationSensor()
 
 // FIRST Trial: BASE
-let actionsArray: [Action] = [Action1(), NotSend()]
-let rewardsArray: [Reward] = [ReadSendRatio()]
-var environment: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArray, rewards: rewardsArray, actionSize: 2)
-let params: Dictionary<ModelParameters, Any> = [
-    .agentID: 0,
-    .epsilon: Double(0.6),
-    .batchSize: 32,
-    .learning_rate: Double(0.0001),
-    .gamma: Double(0.9),
-    .secondsObserveProcess: 5,
-    .secondsTrainProcess: 10*60
-]
+//let actionsArray: [Action] = [Action1(), NotSend()]
+//let rewardsArray: [Reward] = [ReadSendRatio()]
+//var environment: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArray, rewards: rewardsArray, actionSize: 2)
+//let params: Dictionary<ModelParameters, Any> = [
+//    .agentID: 0,
+//    .epsilon: Double(0.6),
+//    .batchSize: 32,
+//    .learning_rate: Double(0.0001),
+//    .gamma: Double(0.9),
+//    .secondsObserveProcess: 5,
+//    .secondsTrainProcess: 10*60
+//]
+//
+//let qnet: DeepQNetwork = DeepQNetwork(env: environment, policy: EpsilonGreedy(), parameters: params)
 
-let qnet: DeepQNetwork = DeepQNetwork(env: environment, policy: EpsilonGreedy(), parameters: params)
+// NEW Trial: NEW SENSOR -> STACK IPHONE 13
+//let actionsArrayNew: [Action] = [ActionStack(), NotSend()]
+//let rewardsArrayNew: [Reward] = [ReadSendRatioNew()]
+//var environmentNew: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArrayNew, rewards: rewardsArrayNew, actionSize: 2)
+//let paramsNew: Dictionary<ModelParameters, Any> = [
+//    .agentID: 10,
+////    .epsilon: Double(0.6),
+//    .batchSize: 64,
+//    .learning_rate: Double(0.001),
+//    .gamma: Double(0.999),
+//    .secondsObserveProcess: 1,
+//    .secondsTrainProcess: 5*60
+//]
 
-// Second Trial: Smaller LR
-let actionsArray2: [Action] = [Action2(), NotSend()]
-let rewardsArray2: [Reward] = [ReadSendRatio2()]
-var environment2: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArray2, rewards: rewardsArray2, actionSize: 2)
-let params2: Dictionary<ModelParameters, Any> = [
-    .agentID: 1,
-    .epsilon: Double(0.6),
-    .batchSize: 32,
-    .learning_rate: Double(0.00001),
-    .gamma: Double(0.9),
-    .secondsObserveProcess: 8,
-    .secondsTrainProcess: 10*60
-]
-let qnet2: DeepQNetwork = DeepQNetwork(env: environment2, policy: EpsilonGreedy(), parameters: params2)
+//let qnetNew: DeepQNetwork = DeepQNetwork(env: environmentNew, policy: EpsilonGreedy(), parameters: paramsNew)
 
-
-// Third Trial: Bigger LR
-let actionsArray3: [Action] = [Action3(), NotSend()]
-let rewardsArray3: [Reward] = [ReadSendRatio3()]
-var environment3: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArray3, rewards: rewardsArray3, actionSize: 2)
-let params3: Dictionary<ModelParameters, Any> = [
-    .agentID: 2,
-    .epsilon: Double(0.6),
-    .batchSize: 32,
-    .learning_rate: Double(0.001),
-    .gamma: Double(0.9),
-    .secondsObserveProcess: 6,
-    .secondsTrainProcess: 10*60
-]
-let qnet3: DeepQNetwork = DeepQNetwork(env: environment3, policy: EpsilonGreedy(), parameters: params3)
-
-// Forth Trial: Bigger batch size
-let actionsArray4: [Action] = [Action4(), NotSend()]
-let rewardsArray4: [Reward] = [ReadSendRatio4()]
-var environment4: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArray4, rewards: rewardsArray4, actionSize: 2)
-let params4: Dictionary<ModelParameters, Any> = [
-    .agentID: 3,
-    .epsilon: Double(0.6),
+//// NEW Trial: NEW SENSOR -> STACK IPHONE 13pro4444444
+let actionsArrayNew2: [Action] = [ActionStack2(), NotSend()]
+let rewardsArrayNew2: [Reward] = [ReadSendRatioNew2()]
+var environmentNew2: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArrayNew2, rewards: rewardsArrayNew2, actionSize: 2)
+let paramsNew2: Dictionary<ModelParameters, Any> = [
+    .agentID: 10,
+//    .epsilon: Double(0.6),
     .batchSize: 64,
     .learning_rate: Double(0.0001),
-    .gamma: Double(0.9),
-    .secondsObserveProcess: 4,
-    .secondsTrainProcess: 10*60
-]
-let qnet4: DeepQNetwork = DeepQNetwork(env: environment4, policy: EpsilonGreedy(), parameters: params4)
-
-// Fifth Trial: More bigger batch size, though bigger training size
-let actionsArray5: [Action] = [Action5(), NotSend()]
-let rewardsArray5: [Reward] = [ReadSendRatio5()]
-var environment5: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArray5, rewards: rewardsArray5, actionSize: 2)
-let params5: Dictionary<ModelParameters, Any> = [
-    .agentID: 4,
-    .epsilon: Double(0.6),
-    .batchSize: 128,
-    .trainingSetSize: 128*4,
-    .learning_rate: Double(0.0001),
-    .gamma: Double(0.9),
-    .secondsObserveProcess: 2,
-    .secondsTrainProcess: 10*60
-]
-let qnet5: DeepQNetwork = DeepQNetwork(env: environment5, policy: EpsilonGreedy(), parameters: params5)
-
-// Sixth Trial: Smaller batch size
-let actionsArray6: [Action] = [Action6(), NotSend()]
-let rewardsArray6: [Reward] = [ReadSendRatio6()]
-var environment6: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArray6, rewards: rewardsArray6, actionSize: 2)
-let params6: Dictionary<ModelParameters, Any> = [
-    .agentID: 5,
-    .epsilon: Double(0.6),
-    .batchSize: 16,
-    .learning_rate: Double(0.0001),
-    .gamma: Double(0.9),
-    .secondsObserveProcess: 7,
-    .secondsTrainProcess: 10*60
-]
-let qnet6: DeepQNetwork = DeepQNetwork(env: environment6, policy: EpsilonGreedy(), parameters: params6)
-
-
-// Seventh Trial: Even Smaller batch size
-let actionsArray7: [Action] = [Action7(), NotSend()]
-let rewardsArray7: [Reward] = [ReadSendRatio7()]
-var environment7: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArray7, rewards: rewardsArray7, actionSize: 2)
-let params7: Dictionary<ModelParameters, Any> = [
-    .agentID: 6,
-    .epsilon: Double(0.6),
-    .batchSize: 16,
-    .learning_rate: Double(0.0001),
-    .gamma: Double(0.9),
+    .gamma: Double(0.999),
     .secondsObserveProcess: 1,
-    .secondsTrainProcess: 10*60
+    .secondsTrainProcess: 6*60
 ]
-let qnet7: DeepQNetwork = DeepQNetwork(env: environment7, policy: EpsilonGreedy(), parameters: params7)
 
+let qnetNew2: DeepQNetwork = DeepQNetwork(env: environmentNew2, policy: EpsilonGreedy(id: 0), parameters: paramsNew2)
 
-
-
-// NEW Trial: NEW SENSOR -> STACK
+// IPHONE 13Pro3333
 let actionsArrayNew: [Action] = [ActionStack(), NotSend()]
 let rewardsArrayNew: [Reward] = [ReadSendRatioNew()]
 var environmentNew: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArrayNew, rewards: rewardsArrayNew, actionSize: 2)
 let paramsNew: Dictionary<ModelParameters, Any> = [
-    .agentID: 7,
-    .epsilon: Double(0.6),
-    .batchSize: 32,
-    .learning_rate: Double(0.0001),
-    .gamma: Double(0.9),
-    .secondsObserveProcess: 3,
-    .secondsTrainProcess: 10*60
+    .agentID: 9,
+//    .epsilon: Double(0.6),
+    .batchSize: 16,
+    .learning_rate: Double(0.00001),
+    .gamma: Double(0.999),
+    .secondsObserveProcess: 1,
+    .secondsTrainProcess: 6*60
 ]
 
-let qnetNew: DeepQNetwork = DeepQNetwork(env: environmentNew, policy: EpsilonGreedy(), parameters: paramsNew)
+let qnetNew: DeepQNetwork = DeepQNetwork(env: environmentNew, policy: EpsilonGreedy(id: 1), parameters: paramsNew)
 
 
 // QLearning Trial
-let actionsArrayQL: [Action] = [ActionQL(), NotSend()]
-let rewardsArrayQL: [Reward] = [ReadSendRatioQL()]
-var environmentQL: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArrayQL, rewards: rewardsArrayQL, actionSize: 2)
-let paramsQL: Dictionary<ModelParameters, Any> = [
-    .agentID: 8,
-    .epsilon: Double(0.6),
-    .batchSize: 32,
-    .learning_rate: Double(0.01),
-    .gamma: Double(0.9),
-    .secondsObserveProcess: 5,
-    .secondsTrainProcess: 5*60
-]
-
-let QL: QLearning = QLearning(env: environmentQL, policy: EpsilonGreedy(), parameters: paramsQL)
+//let actionsArrayQL: [Action] = [ActionQL(), NotSend()]
+//let rewardsArrayQL: [Reward] = [ReadSendRatioQL()]
+//var environmentQL: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArrayQL, rewards: rewardsArrayQL, actionSize: 2)
+//let paramsQL: Dictionary<ModelParameters, Any> = [
+//    .agentID: 8,
+//    .epsilon: Double(0.6),
+//    .batchSize: 32,
+//    .learning_rate: Double(0.01),
+//    .gamma: Double(0.9),
+//    .secondsObserveProcess: 5,
+//    .secondsTrainProcess: 5*60
+//]
+//
+//let QL: QLearning = QLearning(env: environmentQL, policy: EpsilonGreedy(), parameters: paramsQL)
 
 
 var firstOpen = true
@@ -282,31 +219,21 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
 
-        environment.addObservableData(s: newSensor)
-        environment2.addObservableData(s: newSensor2)
-        environment3.addObservableData(s: newSensor3)
-        environment4.addObservableData(s: newSensor4)
-        environment5.addObservableData(s: newSensor5)
-
-        environment6.addObservableData(s: newSensor6)
-        environment7.addObservableData(s: newSensor7)
-
-        environmentQL.addObservableData(s: newSensorQL)
-//
         environmentNew.addObservableData(s: newSensorStack)
+        environmentNew2.addObservableData(s: newSensorStack2)
         
         BGTaskScheduler.shared.register(
           forTaskWithIdentifier: backgroundListenURL,
           using: nil) { (task) in
             print("Listen Task handler")
-              qnet.handleAppRefreshTask(task: task as! BGAppRefreshTask)
+//              qnet.handleAppRefreshTask(task: task as! BGAppRefreshTask)
         }
 
         BGTaskScheduler.shared.register(
           forTaskWithIdentifier: backgroundTrainURL,
           using: nil) { (task) in
             print("Background Task handler")
-              qnet.handleTrainingTask(task: task as! BGProcessingTask)
+//              qnet.handleTrainingTask(task: task as! BGProcessingTask)
         }
         print("Background tasks registered")
         return true
@@ -328,23 +255,16 @@ struct NotificationMangementApp: App {
     
     var body: some Scene {
             WindowGroup {
-                ContentView(qnet: qnet, sensor: newSensorStack, database: dataManager.loadDatabase("database.json")).onAppear(perform: initializeRL)
+                ContentView(qnet: qnetNew, sensor: newSensorStack, database: dataManager.loadDatabase("database.json")).onAppear(perform: initializeRL)
             }
         }
         
         func initializeRL() {
             print("App opened")
-            qnet.observe(.timer)
-            qnet2.observe(.timer)
-            qnet3.observe(.timer)
-            qnet4.observe(.timer)
-            qnet5.observe(.timer)
-            qnet6.observe(.timer)
-            qnet7.observe(.timer)
+            qnetNew.observe(.timer, .training)
+//            qnetNew2.observe(.timer)
             
-            qnetNew.observe(.timer)
-            
-            QL.observe(.timer)
+//            QL.observe(.timer)
             
             let metricManager = MXMetricManager.shared
             metricManager.add(appleRLMetrics)

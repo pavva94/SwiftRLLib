@@ -37,7 +37,7 @@ struct ContentView: View {
             NavigationView {
                 List(database) { data in
                     NavigationLink {
-                        Detail(data: data, qnet: qnet, actionsArray: actionsArray)
+                        Detail(data: data, qnet: qnet, actionsArray: actionsArrayNew)
                     } label: {
                         Row(data: data)
                     }
