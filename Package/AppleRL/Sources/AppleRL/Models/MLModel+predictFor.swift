@@ -10,7 +10,7 @@ import CoreML
 
 extension MLModel {
     
-    func predictForAppleRL(_ value: MLFeatureValue) -> AppleRLModelOutput? {
+    public func predictForAppleRL(_ value: MLFeatureValue) -> MLMultiArray? {
         guard let input = value.multiArrayValue else {
             fatalError("Could not extract multiArray from the feature value")
         }
@@ -25,6 +25,6 @@ extension MLModel {
             return nil
         }
         defaultLogger.log("predictForAppleRL Prediction \(convertToArray(from: prediction.features(at: 0).featureValue(for: "actions")!.multiArrayValue!))")
-        return AppleRLModelOutput(actions: prediction.features(at: 0).featureValue(for: "actions")!.multiArrayValue!)
+        return prediction.features(at: 0).featureValue(for: "actions")!.multiArrayValue!
     }
 }
