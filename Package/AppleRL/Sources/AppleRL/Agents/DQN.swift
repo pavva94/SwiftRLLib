@@ -22,6 +22,8 @@ open class DeepQNetwork: Agent {
     
     var environment: Env
     var policy: Policy
+    /// Function to define the end of the episode
+    private var episodeEnd: (() -> Bool)
     
     /// Training parameters
     var learningRate: [Double] = [0.0001]
@@ -79,6 +81,7 @@ open class DeepQNetwork: Agent {
         self.miniBatchSize = parameters.keys.contains(.batchSize) ? (parameters[.batchSize] as? Int)! : self.miniBatchSize
         self.secondsTrainProcess = parameters.keys.contains(.secondsTrainProcess) ? (parameters[.secondsTrainProcess] as? Int)! : 2*60*60 // 2 ore
         self.secondsObserveProcess = parameters.keys.contains(.secondsObserveProcess) ? (parameters[.secondsObserveProcess] as? Int)! : 10*60 // 10 minuti
+        self.episodeEnd = parameters.keys.contains(.episodeEnd) ? (parameters[.episodeEnd] as? (() -> Bool))! : { return false }
 
         // allows the possibility to use a variable learning rate
         if type(of: parameters[.learning_rate]) == Double.self {
@@ -257,26 +260,121 @@ open class DeepQNetwork: Agent {
         }
     }
     
+    /// Create the MLArrayBatchProvider used to train the MLModel
+    /// It's created using the buffer data,
+    func createUpdateFeatures() -> MLArrayBatchProvider {
+        // Get the SarsaTuples
+        let data = buffer.batchProvider()
+        // Create the variable for the Target
+        var target: MLFeatureValue
+        // Array of MLFeatureProvider that will compose the MLArrayBatchProvider
+        // It's composed by MLDictionaryFeatureProvider that contains the 'data' and the 'actions_true' as a dict
+        var featureProviders = [MLFeatureProvider]()
+        
+        // Iter over data from buffer
+        for d in data {
+            defaultLogger.log("__________\(d.getAction())___________")
+            defaultLogger.log("__________\(d.getState())___________")
+            defaultLogger.log("__________\(d.getReward())___________")
+            defaultLogger.log("__________\(d.getNextState())___________")
+            let state = d.getState()
+            let action = d.getAction()
+            let reward = d.getReward()
+            let nextState = d.getNextState()
+            var nextStateArray: [Double] = convertToArray(from: d.getNextState())
+            
+            // if use simulator do not use the state with the battery == 0; [1] notification, [0]battery
+            if self.episodeEnd() {
+                print("state battery 0: end of the episode")
+                nextStateArray = []
+            }
+            
+            // Create a MLFeatureValue as input for the model
+            let stateValue = MLFeatureValue(multiArray: state)
+            // predict value
+            let stateTarget = updatedModel!.predictFor(stateValue)!.actions
+            defaultLogger.log("Predict livemodel \(stateTarget)")
+            
+            if nextStateArray != [] {
+                // Create a MLFeatureValue as input for the target model
+                let nextStateValue = MLFeatureValue(multiArray: nextState)
+                
+                // take value for next state
+                let nextStateActions = targetModel!.predictFor(nextStateValue)!.actions
+                let nextStateTarget = convertToArray(from: nextStateActions)
+                defaultLogger.log("Predict TargetModel \(nextStateActions)")
+                // Update the taget with the max q-value of next state, using a greedy policy
+                stateTarget[action] = NSNumber(value: Double(reward) + self.gamma * nextStateTarget.max()!)
+            } else {
+                stateTarget[action] = NSNumber(value: Double(reward))
+            }
+
+            defaultLogger.log("Target Updated \(stateTarget)")
+            target = MLFeatureValue(multiArray: stateTarget)
+            
+            // Create the final Dictionary to build the input
+            let dataPointFeatures: [String: MLFeatureValue] = [inputName: stateValue,
+                                                            outputName: target]
+
+            if let provider = try? MLDictionaryFeatureProvider(dictionary: dataPointFeatures) {
+             featureProviders.append(provider)
+            }
+         }
+         
+        return MLArrayBatchProvider(array: featureProviders.shuffled())
+        
+    }
+    
+    /// The closure an MLUpdateTask calls when it finishes updating the model.
+    func updateModelCompletionHandler(updateContext: MLUpdateContext) {
+        
+        defaultLogger.log("Training completed with state \(updateContext.task.state.rawValue)")
+        if updateContext.task.state == .failed {
+            defaultLogger.log("Failed")
+            defaultLogger.log("\(updateContext.task.error!.localizedDescription)")
+            return
+          }
+        
+        self.countTargetUpdate += 1
+        
+        // Save the updated model to the file system.
+        saveUpdatedModel(updateContext)
+
+        // Begin using the saved updated model.
+        loadUpdatedModel()
+        
+        let endTrainLogHandle = MXMetricManager.makeLogHandle(category: "Train")
+        mxSignpost(
+            .end,
+          log: endTrainLogHandle,
+          name: "End Train")
+
+        // Inform the calling View Controller when the update is complete
+        DispatchQueue.main.async { defaultLogger.log("Trained") }
+    }
+    
+    // Handle the progress during the MLUpdateTask
+    func progressHandler(context: MLUpdateContext) {
+        switch context.event {
+        case .trainingBegin:
+            defaultLogger.info("Training begin")
+        case .miniBatchEnd:
+            let batchIndex = context.metrics[.miniBatchIndex] as! Int
+//            let batchLoss = context.metrics[.lossValue] as! Double
+//            defaultLogger.log("Mini batch \(batchIndex), loss: \(batchLoss)")
+            print("batchIndex: \(batchIndex)")
+//            Tester.readWeights(currentModel: context.model)
+
+        case .epochEnd:
+            let epochIndex = context.metrics[.epochIndex] as! Int
+            let trainLoss = context.metrics[.lossValue] as! Double
+            defaultLogger.info("Epoch \(epochIndex) Loss \(trainLoss)")
+            
+//            Tester.readWeights(currentModel: context.model)
+            
+        default:
+            defaultLogger.log("Unknown event")
+        }
+    }
 }
-
-// train test
-//[0.09120198339223862,0.03973470628261566,0.01435149274766445,-0.02724559232592583,0.02169860899448395] .first
-//
-//[0.04767553508281708,0.1081157997250557,-0.004447195213288069,-0.103394590318203,0.0506153479218483]
-//
-//[0.05088436603546143,0.05092423409223557,0.03019963018596172,-0.5132191777229309,-0.04031703621149063]
-//
-//[0.03314311802387238,0.03358393907546997,0.02671210467815399,-0.9411672949790955,-0.3377813994884491] after 5/6 training iT CHANGEs!! IT TRAINs!
-
-// a bit different on the next run after reload the app but it's ok
-//[0.03375066816806793,0.03317856043577194,0.02958793565630913,-0.9496716260910034,-0.4104157686233521]
-
-// loadModel test done correctly, save and reload after reload the app works
-//Model List [0.04388461634516716, 0.035614483058452606, 0.0495888814330101, -0.9496716260910034, -0.5101786851882935]
-//Model List [0.04388461634516716, 0.035614483058452606, 0.0495888814330101, -0.9496716260910034, -0.5101786851882935]
-//
-//Model List [0.04121972993016243, 0.048581261187791824, 0.04852025955915451, -0.9568986296653748, -0.5867434144020081]
-//Model List [0.04121972993016243, 0.048581261187791824, 0.04852025955915451, -0.9568986296653748, -0.5867434144020081]
-
-
-// e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.pavesialessandro.applerl.backgroundListen"]
+ 

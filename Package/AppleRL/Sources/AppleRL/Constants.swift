@@ -45,6 +45,8 @@ public enum ModelParameters {
     case secondsObserveProcess
     case secondsTrainProcess
     case testPerformance
+    /// Function to define the end of the episode
+    case episodeEnd
 }
 
 public enum WorkMode {
