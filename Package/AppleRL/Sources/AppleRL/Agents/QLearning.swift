@@ -94,16 +94,16 @@ open class QLearning: Agent {
         while i < data.count {
             let tuple: SarsaTuple = data[i]
 //            defaultLogger.log("\(tuple)")
-            let s: Int = Int(convertToArray(from: tuple.getState())[0]), a: Int = tuple.getAction(), r: Double = tuple.getReward()
+            let s: Int = self.manageStates(convertToArray(from: tuple.getState())), a: Int = tuple.getAction(), r: Double = tuple.getReward()
 
             var maxQtable: [Double] = []
-            for i in 0...self.environment.getStateSize() {
+            for i in 0..<self.maxStateId {
                 maxQtable.append(self.qTable[i].max()!)
             }
 
             let temp : Double = Double(r) + gamma * maxQtable.max()! - qTable[s][a]
             qTable[s][a] = qTable[s][a] + lr * temp
-            defaultLogger.log("\(self.qTable)")
+//            defaultLogger.log("\(self.qTable)")
             i += 1
         }
 //        buffer.reset()
@@ -156,17 +156,15 @@ open class QLearning: Agent {
         if states.keys.contains(strState) {
             stateId = states[strState]!
         } else {
-            states[strState] = self.maxStateId + 1
-            self.maxStateId += 1
-            assert(qTable.count == self.maxStateId)
-            
-            
+            states[strState] = self.maxStateId
             stateId = self.maxStateId
+            self.maxStateId += 1
             var newValue: [Double] = []
             for _ in 0..<self.environment.getActionSize() {
                 newValue.append(Double.random(in: 0...1))
             }
             self.qTable.append(newValue)
+            assert(qTable.count == self.maxStateId)
             
         }
 //        print(self.states.count)
