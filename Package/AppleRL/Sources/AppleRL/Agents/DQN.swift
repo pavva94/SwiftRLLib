@@ -23,7 +23,7 @@ open class DeepQNetwork: Agent {
     var environment: Env
     var policy: Policy
     /// Function to define the end of the episode
-    private var episodeEnd: (() -> Bool)
+    private var episodeEnd: (() -> Bool) = { return false }
     
     /// Training parameters
     var learningRate: [Double] = [0.0001]
