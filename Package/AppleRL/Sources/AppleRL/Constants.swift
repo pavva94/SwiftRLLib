@@ -47,13 +47,13 @@ public enum ModelParameters {
     case testPerformance
 }
 
-public enum ObserveMode {
+public enum WorkMode {
     case timer
     case background
     case both
 }
 
-public enum WorkMode {
+public enum AgentMode {
     case training
     case inference
 }
