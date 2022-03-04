@@ -10,6 +10,7 @@ import UIKit
 import AVKit
 
 open class Env {
+    /// Observable data allowed by default
     var admittedObservableData = [
         "battery",
         "volume",
@@ -34,13 +35,19 @@ open class Env {
         
     ]
     
+    /// User default
     let defaults = UserDefaults.standard
+    /// Instance of the simulator
     public let simulator: Simulator
-
+    /// List of active observable data
     private var observableData: [ObservableData]
+    /// List of active actions
     private var actions: [Action]
+    /// LIst of active rewards
     private var rewards: [Reward]
+    /// Action size
     private var actionSize: Int
+    /// State size
     private var stateSize: Int
     
     /// Initialize the Env with given ObsevrableData, Actions and Rewards
@@ -126,17 +133,17 @@ open class Env {
         }
     }
     
-    // Get the action size of the Environment, set by user
+    /// Get the action size of the Environment, set by user
     open func getActionSize() -> Int {
         return self.actionSize
     }
     
-    // Get the state size of the environment
+    /// Get the state size of the environment
     open func getStateSize() -> Int {
         return self.stateSize
     }
     
-    // Add an ObservableData to the list, in the last position
+    /// Add an ObservableData to the list, in the last position
     open func addObservableData(s: ObservableData) {
         self.admittedObservableData.append(s.name)
         self.observableData.append(s)
@@ -145,7 +152,7 @@ open class Env {
     
     private var oldBattery = 0.0
     
-    // Call the read() func for each ObsevrableData given
+    /// Call the read() func for each ObsevrableData given
     open func read(fromAction: Bool = false) -> [Double] {
         var data: [Double] = []
         if useSimulator {
@@ -157,6 +164,11 @@ open class Env {
             // save as dictionary the observed values for the simulator
             for s in self.observableData {
                 let obsVal = s.read([])
+                
+                if obsVal == [] {
+                    dataTemp.append(0.0)
+                    continue
+                }
                 
                 if s.name == "brightness" {
                     let val = self.simulator.simulateBrightness()

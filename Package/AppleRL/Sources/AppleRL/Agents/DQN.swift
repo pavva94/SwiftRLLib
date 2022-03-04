@@ -99,18 +99,6 @@ open class DeepQNetwork: Agent {
         /// The permanent location of the updated Target Model model.
         self.updatedTargetModelURL = appDirectory.appendingPathComponent(personalizedTargetModelFileName + String(self.modelID) + modelFileExtension)
         
-        
-//        if parameters.keys.contains(.secondsTrainProcess) {
-//            self.secondsTrainProcess = parameters[.secondsTrainProcess] as! Int
-//        } else {
-//            self.secondsTrainProcess = 2*60*60
-//        }
-        
-//        if parameters.keys.contains(.secondsObserveProcess) {
-//            self.secondsObserveProcess = parameters[.secondsObserveProcess] as! Int
-//        } else {
-//            self.secondsObserveProcess = 10*60 // 10 minuti
-//        }
         defaultLogger.log("DQN Initialized")
         loadUpdatedModel()
             
@@ -121,12 +109,12 @@ open class DeepQNetwork: Agent {
         return defaultModelURL
     }
     
-    // Return the model URL, used after the early stages when the app has already trained the network
+    /// Return the model URL, used after the early stages when the app has already trained the network
     open func getModelURL() -> URL {
         return updatedModelURL
     }
     
-    // Return the target model URL
+    /// Return the target model URL
     open func getTargetModelURL() -> URL {
         return updatedTargetModelURL
     }
@@ -148,11 +136,13 @@ open class DeepQNetwork: Agent {
         }
     }
     
+    /// Save the model
     open override func save() {
         defaultLogger.log("Save")
         fatalError("Save is only allowed after an Update")
     }
     
+    /// Load the model
     open override func load() {
         defaultLogger.log("Load")
         // Read from file
@@ -160,6 +150,7 @@ open class DeepQNetwork: Agent {
         
     }
     
+    /// Function that read the environment and chose the action
     @objc open override func listen() {
         // read new state and do things like act
         let state = self.environment.read()

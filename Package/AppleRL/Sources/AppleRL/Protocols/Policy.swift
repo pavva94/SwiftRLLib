@@ -8,16 +8,20 @@
 import Foundation
 import CoreML
 
+/// Protocol for the Policy class
 public protocol Policy {
-
+    /// Policy ID
     var id: Int { get }
+    /// Policy description
     var description: String { get }
     
     // Implement also the Init(), mark it public
-
+    
+    /// Policy execution function
     func exec(model: MLModel, state: MLMultiArray) -> Int
 }
 
+/// Epsilon Greedy policy
 public class EpsilonGreedy: Policy {
     public var id: Int = 0
     let defaults = UserDefaults.standard
@@ -68,6 +72,7 @@ public class EpsilonGreedy: Policy {
     }
 }
 
+/// Random policy
 public class RandomPolicy: Policy {
     public var id: Int = 0
     private var actions: Int = 2

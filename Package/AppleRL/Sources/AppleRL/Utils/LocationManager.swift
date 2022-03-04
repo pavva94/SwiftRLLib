@@ -7,6 +7,7 @@
 
 import CoreLocation
 
+/// Location manager used for the LocationSensor
 open class LocationManagerRL: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var authorizationStatus: CLAuthorizationStatus
     @Published var lastSeenLocation: CLLocation?

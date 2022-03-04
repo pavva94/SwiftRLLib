@@ -7,7 +7,7 @@
 
 import Foundation
 
-
+/// Class used to create a Observable data
 open class ObservableData {
     var name: String
     var stateSize: Int

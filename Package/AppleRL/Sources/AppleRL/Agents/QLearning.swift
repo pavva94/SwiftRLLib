@@ -17,15 +17,22 @@ open class QLearning: Agent {
     var environment: Env
     var policy: Policy
     
-   
+    /// Matrix for the Q-Value
     var qTable: [[Double]] = []
+    /// Dict of states, used to transform a string state to a index value for the qTable
     var states: Dictionary<String, Int> = [:]
+    /// Maximum index for the qTable
     var maxStateId: Int = -1
+    /// Epsilon for the policy
     var epsilon: Double = 0.6
+    /// Learning rate standard
     var lr: Double = 0.0001
+    /// Gamma standard
     var gamma: Double = 0.9
+    /// Training size standard
     var trainingSetSize: Int = 64
     
+    /// File path of the saved qTable
     var path: URL = URL(fileURLWithPath: "")
     
     required public init(env: Env, policy: Policy, parameters: Dictionary<ModelParameters, Any>) {
@@ -35,7 +42,6 @@ open class QLearning: Agent {
         
         // General parameter
         self.modelID = parameters.keys.contains(.agentID) ? (parameters[.agentID] as? Int)! : self.modelID
-//        self.path = URL(fileURLWithPath: "qnetValue_\(self.modelID).txt")
         self.bufferPath = parameters.keys.contains(.bufferPath) ? (parameters[.bufferPath] as? String)! : self.bufferPath + String(self.modelID) + dataManagerFileExtension
         self.databasePath = parameters.keys.contains(.databasePath) ? (parameters[.databasePath] as? String)! : self.databasePath + String(self.modelID) + dataManagerFileExtension
         self.trainingSetSize = parameters.keys.contains(.trainingSetSize) ? (parameters[.trainingSetSize] as? Int)! : self.trainingSetSize
@@ -47,29 +53,23 @@ open class QLearning: Agent {
         
         self.lr = (parameters[.learning_rate] as? Double)!
         self.gamma = (parameters[.gamma] as? Double)!
-//        var temp: [[Double]] = []
-//        for i in 0...env.getStateSize() {
-//            temp.append([])
-//            for _ in 0...env.getActionSize() {
-//                temp[i].append(0.0)
-//            }
-//        }
-//        self.qTable = temp
-//        defaultLogger.log("\(temp)")
         
         self.path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("QLearningOrientation_\(self.modelID).plist")
         load()
     }
-
+    
+    /// Store data into the buffer
     func store(state: [Double], action: Int, reward: Double, nextState: [Double]) {
         let tuple = SarsaTuple(state: convertToMLMultiArrayFloat(from: state), action: action, reward: reward, nextState: convertToMLMultiArrayFloat(from: nextState))
         buffer.addData(tuple)
     }
 
+    /// Get Q-Table
     func getQValue() -> [[Double]] {
         return qTable
     }
-
+    
+    /// Epsilon greedy policy fixed
     func epsilonGreedy(state: Int) -> Int {
         if Double.random(in: 0..<1) < epsilon {
             // epsilon choice
@@ -79,12 +79,13 @@ open class QLearning: Agent {
             return qTable[state].argmax()!
         }
     }
-
+    
+    /// Model act
     open func act(state: Int) -> Int {
-
         return epsilonGreedy(state: state)
     }
 
+    /// Train the model, updating the Q-Values
     open override func update() {
         print("UPDATE")
 
@@ -144,7 +145,8 @@ open class QLearning: Agent {
 //        buffer.reset()
 //    }
     
-    func manageStates(_ state: [Double]) -> Int {
+    /// Manages the states, checking if exists or not and then return the corresponding index
+    private func manageStates(_ state: [Double]) -> Int {
         
         var strState = ""
         for s in state {
@@ -174,7 +176,8 @@ open class QLearning: Agent {
         
         return stateId
     }
-
+    
+    /// Read the environment and act
     @objc open override func listen() {
         let state = environment.read()
         defaultLogger.log("\(state)")
@@ -224,9 +227,8 @@ open class QLearning: Agent {
         // wait the overriding of last tuple to save current tuple
 //        self.buffer.addData(SarsaTuple(state: convertToMLMultiArrayFloat(from: [state]), action: action, reward: 0.0))
     }
-
     
-
+    /// Save the qTable and others parameters
     open override func save() {
         defaultLogger.log("Save")
         // Save to file
@@ -234,7 +236,8 @@ open class QLearning: Agent {
         self.defaults.set(self.states, forKey: "statesDict")
         self.defaults.set(self.maxStateId, forKey: "maxStateId")
     }
-
+    
+    /// Load the qTable and others parameters
     open override func load() {
         defaultLogger.log("Load")
         // Read from file

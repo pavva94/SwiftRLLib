@@ -8,6 +8,7 @@
 import Foundation
 import CoreML
 
+/// Utility to covert a MLMultiArray into a List of Double
 public func convertToArray(from mlMultiArray: MLMultiArray) -> [Double] {
     
     // Init our output array
@@ -28,6 +29,7 @@ public func convertToArray(from mlMultiArray: MLMultiArray) -> [Double] {
     return array
 }
 
+/// Utility to covert a  List of Double into a MLMultiArray
 public func convertToMLMultiArrayFloat<S>(from singleArray: [S]) -> MLMultiArray{
     var featureMultiArray: MLMultiArray
     do {

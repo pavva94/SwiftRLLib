@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Protocol for the Reward
 public protocol Reward {
 
     var id: Int { get }
@@ -15,6 +16,7 @@ public protocol Reward {
     func exec(state: [Double], action: Int, nextState: [Double]) -> Double
 }
 
+/// Example Random Integer reward
 open class RandomIntegerReward: Reward {
     
     public var id: Int = 0

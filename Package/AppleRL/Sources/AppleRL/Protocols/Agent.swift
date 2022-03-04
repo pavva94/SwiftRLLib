@@ -13,15 +13,19 @@ open class Agent {
     /// Identify the Agent with an ID
     var modelID: Int = 0
     
-    /// Variables for saving the data
+    /// Variables for saving the buffer data
     var bufferPath = defaultBufferPath
+    /// Variables for saving the buffer data
     var databasePath = defaultDatabasePath
     
-    /// File manager and defaults
+    /// File manager
     let fileManager = FileManager.default
+    /// User default
     let defaults = UserDefaults.standard
     
+    /// Seconds between two call of the observe process
     var secondsObserveProcess: Int = 0
+    /// Seconds between two call of the train process
     var secondsTrainProcess: Int = 0
     
     /// Start processes based on parameters
@@ -85,6 +89,7 @@ open class Agent {
             }
         }
     
+    /// Timer for the Train process
     var timerTrain : Timer? = nil {
             willSet {
                 timerTrain?.invalidate()
@@ -105,18 +110,21 @@ open class Agent {
         timerObserve = nil
     }
 
+    /// Start the Train process with Timer
     open func startTrain(interval: Int) {
         stopTrain()
         guard self.timerTrain == nil else { return }
         self.timerTrain = Timer.scheduledTimer(timeInterval: TimeInterval(interval), target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
     }
 
+    /// Stop the Train process with Timer
     open func stopTrain() {
         guard timerTrain != nil else { return }
         timerTrain?.invalidate()
         timerTrain = nil
     }
     
+    /// Handler for the Observe process
     open func handleAppRefreshTask(task: BGAppRefreshTask) {
         defaultLogger.log("Handling Listen ask")
         task.expirationHandler = {
@@ -143,6 +151,7 @@ open class Agent {
         }
     }
     
+    /// Handler for the Train process
     open func handleTrainingTask(task: BGProcessingTask) {
         defaultLogger.log("Handling Training task")
         task.expirationHandler = {
@@ -157,6 +166,7 @@ open class Agent {
         scheduleBackgroundTraining()
     }
 
+    /// Scheduler for the Train process in Background
     public func scheduleBackgroundTraining() {
         defaultLogger.log("backgroundmode training activation")
         
