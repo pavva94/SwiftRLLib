@@ -35,6 +35,7 @@ open class QLearning: Agent {
         
         // General parameter
         self.modelID = parameters.keys.contains(.agentID) ? (parameters[.agentID] as? Int)! : self.modelID
+//        self.path = URL(fileURLWithPath: "qnetValue_\(self.modelID).txt")
         self.bufferPath = parameters.keys.contains(.bufferPath) ? (parameters[.bufferPath] as? String)! : self.bufferPath + String(self.modelID) + dataManagerFileExtension
         self.databasePath = parameters.keys.contains(.databasePath) ? (parameters[.databasePath] as? String)! : self.databasePath + String(self.modelID) + dataManagerFileExtension
         self.trainingSetSize = parameters.keys.contains(.trainingSetSize) ? (parameters[.trainingSetSize] as? Int)! : self.trainingSetSize
@@ -56,8 +57,8 @@ open class QLearning: Agent {
 //        self.qTable = temp
 //        defaultLogger.log("\(temp)")
         
-        self.path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("QLearningOrientation.plist")
-        
+        self.path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("QLearningOrientation_\(self.modelID).plist")
+        load()
     }
 
     func store(state: [Double], action: Int, reward: Double, nextState: [Double]) {
@@ -117,6 +118,7 @@ open class QLearning: Agent {
 //
 //        qTable[s][a] = qTable[s][a] + lr * (Float(r) + gamma * maxQtable.max()! - qTable[s][a])
 //        defaultLogger.log(qTable)
+        save()
     }
 
 //    @objc open override func update() {
@@ -170,6 +172,7 @@ open class QLearning: Agent {
 //        print(self.states.count)
 //        print(self.states)
 //        print(self.qTable)
+        save()
         
         return stateId
     }
@@ -231,18 +234,32 @@ open class QLearning: Agent {
         // Save to file
         (self.qTable as NSArray).write(to: path, atomically: true)
         self.defaults.set(self.states, forKey: "statesDict")
+        self.defaults.set(self.maxStateId, forKey: "maxStateId")
     }
 
     open override func load() {
         defaultLogger.log("Load")
         // Read from file
-        let savedArray = NSArray(contentsOf: path)  as! [[Double]]
-        defaultLogger.log("QL Table \(savedArray)")
+        var savedArray: [[Double]] = []
+        if NSArray(contentsOf: path) != nil {
+            savedArray = NSArray(contentsOf: path)  as! [[Double]]
+        }
+//        defaultLogger.log("QL Table \(savedArray)")
         self.qTable = savedArray
         
-        let states = self.defaults.dictionary(forKey: "stateDict")  as! Dictionary<String, Int>
-        defaultLogger.log("QL states\(states)")
+        var states: Dictionary<String, Int> = [:]
+        if self.defaults.dictionary(forKey: "statesDict") != nil {
+            states = self.defaults.dictionary(forKey: "statesDict")  as! Dictionary<String, Int>
+        }
+//        defaultLogger.log("QL states\(states)")
         self.states = states
+        
+        var maxStateId: Int = -1
+        if self.defaults.integer(forKey: "maxStateId") != nil {
+            maxStateId = self.defaults.integer(forKey: "maxStateId")  as! Int
+        }
+//        defaultLogger.log("QL maxStateId\(maxStateId)")
+        self.maxStateId = maxStateId
     }
 }
 
