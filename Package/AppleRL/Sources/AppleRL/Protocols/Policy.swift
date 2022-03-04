@@ -20,18 +20,23 @@ public protocol Policy {
 
 public class EpsilonGreedy: Policy {
     public var id: Int = 0
+    let defaults = UserDefaults.standard
     
-    public init() {}
-    
-    public var description: String = "EpsilonGreedy"
+    public init(id: Int) {
+        self.id = id
+        self.step = self.defaults.integer(forKey: "stepEpsilonGreedy" + String(self.id))
+        
+    }
+
+    public var description: String = "EpsilonGreedy 2 actions"
     
     let greedy: Bool = false
     var step: Int = 0 // save this value?
     
     private func defineEpsilon() -> Double {
-        if self.step < 5500 {
+        if self.step < 2500 {
             return 0.7
-        } else if self.step < 10500 {
+        } else if self.step < 5500 {
             return 0.5
         } else {
             return 0.3
@@ -42,6 +47,7 @@ public class EpsilonGreedy: Policy {
         defaultLogger.log("\(self.description)")
         let currentEpsilon = defineEpsilon()
         self.step += 1
+        self.defaults.set(self.step, forKey: "stepEpsilonGreedy" + String(self.id))
         if !greedy && Double.random(in: 0..<1) < currentEpsilon {
             // epsilon choice
             let choice = Int.random(in: 0..<2)
@@ -57,7 +63,7 @@ public class EpsilonGreedy: Policy {
             
 //            defaultLogger.log("Model Choice \(convertToArray(from: stateTarget!.actions).argmax()!)")
 //            defaultLogger.log("Model List \(convertToArray(from: stateTarget!.actions))")
-            return convertToArray(from: stateTarget!.actions).argmax()!
+            return convertToArray(from: stateTarget!).argmax()!
         }
     }
 }
