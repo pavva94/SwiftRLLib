@@ -24,33 +24,34 @@ open class Agent {
     var secondsObserveProcess: Int = 0
     var secondsTrainProcess: Int = 0
     
-    open func observe(_ mode: WorkMode, _ type: AgentMode) {
+    /// Start processes based on parameters
+    open func start(_ mode: WorkMode, _ type: AgentMode) {
         if mode == WorkMode.timer {
             if type == AgentMode.training {
-                self.startListen(interval: self.secondsObserveProcess)
+                self.startObserve(interval: self.secondsObserveProcess)
                 self.startTrain(interval: self.secondsTrainProcess)
             } else if type == AgentMode.inference {
-                self.startListen(interval: self.secondsObserveProcess)
+                self.startObserve(interval: self.secondsObserveProcess)
             }
         } else if mode == WorkMode.background {
             BGTaskScheduler.shared.cancelAllTaskRequests()
             if type == AgentMode.training {
-                self.scheduleBackgroundFetch()
+                self.scheduleBackgroundObserve()
                 self.scheduleBackgroundTraining()
             } else if type == AgentMode.inference {
-                self.scheduleBackgroundFetch()
+                self.scheduleBackgroundObserve()
             }
         } else if mode == WorkMode.both {
             if type == AgentMode.training {
-                self.startListen(interval: self.secondsObserveProcess)
+                self.startObserve(interval: self.secondsObserveProcess)
                 self.startTrain(interval: self.secondsTrainProcess)
                 BGTaskScheduler.shared.cancelAllTaskRequests()
-                self.scheduleBackgroundFetch()
+                self.scheduleBackgroundObserve()
                 self.scheduleBackgroundTraining()
             } else if type == AgentMode.inference {
-                self.startListen(interval: self.secondsObserveProcess)
+                self.startObserve(interval: self.secondsObserveProcess)
                 BGTaskScheduler.shared.cancelAllTaskRequests()
-                self.scheduleBackgroundFetch()
+                self.scheduleBackgroundObserve()
             }
             
         } else {
@@ -77,9 +78,10 @@ open class Agent {
         fatalError("Not Implemented")
     }
     
-    var timerListen : Timer? = nil {
+    /// Timer for the Observe process
+    var timerObserve : Timer? = nil {
             willSet {
-                timerListen?.invalidate()
+                timerObserve?.invalidate()
             }
         }
     
@@ -89,16 +91,18 @@ open class Agent {
             }
         }
     
-    open func startListen(interval: Int) {
-        stopListen()
-        guard self.timerListen == nil else { return }
-        self.timerListen = Timer.scheduledTimer(timeInterval: TimeInterval(interval), target: self, selector: #selector(self.listen), userInfo: nil, repeats: true)
+    /// Start the Observe process with Timer
+    open func startObserve(interval: Int) {
+        stopObserve()
+        guard self.timerObserve == nil else { return }
+        self.timerObserve = Timer.scheduledTimer(timeInterval: TimeInterval(interval), target: self, selector: #selector(self.listen), userInfo: nil, repeats: true)
     }
 
-    open func stopListen() {
-        guard timerListen != nil else { return }
-        timerListen?.invalidate()
-        timerListen = nil
+    /// Stop the Observe process with Timer
+    open func stopObserve() {
+        guard timerObserve != nil else { return }
+        timerObserve?.invalidate()
+        timerObserve = nil
     }
 
     open func startTrain(interval: Int) {
@@ -123,10 +127,11 @@ open class Agent {
         self.listen()
         task.setTaskCompleted(success: true)
       
-        scheduleBackgroundFetch()
+        scheduleBackgroundObserve()
     }
-
-    public func scheduleBackgroundFetch() {
+    
+    /// Scheduler for the Observe process in Background
+    public func scheduleBackgroundObserve() {
         defaultLogger.log("Background fetch activate")
         let fetchTask = BGAppRefreshTaskRequest(identifier: backgroundListenURL)
         fetchTask.earliestBeginDate = Date(timeIntervalSinceNow: TimeInterval(self.secondsObserveProcess)) // launch at least every x minutes
