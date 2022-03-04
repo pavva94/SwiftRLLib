@@ -98,7 +98,7 @@ open class Simulator {
     func simulateBrightness() -> Double {
         var value = brightnessValuesPer30Minutes.last!
         // if the last brighness is zero, there is a probability that changes autonomously
-        if value == 0.0 && Double.random(in: 0...1) < 0.4 {
+        if value == 0.0 && Double.random(in: 0...1) < 0.05 {
             value = Double.random(in: 0...1).customRound(.toNearestOrAwayFromZero)
             brightnessValuesPer30Minutes.append(value)
         }
