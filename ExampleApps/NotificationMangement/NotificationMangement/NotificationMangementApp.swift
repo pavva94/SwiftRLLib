@@ -7,7 +7,7 @@
 
 import SwiftUI
 import BackgroundTasks
-import AppleRL
+import SwiftRL
 import MetricKit
 import CoreML
 
@@ -115,7 +115,7 @@ struct NotificationMangementApp: App {
             qnet.start(.timer, .training)
             
             let metricManager = MXMetricManager.shared
-            metricManager.add(appleRLMetrics)
+            metricManager.add(RLMetrics)
             
         }
 }

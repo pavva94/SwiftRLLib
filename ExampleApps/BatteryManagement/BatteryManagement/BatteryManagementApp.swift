@@ -6,11 +6,11 @@
 //
 
 import SwiftUI
-import AppleRL
+import SwiftRL
 import BackgroundTasks
 
 
-let actionsArray: [Action] = [BrightnessDecrese0(), BrightnessIncrese0()]
+let actionsArray: [Action] = [BrightnessDecrese(), BrightnessIncrese()]
 let reward: [Reward] = [Reward3()]
 var environment: Env = Env(observableData: ["battery", "clock", "brightness"], actions: actionsArray, rewards: reward, actionSize: 3)
 let params: Dictionary<ModelParameters, Any> = [.agentID: 0, .batchSize: 64, .learning_rate: Double(0.0001), .gamma: Double(0.999), .secondsObserveProcess: 1, .secondsTrainProcess: 5*60]

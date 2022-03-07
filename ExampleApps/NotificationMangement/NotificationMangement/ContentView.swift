@@ -7,7 +7,7 @@
 
 import SwiftUI
 import UserNotifications
-import AppleRL
+import SwiftRL
 import BackgroundTasks
 
 struct ContentView: View {

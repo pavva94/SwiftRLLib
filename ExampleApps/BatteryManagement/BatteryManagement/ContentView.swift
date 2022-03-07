@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AppleRL
+import SwiftRL
 
 struct ContentView: View {
     var databaseDataApp: [DatabaseData]

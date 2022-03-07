@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AppleRL
+import SwiftRL
 import CoreML
 import MapKit
 

@@ -17,8 +17,7 @@
 		73E5960D27CF939F0009FCEA /* AppActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E5960C27CF939F0009FCEA /* AppActions.swift */; };
 		73E5960F27CF93AC0009FCEA /* AppReward.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E5960E27CF93AC0009FCEA /* AppReward.swift */; };
 		73E5961127CF93DF0009FCEA /* AppSensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E5961027CF93DF0009FCEA /* AppSensors.swift */; };
-		73E5961627CF99150009FCEA /* AppleRL in Frameworks */ = {isa = PBXBuildFile; productRef = 73E5961527CF99150009FCEA /* AppleRL */; };
-		73E5961A27CFA08D0009FCEA /* AppleRLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 73E5961927CFA08D0009FCEA /* AppleRLModel.mlmodel */; };
+		73EFAA8027D6775000448A6D /* SwiftRL in Frameworks */ = {isa = PBXBuildFile; productRef = 73EFAA7F27D6775000448A6D /* SwiftRL */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,11 +48,10 @@
 		73E595F727CF93680009FCEA /* Environment2DUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Environment2DUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		73E595FB27CF93680009FCEA /* Environment2DUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment2DUITests.swift; sourceTree = "<group>"; };
 		73E595FD27CF93680009FCEA /* Environment2DUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment2DUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		73E5960B27CF93840009FCEA /* AppleRL */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AppleRL; path = ../../Package/AppleRL; sourceTree = "<group>"; };
 		73E5960C27CF939F0009FCEA /* AppActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppActions.swift; sourceTree = "<group>"; };
 		73E5960E27CF93AC0009FCEA /* AppReward.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReward.swift; sourceTree = "<group>"; };
 		73E5961027CF93DF0009FCEA /* AppSensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSensors.swift; sourceTree = "<group>"; };
-		73E5961927CFA08D0009FCEA /* AppleRLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = AppleRLModel.mlmodel; sourceTree = "<group>"; };
+		73EFAA7E27D6773F00448A6D /* SwiftRL */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftRL; path = ../../Package/SwiftRL; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,7 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				73E5961627CF99150009FCEA /* AppleRL in Frameworks */,
+				73EFAA8027D6775000448A6D /* SwiftRL in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,7 +108,6 @@
 				73E595E027CF93660009FCEA /* Environment2DApp.swift */,
 				73E595E227CF93660009FCEA /* ContentView.swift */,
 				73E595E427CF93670009FCEA /* Assets.xcassets */,
-				73E5961927CFA08D0009FCEA /* AppleRLModel.mlmodel */,
 				73E595E627CF93670009FCEA /* Preview Content */,
 				73E5960C27CF939F0009FCEA /* AppActions.swift */,
 				73E5960E27CF93AC0009FCEA /* AppReward.swift */,
@@ -147,7 +144,7 @@
 		73E5960A27CF93840009FCEA /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				73E5960B27CF93840009FCEA /* AppleRL */,
+				73EFAA7E27D6773F00448A6D /* SwiftRL */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -176,7 +173,7 @@
 			);
 			name = Environment2D;
 			packageProductDependencies = (
-				73E5961527CF99150009FCEA /* AppleRL */,
+				73EFAA7F27D6775000448A6D /* SwiftRL */,
 			);
 			productName = Environment2D;
 			productReference = 73E595DD27CF93660009FCEA /* Environment2D.app */;
@@ -293,7 +290,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				73E5960F27CF93AC0009FCEA /* AppReward.swift in Sources */,
-				73E5961A27CFA08D0009FCEA /* AppleRLModel.mlmodel in Sources */,
 				73E5961127CF93DF0009FCEA /* AppSensors.swift in Sources */,
 				73E595E327CF93660009FCEA /* ContentView.swift in Sources */,
 				73E595E127CF93660009FCEA /* Environment2DApp.swift in Sources */,
@@ -626,9 +622,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		73E5961527CF99150009FCEA /* AppleRL */ = {
+		73EFAA7F27D6775000448A6D /* SwiftRL */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = AppleRL;
+			productName = SwiftRL;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

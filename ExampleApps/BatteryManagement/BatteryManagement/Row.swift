@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AppleRL
+import SwiftRL
 
 struct Row: View {
     var data: DatabaseData

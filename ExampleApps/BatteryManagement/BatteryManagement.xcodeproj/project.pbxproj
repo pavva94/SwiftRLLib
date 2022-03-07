@@ -15,11 +15,11 @@
 		73793FCC2767888000A79709 /* BatteryManagementUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73793FCB2767888000A79709 /* BatteryManagementUITests.swift */; };
 		73793FCE2767888000A79709 /* BatteryManagementUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73793FCD2767888000A79709 /* BatteryManagementUITestsLaunchTests.swift */; };
 		73793FDE27678A0600A79709 /* AppActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73793FDD27678A0600A79709 /* AppActions.swift */; };
-		73793FE127678A5500A79709 /* AppleRL in Frameworks */ = {isa = PBXBuildFile; productRef = 73793FE027678A5500A79709 /* AppleRL */; };
 		73793FE4276797FC00A79709 /* Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73793FE3276797FC00A79709 /* Row.swift */; };
 		73793FE62767983700A79709 /* Detail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73793FE52767983700A79709 /* Detail.swift */; };
-		73E5961C27D031320009FCEA /* AppleRLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 73E5961B27D031320009FCEA /* AppleRLModel.mlmodel */; };
 		73E6B2FC27C4E24D00E161A5 /* AppRewards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E6B2FB27C4E24D00E161A5 /* AppRewards.swift */; };
+		73EFAA7B27D676B200448A6D /* SwiftRL in Frameworks */ = {isa = PBXBuildFile; productRef = 73EFAA7A27D676B200448A6D /* SwiftRL */; };
+		73EFAA7D27D676C700448A6D /* RLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 73EFAA7C27D676C700448A6D /* RLModel.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,13 +50,13 @@
 		73793FC72767888000A79709 /* BatteryManagementUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BatteryManagementUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		73793FCB2767888000A79709 /* BatteryManagementUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryManagementUITests.swift; sourceTree = "<group>"; };
 		73793FCD2767888000A79709 /* BatteryManagementUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryManagementUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		73793FDC276788B400A79709 /* AppleRL */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AppleRL; path = ../../Package/AppleRL; sourceTree = "<group>"; };
 		73793FDD27678A0600A79709 /* AppActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppActions.swift; sourceTree = "<group>"; };
 		73793FE227678A7500A79709 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		73793FE3276797FC00A79709 /* Row.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Row.swift; sourceTree = "<group>"; };
 		73793FE52767983700A79709 /* Detail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Detail.swift; sourceTree = "<group>"; };
-		73E5961B27D031320009FCEA /* AppleRLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = AppleRLModel.mlmodel; sourceTree = "<group>"; };
 		73E6B2FB27C4E24D00E161A5 /* AppRewards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRewards.swift; sourceTree = "<group>"; };
+		73EFAA7927D6768D00448A6D /* SwiftRL */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftRL; path = ../../Package/SwiftRL; sourceTree = "<group>"; };
+		73EFAA7C27D676C700448A6D /* RLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = RLModel.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,7 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				73793FE127678A5500A79709 /* AppleRL in Frameworks */,
+				73EFAA7B27D676B200448A6D /* SwiftRL in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,11 +112,11 @@
 			children = (
 				73793FE227678A7500A79709 /* Info.plist */,
 				73793FB02767887E00A79709 /* BatteryManagementApp.swift */,
-				73E5961B27D031320009FCEA /* AppleRLModel.mlmodel */,
 				73793FB22767887E00A79709 /* ContentView.swift */,
 				73793FB42767888000A79709 /* Assets.xcassets */,
 				73793FB62767888000A79709 /* Preview Content */,
 				73793FDD27678A0600A79709 /* AppActions.swift */,
+				73EFAA7C27D676C700448A6D /* RLModel.mlmodel */,
 				73E6B2FB27C4E24D00E161A5 /* AppRewards.swift */,
 				73793FE3276797FC00A79709 /* Row.swift */,
 				73793FE52767983700A79709 /* Detail.swift */,
@@ -152,7 +152,7 @@
 		73793FDA2767889500A79709 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				73793FDC276788B400A79709 /* AppleRL */,
+				73EFAA7927D6768D00448A6D /* SwiftRL */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -181,7 +181,7 @@
 			);
 			name = BatteryManagement;
 			packageProductDependencies = (
-				73793FE027678A5500A79709 /* AppleRL */,
+				73EFAA7A27D676B200448A6D /* SwiftRL */,
 			);
 			productName = BatteryManagement;
 			productReference = 73793FAD2767887E00A79709 /* BatteryManagement.app */;
@@ -299,7 +299,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				73E5961C27D031320009FCEA /* AppleRLModel.mlmodel in Sources */,
+				73EFAA7D27D676C700448A6D /* RLModel.mlmodel in Sources */,
 				73793FE4276797FC00A79709 /* Row.swift in Sources */,
 				73793FE62767983700A79709 /* Detail.swift in Sources */,
 				73E6B2FC27C4E24D00E161A5 /* AppRewards.swift in Sources */,
@@ -660,9 +660,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		73793FE027678A5500A79709 /* AppleRL */ = {
+		73EFAA7A27D676B200448A6D /* SwiftRL */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = AppleRL;
+			productName = SwiftRL;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

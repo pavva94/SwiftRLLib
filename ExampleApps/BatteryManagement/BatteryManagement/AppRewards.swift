@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AppleRL
+import SwiftRL
 
 
 open class RandomIntegerReward: Reward {
