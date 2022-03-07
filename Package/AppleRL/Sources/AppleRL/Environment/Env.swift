@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import AVKit
 
+/// Customizable Environment
 open class Env {
     /// Observable data allowed by default
     var admittedObservableData = [

@@ -29,7 +29,7 @@ import Combine
 //    }
 //}
 
-
+/// Sensor for the Altitude of the device
 open class AltitudeSensor: ObservableData {
     let locationManager = LocationManagerRL()
     
@@ -47,7 +47,7 @@ open class AltitudeSensor: ObservableData {
     }
 }
 
-
+/// Sensor for the Accelerometer
 open class AccelerometerSensor: ObservableData {
     init() {
         super.init(name: "accelerometer", stateSize: 3)
@@ -75,7 +75,7 @@ open class AccelerometerSensor: ObservableData {
     }
 }
 
-
+/// Sensor for the Battery of the device
 open class BatterySensor: ObservableData {
     init() {
         super.init(name: "battery", stateSize: 1)
@@ -91,6 +91,7 @@ open class BatterySensor: ObservableData {
     }
 }
 
+/// Sensor for the Brightness of the device
 open class BrightnessSensor: ObservableData {
     
     init() {
@@ -109,6 +110,7 @@ open class BrightnessSensor: ObservableData {
     }
 }
 
+/// Sensor for the Barometer of the device
 open class BarometerSensor: ObservableData {
     private var altimeter: CMAltimeter!
     
@@ -136,7 +138,7 @@ open class BarometerSensor: ObservableData {
     }
 }
 
-
+/// Sensor for the City in which the device is
 open class CitySensor: ObservableData {
     let locationManager = LocationManagerRL()
     
@@ -154,6 +156,7 @@ open class CitySensor: ObservableData {
     }
 }
 
+/// Sensor for the Clock
 open class ClockSensor: ObservableData {
     
     public init() {
@@ -183,7 +186,7 @@ open class ClockSensor: ObservableData {
 }
 
 
-
+/// Sensor for the Country in which the device is
 open class CountrySensor: ObservableData {
     let locationManager = LocationManagerRL()
     
@@ -201,7 +204,7 @@ open class CountrySensor: ObservableData {
     }
 }
 
-
+/// Sensor for the Date
 open class DateSensor: ObservableData {
     
     init() {
@@ -223,6 +226,7 @@ open class DateSensor: ObservableData {
     }
 }
 
+/// Sensor for the Gyroscope of the device
 open class GyroscopeSensor: ObservableData {
     init() {
         super.init(name: "gyroscope", stateSize: 3)
@@ -250,7 +254,7 @@ open class GyroscopeSensor: ObservableData {
     }
 }
 
-
+/// Sensor for the Hour
 open class HourSensor: ObservableData {
     
     init() {
@@ -270,7 +274,7 @@ open class HourSensor: ObservableData {
     }
 }
 
-
+/// Sensor for the Location in coordinates of the device
 open class LocationSensor: ObservableData {
 
     let locationManager = LocationManagerRL()
@@ -300,6 +304,7 @@ open class LocationSensor: ObservableData {
     }
 }
 
+/// Sensor for the Lock of the device
 open class LockedSensor: ObservableData {
     
     init() {
@@ -320,7 +325,7 @@ open class LockedSensor: ObservableData {
     }
 }
 
-
+/// Sensor for the Low Power Mode of the device
 open class LowPowerModeSensor: ObservableData {
     
     init() {
@@ -342,7 +347,7 @@ open class LowPowerModeSensor: ObservableData {
     }
 }
 
-
+/// Sensor for the Minute
 open class MinuteSensor: ObservableData {
     
     init() {
@@ -362,7 +367,7 @@ open class MinuteSensor: ObservableData {
     }
 }
 
-
+/// Sensor for the Orientation of the device
 open class OrientationSensor: ObservableData {
     init() {
         super.init(name: "orientation", stateSize: 1)
@@ -382,6 +387,7 @@ open class OrientationSensor: ObservableData {
     }
 }
 
+/// Sensor for the Seconds
 open class SecondSensor: ObservableData {
     
     init() {
@@ -401,7 +407,7 @@ open class SecondSensor: ObservableData {
     }
 }
 
-
+/// Sensor for the Speed at which the device
 open class SpeedSensor: ObservableData {
     let locationManager = LocationManagerRL()
     
@@ -419,7 +425,7 @@ open class SpeedSensor: ObservableData {
     }
 }
 
-
+/// Sensor for the Volume of the device
 open class VolumeSensor: ObservableData {
     
     init() {

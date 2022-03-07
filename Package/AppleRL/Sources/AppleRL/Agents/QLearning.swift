@@ -8,7 +8,7 @@
 import Foundation
 import CoreML
 
-
+/// Q-Learning Agent
 open class QLearning: Agent {
     
     open var buffer: ExperienceReplayBuffer = ExperienceReplayBuffer()

@@ -9,7 +9,7 @@ import CoreML
 import BackgroundTasks
 import MetricKit
 
-
+/// Deep Q-Network Agent
 open class DeepQNetwork: Agent {
     /// Define the buffer
     open var buffer: ExperienceReplayBuffer = ExperienceReplayBuffer()

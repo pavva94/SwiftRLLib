@@ -8,7 +8,7 @@
 import Foundation
 import BackgroundTasks
 
-
+/// Superclass for the Agents
 open class Agent {
     /// Identify the Agent with an ID
     var modelID: Int = 0
