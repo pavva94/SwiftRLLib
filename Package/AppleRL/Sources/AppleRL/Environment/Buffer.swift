@@ -6,45 +6,24 @@
 //
 
 import Foundation
-
-extension Array where Element: Comparable {
-    func argmax() -> Index? {
-        return indices.max(by: { self[$0] < self[$1] })
-    }
-    
-    func argmin() -> Index? {
-        return indices.min(by: { self[$0] < self[$1] })
-    }
-}
-
-extension Array {
-    func argmax(by areInIncreasingOrder: (Element, Element) throws -> Bool) rethrows-> Index? {
-        return try indices.max { (i, j) throws -> Bool in
-            try areInIncreasingOrder(self[i], self[j])
-        }
-    }
-    
-    func argmin(by areInIncreasingOrder: (Element, Element) throws -> Bool) rethrows-> Index? {
-        return try indices.min { (i, j) throws -> Bool in
-            try areInIncreasingOrder(self[i], self[j])
-        }
-    }
-}
-
-// public typealias sarTuple = (state: Int, action: Int, reward: Int)
-
 import SwiftUI
 import CoreML
 
-/// - Tag: LabeledDrawingCollection
+/// Expericence Replay Buffer
 public struct ExperienceReplayBuffer {
     
+    /// User defaults
     let defaults = UserDefaults.standard
-    
+    /// Path of the buffer
+    var bufferPath: String = defaultBufferPath
+    /// Path of the database
+    var databasePath: String = defaultDatabasePath
+    /// Max size of the data keeped
     var maxLength: Int = 512
+    /// Max size of the training data returned
     var batchSize: Int = 256
     
-    /// Collection of the training drawings
+    /// Collection of the training data
     private var trainingData = [SarsaTupleGeneric]()
     
     public var isEmpty = true
@@ -52,7 +31,9 @@ public struct ExperienceReplayBuffer {
     /// The last state
     var lastData: SarsaTupleGeneric
     
-    init(_ batchSize: Int = 256, _ maxBufferLength: Int = 512) {
+    init(_ batchSize: Int = 256, _ maxBufferLength: Int = 512, bufferPath: String = defaultBufferPath, databasePath: String = defaultDatabasePath) {
+        self.bufferPath = bufferPath
+        self.databasePath = databasePath
         self.maxLength = maxBufferLength
         self.batchSize = batchSize
         
@@ -74,6 +55,7 @@ public struct ExperienceReplayBuffer {
         }
     }
     
+    /// Return the dimension fo the buffer
     var count: Int {
         return trainingData.count
     }
@@ -84,6 +66,7 @@ public struct ExperienceReplayBuffer {
         
     }
     
+    /// Set last data to be keeped
     mutating func setLastData(_ data: SarsaTupleGeneric) {
         if isEmpty {
             isEmpty = false
@@ -115,6 +98,7 @@ public struct ExperienceReplayBuffer {
         dataManager.addDataToDatabase(temp, databasePath)
     }
     
+    /// Reset the Buffer
     mutating func reset() {
         self.trainingData = []
         self.defaults.set(0, forKey: "idBufferCounter")

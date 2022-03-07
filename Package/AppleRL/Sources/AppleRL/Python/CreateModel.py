@@ -1,6 +1,6 @@
 import coremltools as ct
 from keras.models import Sequential
-from keras.layers import Dense, Flatten, Conv2D
+from keras.layers import Dense, Flatten, Conv2D, Dropout
 from coremltools.converters import keras as keras_converter
 from coremltools.models.neural_network import datatypes
 
@@ -24,7 +24,7 @@ def convert_model_to_mlmodel(model, updatable_layers, output_shape):
 
     from coremltools.models.neural_network import AdamParams
     adam_params = AdamParams(lr=0.001, batch=8, beta1=0.9, beta2=0.999, eps=1e-8)
-    adam_params.set_batch(8, [1, 2, 8, 16])
+    adam_params.set_batch(32, [8, 16, 32, 64, 128])
     builder.set_adam_optimizer(adam_params)
     builder.set_epochs(10, [1, 10, 50])
     builder.set_shuffle(False)
@@ -79,7 +79,7 @@ def convert_model_to_mlmodel(model, updatable_layers, output_shape):
 def create_dqn(layers, unit_per_layer, input_shape):
     """
     @param: layer            = list of string with names of layer (e.g. ["dense", "dropout", "dense", "dense"])
-    @param: unit_per_layer   = list of int meaning the units for each layer (e.g. [64, 0, 32, 2])
+    @param: unit_per_layer   = list of int meaning the units for each layer (e.g. [64, 0.3, 32, 2])
     @param: input_shape      = tuple with shape of input (e.g. (32, 32, 1))
     """
     updatable_layers = []
@@ -106,7 +106,11 @@ def create_dqn(layers, unit_per_layer, input_shape):
             layer_name = "dense_" + str(i)
             q_net.add(Dense(upl, activation='relu', name=layer_name))
             updatable_layers.append(layer_name)
-        if l == "flatten":
+        elif l == "dropout":
+            layer_name = "dropout_" + str(i)
+            q_net.add(Dropout(upl))
+#            updatable_layers.append(layer_name)
+        elif l == "flatten":
             layer_name = "flatten_" + str(i)
             q_net.add(Flatten(name=layer_name))
 #            updatable_layers.append(layer_name)
@@ -115,7 +119,7 @@ def create_dqn(layers, unit_per_layer, input_shape):
             q_net.add(Conv2D(upl[0], upl[1], activation='relu', dilation_rate=2, name=layer_name))
             updatable_layers.append(layer_name)
         else:
-            print("Only Dense layer please")
+            print("Only Dense,Conv2D and Dropout layers please")
     
     layer_name = "dense_" + str(len(layers)-1)
     
@@ -146,5 +150,7 @@ def create_model(type, layers, unit_per_layer, input_shape):
 if __name__ == "__main__":
     print("Create NN")
 #    create_model("DQN", ["conv2d", "conv2d","conv2d", "flatten", "dense", "dense"], [(2, 3), (2, 3), (2, 3), 0, 16, 2], (512, 512, 1))
-    create_model("DQN", ["dense", "dense", "dense", "dense"], [16, 32, 16, 2], (6, ))
+#    create_model("DQN", ["dense", "dense", "dropout", "dense", "dense", "dense", "dropout", "dense", "dense", "dropout", "dense", "dense", "dense"], [64, 128, 0.3, 512, 1024, 1024, 0.3, 2048, 2048, 0.3, 512, 64, 2], (6, ))
+    create_model("DQN", ["dense", "dense", "dense", "dense", "dense"], [32, 64, 64, 32, 2], (4, ))
+#    create_model("DQN", ["dense", "dense", "dense",], [16, 32, 2], (10, )) # 2D
     print("End")

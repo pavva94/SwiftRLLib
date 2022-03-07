@@ -18,7 +18,8 @@
 		73793FE127678A5500A79709 /* AppleRL in Frameworks */ = {isa = PBXBuildFile; productRef = 73793FE027678A5500A79709 /* AppleRL */; };
 		73793FE4276797FC00A79709 /* Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73793FE3276797FC00A79709 /* Row.swift */; };
 		73793FE62767983700A79709 /* Detail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73793FE52767983700A79709 /* Detail.swift */; };
-		73BFF542278C2D670025EA53 /* AppleRLModel.mlmodelc in Resources */ = {isa = PBXBuildFile; fileRef = 73BFF541278C2D670025EA53 /* AppleRLModel.mlmodelc */; };
+		73E5961C27D031320009FCEA /* AppleRLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 73E5961B27D031320009FCEA /* AppleRLModel.mlmodel */; };
+		73E6B2FC27C4E24D00E161A5 /* AppRewards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E6B2FB27C4E24D00E161A5 /* AppRewards.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,7 +55,8 @@
 		73793FE227678A7500A79709 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		73793FE3276797FC00A79709 /* Row.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Row.swift; sourceTree = "<group>"; };
 		73793FE52767983700A79709 /* Detail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Detail.swift; sourceTree = "<group>"; };
-		73BFF541278C2D670025EA53 /* AppleRLModel.mlmodelc */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppleRLModel.mlmodelc; sourceTree = "<group>"; };
+		73E5961B27D031320009FCEA /* AppleRLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = AppleRLModel.mlmodel; sourceTree = "<group>"; };
+		73E6B2FB27C4E24D00E161A5 /* AppRewards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRewards.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,11 +112,12 @@
 			children = (
 				73793FE227678A7500A79709 /* Info.plist */,
 				73793FB02767887E00A79709 /* BatteryManagementApp.swift */,
+				73E5961B27D031320009FCEA /* AppleRLModel.mlmodel */,
 				73793FB22767887E00A79709 /* ContentView.swift */,
-				73BFF541278C2D670025EA53 /* AppleRLModel.mlmodelc */,
 				73793FB42767888000A79709 /* Assets.xcassets */,
 				73793FB62767888000A79709 /* Preview Content */,
 				73793FDD27678A0600A79709 /* AppActions.swift */,
+				73E6B2FB27C4E24D00E161A5 /* AppRewards.swift */,
 				73793FE3276797FC00A79709 /* Row.swift */,
 				73793FE52767983700A79709 /* Detail.swift */,
 			);
@@ -271,7 +274,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				73793FB82767888000A79709 /* Preview Assets.xcassets in Resources */,
-				73BFF542278C2D670025EA53 /* AppleRLModel.mlmodelc in Resources */,
 				73793FB52767888000A79709 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -297,8 +299,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73E5961C27D031320009FCEA /* AppleRLModel.mlmodel in Sources */,
 				73793FE4276797FC00A79709 /* Row.swift in Sources */,
 				73793FE62767983700A79709 /* Detail.swift in Sources */,
+				73E6B2FC27C4E24D00E161A5 /* AppRewards.swift in Sources */,
 				73793FB32767887E00A79709 /* ContentView.swift in Sources */,
 				73793FB12767887E00A79709 /* BatteryManagementApp.swift in Sources */,
 				73793FDE27678A0600A79709 /* AppActions.swift in Sources */,
@@ -389,7 +393,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -444,7 +448,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

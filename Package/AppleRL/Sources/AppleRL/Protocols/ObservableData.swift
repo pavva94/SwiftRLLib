@@ -7,7 +7,7 @@
 
 import Foundation
 
-
+/// Class used to create a Observable data
 open class ObservableData {
     var name: String
     var stateSize: Int
@@ -17,7 +17,7 @@ open class ObservableData {
         self.stateSize = stateSize
     }
 
-    open func read() -> [Double] {
+    open func read(_ state: [Double] = []) -> [Double] {
         fatalError("read() has not been implemented")
     }
     

@@ -10,6 +10,7 @@ import CoreML
 
 extension DeepQNetwork {
 
+    /// Save the model after an MLUpdateTask
     func saveUpdatedModel(_ updateContext: MLUpdateContext, _ testPerformance: Bool = false) {
         let updatedContextModel = updateContext.model
 //        Tester.checkCorrectPrediction(environment: environment, urlModel: self.getModelURL())
@@ -34,18 +35,14 @@ extension DeepQNetwork {
             defaultLogger.error("Could not save updated model to the file system: \(error.localizedDescription)")
             return
         }
-        Tester.checkCorrectPrediction(environment: environment, urlModel: self.getModelURL())
+//        Tester.checkCorrectPrediction(environment: environment, urlModel: self.getModelURL())
         defaultLogger.log("Saved Model")
     }
 
 
-    /// Loads the updated Model, if available.
+    /// Loads the updated Model, if available. Same with the Target model
     func loadUpdatedModel() {
-    //        guard FileManager.default.fileExists(atPath: updatedModelURL.path) else {
-    //            // The updated model is not present at its designated path.
-    //            defaultLogger.info("The updated model is not present at its designated path.")
-    //            return
-    //        }
+
         if !fileManager.fileExists(atPath: updatedModelURL.path) {
             defaultLogger.info("The updated model is not present at its designated path \(self.updatedModelURL.path)")
             do {

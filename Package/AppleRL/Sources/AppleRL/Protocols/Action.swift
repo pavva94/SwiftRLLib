@@ -7,16 +7,20 @@
 
 import Foundation
 
+/// Representation of an Action
 public protocol Action {
-
+    /// The Action ID
     var id: Int { get }
+    /// The Action description
     var description: String { get }
     
     // Implement also the Init(), mark it public
-
+    
+    /// The Action execution function
     func exec()
 }
 
+/// Example action
 open class Action1: Action {
     public var id: Int = 0
     
@@ -26,53 +30,5 @@ open class Action1: Action {
     
     public func exec() {
         defaultLogger.log("Action1")
-    }
-}
-
-open class Action2: Action {
-    public var id: Int = 1
-    
-    public init() {}
-    
-    public var description: String = "Action2"
-    
-    public func exec() {
-        defaultLogger.log("Action2")
-    }
-}
-
-open class Action3: Action {
-    public var id: Int = 2
-    
-    public init() {}
-    
-    public var description: String = "Action3"
-    
-    public func exec() {
-        defaultLogger.log("Action3")
-    }
-}
-
-open class Action4: Action {
-    public var id: Int = 3
-    
-    public init() {}
-    
-    public var description: String = "Action4"
-    
-    public func exec() {
-        defaultLogger.log("Action4")
-    }
-}
-
-open class Action5: Action {
-    public var id: Int = 4
-    
-    public init() {}
-    
-    public var description: String = "Action5"
-    
-    public func exec() {
-        defaultLogger.log("Action5")
     }
 }

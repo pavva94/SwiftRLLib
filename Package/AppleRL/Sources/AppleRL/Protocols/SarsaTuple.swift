@@ -7,8 +7,9 @@
 
 import CoreML
 
-
+/// Basic data for the package, implements the SARSA tuple
 struct SarsaTupleGeneric {
+
     private var state: MLMultiArray
     private var action: Int
     private var reward: Double
@@ -31,18 +32,22 @@ struct SarsaTupleGeneric {
 //        self.featureValue = try! MLFeatureValue(multiArray: MLMultiArray([state, action, reward, 0]))
     }
     
+    /// Get the state
     func getState() -> MLMultiArray {
         return self.state
     }
     
+    // Get the action
     func getAction() -> Int {
         return self.action
     }
     
+    // Get the Reward
     func getReward() -> Double {
         return self.reward
     }
     
+    // Get the next state
     func getNextState() -> MLMultiArray {
         return self.next_state
     }

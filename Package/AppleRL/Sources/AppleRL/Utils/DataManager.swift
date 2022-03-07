@@ -7,8 +7,10 @@
 
 import Foundation
 
+/// Data Manager for open, add, save files
 public class DataManager {
     
+    /// Load a file with DatabaseData
     public func loadDatabase(_ path: String) -> [DatabaseData] {
         var data: Data
         defaultLogger.log("\(path)")
@@ -39,7 +41,8 @@ public class DataManager {
             fatalError("Couldn't parse \(path) as \([DatabaseData].self):\n\(error)")
         }
     }
-
+    
+    /// Save a file with DatabaseData
     func saveDatabase(data: [DatabaseData], path: String) {
         let fileManager = FileManager.default
 
@@ -84,6 +87,7 @@ public class DataManager {
         saveDatabase(data: newDatabaseData, path: path)
     }
 
+    /// Remove the first element, like a FIFO
     func removeFirstDataFromDatabase(_ path: String) {
         let databaseData: [DatabaseData] = loadDatabase(path)
         
@@ -101,6 +105,7 @@ public class DataManager {
         saveDatabase(data: databaseData, path: path)
     }
 
+    /// Utility function to copy files from the Bundle to the App Documents
     public func copyFilesFromBundleToDocumentsFolderWith(fileExtension: String) {
         if let resPath = Bundle.main.resourcePath {
             do {

@@ -10,6 +10,7 @@ import Foundation
 open class Simulator {
     
     private var simStep: Int = 0
+    private var lastSimStep: Int = 0
     private let maxSimStep: Int = 24*2 // one day, divided by 30 minute
     public var maxBattery: Double = 100.0
     public var baseConsumption: Double = 2
@@ -28,7 +29,7 @@ open class Simulator {
     private var brightnessValuesPer30Minutes: [Double]
     
     init() {
-        clockHoursValues = [1.00, 1.00, 2.00, 2.00, 3.00, 4.00, 4.00, 4.00, 5.00, 5.00, 6.00, 6.00, 7.00, 7.00, 8.00, 8.00, 9.00, 9.00, 10.00, 10.00, 11.00, 11.00, 12.00, 12.00, 13.00, 13.00, 14.00, 14.00, 15.00, 15.00, 16.00, 16.00, 17.00, 17.00, 18.00, 18.00, 19.00, 19.00, 20.00, 20.00, 21.00, 21.00, 22.00, 22.00, 23.00, 23.00]
+        clockHoursValues = [1.00, 1.00, 2.00, 2.00, 3.00, 3.00, 4.00, 4.00, 5.00, 5.00, 6.00, 6.00, 7.00, 7.00, 8.00, 8.00, 9.00, 9.00, 10.00, 10.00, 11.00, 11.00, 12.00, 12.00, 13.00, 13.00, 14.00, 14.00, 15.00, 15.00, 16.00, 16.00, 17.00, 17.00, 18.00, 18.00, 19.00, 19.00, 20.00, 20.00, 21.00, 21.00, 22.00, 22.00, 23.00, 23.00]
         clockMinutesValues = [0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00, 0.00, 30.00]
         batteryValuesPer30Minutes = [currentBattery]
         brightnessValuesPer30Minutes = [Double.random(in: 0...1).customRound(.toNearestOrAwayFromZero)]
@@ -38,9 +39,14 @@ open class Simulator {
         return self.simStep
     }
     
+    public func getLastSimStep() -> Int {
+        return self.lastSimStep
+    }
+    
     func simulateBattery(params: Dictionary<String, Double>) -> Double {
         print(params)
         var accessoriesConsumption = 0.0
+        print("SimStep \(self.simStep)")
         print("Clock: \(clockHoursValues[self.simStep]): \(clockMinutesValues[self.simStep])")
         print("batteryValuesPer30Minutes: \(batteryValuesPer30Minutes)")
         print("brightnessValuesPer30Minutes: \(brightnessValuesPer30Minutes)")
@@ -54,10 +60,13 @@ open class Simulator {
         currentBattery = batteryValuesPer30Minutes[self.simStep]
         print("accessoriesConsumption \(accessoriesConsumption)")
         let newBatteryValue = (Double(currentBattery) - (baseConsumption + accessoriesConsumption)).customRound(.toNearestOrAwayFromZero)
+//        let newBatteryValue = (Double(currentBattery) - accessoriesConsumption).customRound(.toNearestOrAwayFromZero)
+
         print("new battery value \(newBatteryValue)")
         batteryValuesPer30Minutes.append(newBatteryValue)
         
         if self.currentBattery <= 0.0 || newBatteryValue <= 0.0 || self.simStep >= clockHoursValues.count {
+            self.lastSimStep = self.simStep
             reset()
             return 0.0
         }
@@ -67,7 +76,7 @@ open class Simulator {
         return newBatteryValue
     }
     
-    func simulateClock() -> [Double]{
+    public func simulateClock() -> [Double] {
         if self.simStep >= self.clockHoursValues.count {
             self.reset()
         }
@@ -89,7 +98,7 @@ open class Simulator {
     func simulateBrightness() -> Double {
         var value = brightnessValuesPer30Minutes.last!
         // if the last brighness is zero, there is a probability that changes autonomously
-        if value == 0.0 && Double.random(in: 0...1) < 0.4 {
+        if value == 0.0 && Double.random(in: 0...1) < 0.05 {
             value = Double.random(in: 0...1).customRound(.toNearestOrAwayFromZero)
             brightnessValuesPer30Minutes.append(value)
         }
@@ -106,4 +115,4 @@ open class Simulator {
     }
 }
 
-public let BatterySimulator = Simulator()
+//public let BatterySimulator = Simulator()
