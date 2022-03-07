@@ -29,7 +29,7 @@ struct ContentView: View {
 
             Button("Schedule Notification") {
                 BGTaskScheduler.shared.cancelAllTaskRequests()
-                qnet.scheduleBackgroundFetch()
+                qnet.scheduleBackgroundObserve()
                 qnet.scheduleBackgroundTraining()
                 
             }
@@ -37,7 +37,7 @@ struct ContentView: View {
             NavigationView {
                 List(database) { data in
                     NavigationLink {
-                        Detail(data: data, qnet: qnet, actionsArray: actionsArrayNew)
+                        Detail(data: data, qnet: qnet, actionsArray: actionsArray)
                     } label: {
                         Row(data: data)
                     }

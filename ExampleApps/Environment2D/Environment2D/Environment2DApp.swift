@@ -22,7 +22,7 @@ let actionsArray2: [Action] = [ActionLeft2(), ActionRight2()]
 let reward2: [Reward] = [Reward2D()]
 var environment2: Env = Env(observableData: [], actions: actionsArray2, rewards: reward2, actionSize: 2)
 let params2: Dictionary<ModelParameters, Any> = [.agentID: 1, .batchSize: 64, .learning_rate: Double(0.000001), .gamma: Double(0.999), .secondsObserveProcess: 1, .secondsTrainProcess: 60]
-let qnet2: QLearning = QLearning(env: environment2, policy: EpsilonGreedy(id: 1), parameters: params2)
+let qnet2: DeepQNetwork = DeepQNetwork(env: environment2, policy: EpsilonGreedy(id: 1), parameters: params2)
 
 let newSensor2 = MatrixSens()
 
@@ -59,8 +59,8 @@ struct Environment2DApp: App {
         environment3.addObservableData(s: newSensor3)
         environment4.addObservableData(s: newSensor4)
 //        qnet.observe(.timer, .training)
-        qnet2.observe(.timer, .training)
-        qnet3.observe(.timer, .training)
-        qnet4.observe(.timer, .training)
+        qnet2.start(.timer, .training)
+        qnet3.start(.timer, .training)
+        qnet4.start(.timer, .training)
     }
 }
