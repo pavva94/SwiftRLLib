@@ -18,7 +18,7 @@ open class MatrixSens: ObservableData {
     let originalWorld: [Double]  = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     var world: [Double] = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     
-    open override func read(_ state: RLStateData = []) -> RLStateData
+    open override func read(_ state: RLStateType = []) -> RLStateType
     {
         if sensStep < maxStep {
             self.sensStep += 1

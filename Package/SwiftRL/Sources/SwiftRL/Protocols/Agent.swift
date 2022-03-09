@@ -9,7 +9,7 @@ import Foundation
 import BackgroundTasks
 
 /// Simple function to check if the episode is ended: always false
-public func episodeEndFalse(_ state: RLStateData) -> Bool {
+public func episodeEndFalse(_ state: RLStateType) -> Bool {
     return false
 }
 
@@ -63,7 +63,7 @@ open class Agent {
     var secondsTrainProcess: Int = 0
     
     /// Function to define the end of the episode
-    var episodeEnd: ((_ state: RLStateData) -> Bool) = { state in return false }
+    var episodeEnd: ((_ state: RLStateType) -> Bool) = { state in return false }
     
     /// Initialize every variables
     required public init(env: Environment, policy: Policy, parameters: Dictionary<ModelParameter, Any>) {
@@ -84,7 +84,7 @@ open class Agent {
         self.miniBatchSize = parameters.keys.contains(.batchSize) ? (parameters[.batchSize] as? Int)! : self.miniBatchSize
         self.secondsTrainProcess = parameters.keys.contains(.secondsTrainProcess) ? (parameters[.secondsTrainProcess] as? Int)! : 2*60*60 // 2 ore
         self.secondsObserveProcess = parameters.keys.contains(.secondsObserveProcess) ? (parameters[.secondsObserveProcess] as? Int)! : 10*60 // 10 minuti
-        self.episodeEnd = parameters.keys.contains(.episodeEnd) ? (parameters[.episodeEnd] as? ((_ state: RLStateData) -> Bool))! : episodeEndFalse
+        self.episodeEnd = parameters.keys.contains(.episodeEnd) ? (parameters[.episodeEnd] as? ((_ state: RLStateType) -> Bool))! : episodeEndFalse
 
         // allows the possibility to use a variable learning rate
         if type(of: parameters[.learning_rate]) == Double.self {

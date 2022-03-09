@@ -17,7 +17,7 @@ open class ConsumptionSensor: ObservableData {
         super.init(name: "consumption", stateSize: 1)
     }
     
-    open override func read(_ state: [Double] = []) -> [Double]
+    open override func read(_ state: RLStateType = []) -> RLStateType
     {
         if state == [] {
             return [0.0]
@@ -29,12 +29,9 @@ open class ConsumptionSensor: ObservableData {
         }
         let futureValue = lastBatteryValue - state[0]
         self.lastBatteryValue = state[0]
-        return preprocessing(value: futureValue.customRound(.toNearestOrAwayFromZero))
+        return [futureValue.customRound(.toNearestOrAwayFromZero)]
     }
     
-    open override func preprocessing(value: Any) -> [Double] {
-        return [value as! Double]
-    }
 }
 
 
@@ -44,13 +41,9 @@ open class DailyStepSensor: ObservableData {
         super.init(name: "dailyStep", stateSize: 1)
     }
     
-    open override func read(_ state: [Double] = []) -> [Double]
+    open override func read(_ state: RLStateType = []) -> RLStateType
     {
         return [Double(environment.simulator.getSimStep())]
-    }
-    
-    open override func preprocessing(value: Any) -> [Double] {
-        return [value as! Double]
     }
 }
 

@@ -17,8 +17,8 @@ open class RandomIntegerReward: Reward {
     
     public var description: String = "Random Integer Reward"
     
-    public func exec(state: [Double], action: Int, nextState: [Double]) -> Double {
-        var reward: Double = 0.0
+    public func exec(state: RLStateType, action: RLActionType, nextState: RLStateType) -> RLRewardType {
+        var reward: RLRewardType = 0.0
 
         //        let lat = state[0]
         //        let long = state[1]
@@ -57,8 +57,8 @@ open class Reward3: Reward {
 
     public var description: String = "Random Integer Reward"
 
-    public func exec(state: [Double], action: Int, nextState: [Double]) -> Double {
-        var reward: Double = 0.0
+    public func exec(state: RLStateType, action: RLActionType, nextState: RLStateType) -> RLRewardType {
+        var reward: RLRewardType = 0.0
 
         let battery = state[0]
         let nextBattery = nextState[0]
@@ -90,8 +90,8 @@ open class Reward5: Reward {
     public var description: String = "Random Integer Reward"
     var lastConsumption: Double = 0.0
 
-    public func exec(state: [Double], action: Int, nextState: [Double]) -> Double {
-        var reward: Double = 0.0
+    public func exec(state: RLStateType, action: RLActionType, nextState: RLStateType) -> RLRewardType {
+        var reward: RLRewardType = 0.0
 
         let battery = state[0]
         let nextBattery = nextState[0]

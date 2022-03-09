@@ -8,22 +8,22 @@
 import CoreML
 
 // The alias for the datatype used by the observableData
-public typealias RLStateData = [Double]
+public typealias RLStateType = [Double]
 // The alias for the datatype used by the action
-public typealias RLActionData = Int
+public typealias RLActionType = Int
 // The alias for the datatype used by the reward
-public typealias RLRewardData = Double
+public typealias RLRewardType = Double
 
 /// Basic data for the package, implements the SARSA tuple
 struct SarsaTupleGeneric {
 
     private var state: MLMultiArray
-    private var action: RLActionData
-    private var reward: RLRewardData
+    private var action: RLActionType
+    private var reward: RLRewardType
     private var next_state: MLMultiArray
 //    var featureValue: MLFeatureValue
     
-    init(state: MLMultiArray, action: RLActionData, reward: RLRewardData, nextState: MLMultiArray) {
+    init(state: MLMultiArray, action: RLActionType, reward: RLRewardType, nextState: MLMultiArray) {
         self.state = state
         self.action = action
         self.reward = reward
@@ -31,7 +31,7 @@ struct SarsaTupleGeneric {
 //        self.featureValue = try! MLFeatureValue(multiArray: MLMultiArray([state as Any, action as Any, reward as Any, nextState as Any]))
     }
     
-    init(state: MLMultiArray, action: RLActionData, reward: RLRewardData) {
+    init(state: MLMultiArray, action: RLActionType, reward: RLRewardType) {
         self.state = state
         self.action = action
         self.reward = reward
@@ -45,12 +45,12 @@ struct SarsaTupleGeneric {
     }
     
     // Get the action
-    func getAction() -> RLActionData {
+    func getAction() -> RLActionType {
         return self.action
     }
     
     // Get the Reward
-    func getReward() -> RLRewardData {
+    func getReward() -> RLRewardType {
         return self.reward
     }
     

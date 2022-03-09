@@ -47,7 +47,7 @@ public class EpsilonGreedy: Policy {
         }
     }
     
-    public func exec(model: MLModel, state: MLMultiArray) -> RLActionData {
+    public func exec(model: MLModel, state: MLMultiArray) -> RLActionType {
         defaultLogger.log("\(self.description)")
         let currentEpsilon = defineEpsilon()
         self.step += 1
@@ -77,7 +77,7 @@ public class RandomPolicy: Policy {
     public var id: Int = 0
     private var actions: Int = 2
     
-    public init(_ actions: RLActionData = 2) {
+    public init(_ actions: RLActionType = 2) {
         self.actions = actions
     }
     

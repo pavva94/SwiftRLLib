@@ -45,7 +45,7 @@ open class QLearning: Agent {
         
         self.secondsTrainProcess = parameters.keys.contains(.secondsTrainProcess) ? (parameters[.secondsTrainProcess] as? Int)! : 2*60*60 // 2 ore
         self.secondsObserveProcess = parameters.keys.contains(.secondsObserveProcess) ? (parameters[.secondsObserveProcess] as? Int)! : 10*60 // 10 minuti
-        self.episodeEnd = parameters.keys.contains(.episodeEnd) ? (parameters[.episodeEnd] as? ((_ state: RLStateData) -> Bool))! : { state in return false }
+        self.episodeEnd = parameters.keys.contains(.episodeEnd) ? (parameters[.episodeEnd] as? ((_ state: RLStateType) -> Bool))! : { state in return false }
         
 //        self.learningRate = (parameters[.learning_rate] as? Double)!
 //        self.gamma = (parameters[.gamma] as? Double)!
@@ -55,7 +55,7 @@ open class QLearning: Agent {
     }
     
     /// Store data into the buffer
-    func store(state: RLStateData, action: Int, reward: Double, nextState: RLStateData) {
+    func store(state: RLStateType, action: Int, reward: Double, nextState: RLStateType) {
         let tuple = SarsaTuple(state: convertToMLMultiArrayFloat(from: state), action: action, reward: reward, nextState: convertToMLMultiArrayFloat(from: nextState))
         buffer.addData(tuple)
     }
@@ -66,7 +66,7 @@ open class QLearning: Agent {
     }
     
     /// Epsilon greedy policy fixed
-    func epsilonGreedy(state: RLActionData) -> RLActionData {
+    func epsilonGreedy(state: RLActionType) -> RLActionType {
         if Double.random(in: 0..<1) < epsilon {
             // epsilon choice
             return Int.random(in: 0..<self.environment.getActionSize())
@@ -77,7 +77,7 @@ open class QLearning: Agent {
     }
     
     /// Model act
-    open func act(state: Int) -> RLActionData {
+    open func act(state: Int) -> RLActionType {
         return epsilonGreedy(state: state)
     }
 
@@ -92,8 +92,8 @@ open class QLearning: Agent {
             let tuple: SarsaTuple = data[i]
 //            defaultLogger.log("\(tuple)")
             let s: Int = self.manageStates(convertToArray(from: tuple.getState()))
-            let a: RLActionData = tuple.getAction()
-            let r: RLRewardData = tuple.getReward()
+            let a: RLActionType = tuple.getAction()
+            let r: RLRewardType = tuple.getReward()
             let ns: Int = self.manageStates(convertToArray(from: tuple.getNextState()), true)
 
 //            var maxQtable: [Double] = []
@@ -114,7 +114,7 @@ open class QLearning: Agent {
 //        buffer.reset()
 
 
-//        let s:Int = tuple.state, a:RLActionData = tuple.action, r:Int = tuple.reward
+//        let s:Int = tuple.state, a:RLActionType = tuple.action, r:Int = tuple.reward
 //
 //        var maxQtable: [Float] = []
 //        for i in 0...self.environment.get_state_size() {
@@ -135,7 +135,7 @@ open class QLearning: Agent {
 //        while i < data.count {
 //            let tuple: SarsaTuple = data[i]
 ////            defaultLogger.log(tuple)
-//            let s: Int = Int(convertToArray(from: tuple.getState())[0]), a: RLActionData = tuple.getAction(), r: Double = tuple.getReward()
+//            let s: Int = Int(convertToArray(from: tuple.getState())[0]), a: RLActionType = tuple.getAction(), r: Double = tuple.getReward()
 //
 //            var maxQtable: [Double] = []
 //            for i in 0...self.environment.getStateSize() {
@@ -150,7 +150,7 @@ open class QLearning: Agent {
 //    }
     
     /// Manages the states, checking if exists or not and then return the corresponding index
-    private func manageStates(_ state: RLStateData,_ checkFinal: Bool = false) -> Int {
+    private func manageStates(_ state: RLStateType,_ checkFinal: Bool = false) -> Int {
         if checkFinal && self.episodeEnd(state) {
             defaultLogger.log("Q-learning final state")
             return -1

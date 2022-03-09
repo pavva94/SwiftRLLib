@@ -22,7 +22,7 @@ open class DeepQNetwork: Agent {
 //    var policy: Policy
     
 //    /// Training parameters
-//    var learningRate: RLStateData = [0.0001]
+//    var learningRate: RLStateType = [0.0001]
 //    var learningRateDecayMode: Bool = false
 //    var trainingCounter: Int = 0
 ////    var secondsObserveProcess: Int
@@ -78,13 +78,13 @@ open class DeepQNetwork: Agent {
 //        self.miniBatchSize = parameters.keys.contains(.batchSize) ? (parameters[.batchSize] as? Int)! : self.miniBatchSize
 //        self.secondsTrainProcess = parameters.keys.contains(.secondsTrainProcess) ? (parameters[.secondsTrainProcess] as? Int)! : 2*60*60 // 2 ore
 //        self.secondsObserveProcess = parameters.keys.contains(.secondsObserveProcess) ? (parameters[.secondsObserveProcess] as? Int)! : 10*60 // 10 minuti
-//        self.episodeEnd = parameters.keys.contains(.episodeEnd) ? (parameters[.episodeEnd] as? ((_ state: RLStateData) -> Bool))! : episodeEndFalse
+//        self.episodeEnd = parameters.keys.contains(.episodeEnd) ? (parameters[.episodeEnd] as? ((_ state: RLStateType) -> Bool))! : episodeEndFalse
 //
 //        // allows the possibility to use a variable learning rate
 //        if type(of: parameters[.learning_rate]) == Double.self {
 //            self.learningRate = [(parameters[.learning_rate] as? Double)!]
 //            self.learningRateDecayMode = false
-//        } else if type(of: parameters[.learning_rate]) == RLStateData.self {
+//        } else if type(of: parameters[.learning_rate]) == RLStateType.self {
 //            self.learningRate = (parameters[.learning_rate] as? [Double])!
 //            self.learningRateDecayMode = true
 //        }
@@ -117,13 +117,13 @@ open class DeepQNetwork: Agent {
     }
     
     /// Create and store SarsaTuple into the buffer
-    open func store(state: MLMultiArray, action: Int, reward: RLRewardData, nextState: MLMultiArray) {
+    open func store(state: MLMultiArray, action: Int, reward: RLRewardType, nextState: MLMultiArray) {
         let tuple = SarsaTuple(state: state, action: action, reward: reward, nextState: nextState)
         buffer.addData(tuple)
     }
     
     /// open function to make a choice about what action do
-    open func act(state: MLMultiArray, greedy: Bool = false) -> RLActionData {
+    open func act(state: MLMultiArray, greedy: Bool = false) -> RLActionType {
         do {
             let model = try RLModel(contentsOf: updatedModelURL).model
             return self.policy.exec(model: model, state: state)
@@ -156,7 +156,7 @@ open class DeepQNetwork: Agent {
         if self.episodeEnd(state) {
             do {
                 defaultLogger.log("Terminal State reached")
-                let newState = try MLMultiArray(RLStateData())
+                let newState = try MLMultiArray(RLStateType())
                 let reward = self.environment.reward(state: convertToArray(from: self.buffer.lastData.getState()), action: self.buffer.lastData.getAction(), nextState: state)
                 self.store(state: self.buffer.lastData.getState(), action: self.buffer.lastData.getAction(), reward: reward, nextState: newState)
                 // wait the overriding of last tuple to save current tuple
@@ -269,7 +269,7 @@ open class DeepQNetwork: Agent {
             let action = d.getAction()
             let reward = d.getReward()
             let nextState = d.getNextState()
-            var nextStateArray: RLStateData = convertToArray(from: d.getNextState())
+            var nextStateArray: RLStateType = convertToArray(from: d.getNextState())
             
 //            if self.episodeEnd(convertToArray(from: state)) {
 //                print("state battery 0: end of the episode")

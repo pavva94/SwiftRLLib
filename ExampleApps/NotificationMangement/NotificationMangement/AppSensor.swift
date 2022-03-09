@@ -97,7 +97,7 @@ open class ReadNotificationSensorStack: ObservableData {
             
     }
     
-    open override func read(_ state: RLStateData = []) -> RLStateData {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         if state == [] {
             return [0]
         }

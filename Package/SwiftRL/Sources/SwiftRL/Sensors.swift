@@ -18,13 +18,13 @@ import Combine
 //        super.init(name: "ambientLight", stateSize: 1)
 //    }
 //    
-//    open override func read(_ state: RLStateData = []) -> RLStateData {
+//    open override func read(_ state: RLStateType = []) -> RLStateType {
 //        let a = SRAmbientLightSample()
 //        let l = a.lux.value
 //        return [l]
 //    }
 //    
-//    open override func preprocessing(value: Any) -> RLStateData {
+//    open override func preprocessing(value: Any) -> RLStateType {
 //        return [(value as! CGFloat).swd]
 //    }
 //}
@@ -37,7 +37,7 @@ open class AltitudeSensor: ObservableData {
         super.init(name: "altitude", stateSize: 1)
     }
     
-    open override func read(_ state: RLStateData = []) -> RLStateData
+    open override func read(_ state: RLStateType = []) -> RLStateType
     {
         return [locationManager.lastSeenLocation?.altitude ?? 0.0]
     }
@@ -55,7 +55,7 @@ open class AccelerometerSensor: ObservableData {
     var y: Double = 0
     var z: Double = 0
     
-    open override func read(_ state: RLStateData = []) -> RLStateData {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         // Make sure the accelerometer hardware is available.
         if self.motion.isAccelerometerAvailable {
             if let data = self.motion.accelerometerData {
@@ -75,7 +75,7 @@ open class BatterySensor: ObservableData {
         super.init(name: "battery", stateSize: 1)
     }
 
-    open override func read(_ state: RLStateData = []) -> RLStateData {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
 //        return [Double(Int.random(in: 0...100))]
         return [(UIDevice.current.batteryLevel * 100).f.swd]
     }
@@ -89,7 +89,7 @@ open class BrightnessSensor: ObservableData {
         super.init(name: "brightness", stateSize: 1)
     }
     
-    open override func read(_ state: RLStateData = []) -> RLStateData {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
 //        if useSimulator {
 //            return [BatterySimulator.simulateBrightness()]
 //        }
@@ -108,7 +108,7 @@ open class BarometerSensor: ObservableData {
         altimeter = CMAltimeter()
     }
     
-    open override func read(_ state: RLStateData = []) -> RLStateData {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         if CMAltimeter.isRelativeAltitudeAvailable() {
             // 2
             altimeter.startRelativeAltitudeUpdates(to: .main, withHandler: { data, error in
@@ -132,7 +132,7 @@ open class CitySensor: ObservableData {
         super.init(name: "city", stateSize: 1)
     }
     
-    open override func read(_ state: RLStateData = []) -> RLStateData
+    open override func read(_ state: RLStateType = []) -> RLStateType
     {
         return [0.0]
 //        return [locationManager.currentPlacemark?.administrativeArea ?? 0]
@@ -146,7 +146,7 @@ open class ClockSensor: ObservableData {
         super.init(name: "clock", stateSize: 2)
     }
     
-    open override func read(_ state: RLStateData = []) -> RLStateData {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         let date = Foundation.Date() // save date, so all components use the same date
         let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
 
@@ -169,7 +169,7 @@ open class CountrySensor: ObservableData {
         super.init(name: "country", stateSize: 1)
     }
     
-    open override func read(_ state: RLStateData = []) -> RLStateData
+    open override func read(_ state: RLStateType = []) -> RLStateType
     {
         return [0.0]
 //        return [locationManager.currentPlacemark?.country ?? 0]
@@ -184,7 +184,7 @@ open class DateSensor: ObservableData {
         super.init(name: "date", stateSize: 3)
     }
     
-    open override func read(_ state: RLStateData = []) -> RLStateData {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         let date = Foundation.Date() // save date, so all components use the same date
         let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
 
@@ -207,7 +207,7 @@ open class GyroscopeSensor: ObservableData {
     var y: Double = 0
     var z: Double = 0
     
-    open override func read(_ state: RLStateData = []) -> RLStateData {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         // Make sure the accelerometer hardware is available.
         if self.motion.isGyroAvailable {
             if let data = self.motion.gyroData {
@@ -228,7 +228,7 @@ open class HourSensor: ObservableData {
         super.init(name: "hour", stateSize: 3)
     }
     
-    open override func read(_ state: RLStateData = []) -> RLStateData {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         let date = Foundation.Date() // save date, so all components use the same date
         let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
 
@@ -251,7 +251,7 @@ open class LocationSensor: ObservableData {
         locationManager.lastSeenLocation?.coordinate
     }
 
-    open override func read(_ state: RLStateData = []) -> RLStateData {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         var userLatitude: Double {
             return coordinate?.latitude ?? 0
         }
@@ -271,7 +271,7 @@ open class LockedSensor: ObservableData {
         super.init(name: "locked", stateSize: 1)
     }
     
-    open override func read(_ state: RLStateData = []) -> RLStateData {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         let value = UIApplication.shared.isProtectedDataAvailable
         if value {
             return [Double(0)]
@@ -288,7 +288,7 @@ open class LowPowerModeSensor: ObservableData {
         super.init(name: "lowPowerMode", stateSize: 1)
     }
     
-    open override func read(_ state: RLStateData = []) -> RLStateData {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         let value = ProcessInfo.processInfo.isLowPowerModeEnabled
 
         if value {
@@ -307,7 +307,7 @@ open class MinuteSensor: ObservableData {
         super.init(name: "minute", stateSize: 3)
     }
     
-    open override func read(_ state: RLStateData = []) -> RLStateData {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         let date = Foundation.Date() // save date, so all components use the same date
         let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
 
@@ -323,7 +323,7 @@ open class OrientationSensor: ObservableData {
         super.init(name: "orientation", stateSize: 1)
     }
     
-    open override func read(_ state: RLStateData = []) -> RLStateData
+    open override func read(_ state: RLStateType = []) -> RLStateType
     {
         let value = UIDevice.current.orientation.isLandscape
         if value {
@@ -342,7 +342,7 @@ open class SecondSensor: ObservableData {
         super.init(name: "second", stateSize: 3)
     }
     
-    open override func read(_ state: RLStateData = []) -> RLStateData {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         let date = Foundation.Date() // save date, so all components use the same date
         let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
 
@@ -359,7 +359,7 @@ open class SpeedSensor: ObservableData {
         super.init(name: "speed", stateSize: 1)
     }
     
-    open override func read(_ state: RLStateData = []) -> RLStateData
+    open override func read(_ state: RLStateType = []) -> RLStateType
     {
         return [locationManager.lastSeenLocation?.speed ?? 0.0]
     }
@@ -373,7 +373,7 @@ open class VolumeSensor: ObservableData {
         super.init(name: "volume", stateSize: 1)
     }
     
-    open override func read(_ state: RLStateData = []) -> RLStateData {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         do {
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {

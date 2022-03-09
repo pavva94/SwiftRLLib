@@ -13,7 +13,7 @@ public protocol Reward {
     var id: Int { get }
     var description: String { get }
 
-    func exec(state: RLStateData, action: RLActionData, nextState: RLStateData) -> RLRewardData
+    func exec(state: RLStateType, action: RLActionType, nextState: RLStateType) -> RLRewardType
 }
 
 /// Example Random Integer reward
@@ -25,7 +25,7 @@ open class RandomIntegerReward: Reward {
     
     public var description: String = "Random Integer Reward"
     
-    public func exec(state: RLStateData, action: RLActionData, nextState: RLStateData) -> RLRewardData {
+    public func exec(state: RLStateType, action: RLActionType, nextState: RLStateType) -> RLRewardType {
         return Double.random(in: 0...1)
     }
 }
