@@ -13,7 +13,7 @@ open class Testing {
     
     /// Check performance between two models and a target model.
     /// MSE First-Target and Second-Target
-    public func checkPerformance(environment: Env, firstModel: MLModel, secondModel: MLModel, targetModel: MLModel) {
+    public func checkPerformance(environment: Environment, firstModel: MLModel, secondModel: MLModel, targetModel: MLModel) {
         //
         print("MSE: check")
         let state = environment.read()
@@ -49,7 +49,7 @@ open class Testing {
     }
     
     /// Check prediction with some defined state
-    open func checkCorrectPrediction(environment: Env, urlModel: URL) {
+    open func checkCorrectPrediction(environment: Environment, urlModel: URL) {
         // checkCorrectPrediction
         defaultLogger.log("-----checkCorrectPrediction-----")
         do {

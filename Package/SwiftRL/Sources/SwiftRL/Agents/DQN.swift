@@ -117,13 +117,13 @@ open class DeepQNetwork: Agent {
     }
     
     /// Create and store SarsaTuple into the buffer
-    open func store(state: MLMultiArray, action: Int, reward: Double, nextState: MLMultiArray) {
+    open func store(state: MLMultiArray, action: Int, reward: RLRewardData, nextState: MLMultiArray) {
         let tuple = SarsaTuple(state: state, action: action, reward: reward, nextState: nextState)
         buffer.addData(tuple)
     }
     
     /// open function to make a choice about what action do
-    open func act(state: MLMultiArray, greedy: Bool = false) -> Int {
+    open func act(state: MLMultiArray, greedy: Bool = false) -> RLActionData {
         do {
             let model = try RLModel(contentsOf: updatedModelURL).model
             return self.policy.exec(model: model, state: state)
@@ -156,7 +156,7 @@ open class DeepQNetwork: Agent {
         if state == [] {
             do {
                 defaultLogger.log("Terminal State reached")
-                let newState = try MLMultiArray([Double]())
+                let newState = try MLMultiArray(RLStateData())
                 let reward = self.environment.reward(state: convertToArray(from: self.buffer.lastData.getState()), action: self.buffer.lastData.getAction(), nextState: state)
                 self.store(state: self.buffer.lastData.getState(), action: self.buffer.lastData.getAction(), reward: reward, nextState: newState)
                 // wait the overriding of last tuple to save current tuple
@@ -196,7 +196,7 @@ open class DeepQNetwork: Agent {
     }
     
     // Batch update used by the Timer mode (that needs the function to be @objc)
-    /// Calls the updateModel on the RLModel with data from createUpdateFeatures() and parameter from Env
+    /// Calls the updateModel on the RLModel with data from createUpdateFeatures() and parameter from Environment
     @objc open override func update() {
         
         // Convert the drawings into a batch provider as the update input.
@@ -269,10 +269,10 @@ open class DeepQNetwork: Agent {
             let action = d.getAction()
             let reward = d.getReward()
             let nextState = d.getNextState()
-            var nextStateArray: [Double] = convertToArray(from: d.getNextState())
+            var nextStateArray: RLStateData = convertToArray(from: d.getNextState())
             
             // if use simulator do not use the state with the battery == 0; [1] notification, [0]battery
-            if self.episodeEnd() {
+            if self.episodeEnd(convertToArray(from: state)) {
                 print("state battery 0: end of the episode")
                 nextStateArray = []
             }

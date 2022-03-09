@@ -55,7 +55,7 @@ open class QLearning: Agent {
     }
     
     /// Store data into the buffer
-    func store(state: [Double], action: Int, reward: Double, nextState: [Double]) {
+    func store(state: RLStateData, action: Int, reward: Double, nextState: RLStateData) {
         let tuple = SarsaTuple(state: convertToMLMultiArrayFloat(from: state), action: action, reward: reward, nextState: convertToMLMultiArrayFloat(from: nextState))
         buffer.addData(tuple)
     }
@@ -66,7 +66,7 @@ open class QLearning: Agent {
     }
     
     /// Epsilon greedy policy fixed
-    func epsilonGreedy(state: Int) -> Int {
+    func epsilonGreedy(state: RLActionData) -> RLActionData {
         if Double.random(in: 0..<1) < epsilon {
             // epsilon choice
             return Int.random(in: 0..<self.environment.getActionSize())
@@ -77,7 +77,7 @@ open class QLearning: Agent {
     }
     
     /// Model act
-    open func act(state: Int) -> Int {
+    open func act(state: Int) -> RLActionData {
         return epsilonGreedy(state: state)
     }
 
@@ -127,14 +127,14 @@ open class QLearning: Agent {
 //        while i < data.count {
 //            let tuple: SarsaTuple = data[i]
 ////            defaultLogger.log(tuple)
-//            let s: Int = Int(convertToArray(from: tuple.getState())[0]), a: Int = tuple.getAction(), r: Double = tuple.getReward()
+//            let s: Int = Int(convertToArray(from: tuple.getState())[0]), a: RLActionData = tuple.getAction(), r: Double = tuple.getReward()
 //
 //            var maxQtable: [Double] = []
 //            for i in 0...self.environment.getStateSize() {
 //                maxQtable.append(self.qTable[i].max()!)
 //            }
 //            let temp : Double = Double(r) + gamma * maxQtable.max()! - qTable[s][a]
-//            qTable[s][a] = qTable[s][a] + lr * temp
+//            qTable[s][a] = qTable[s][a] + learningRate[0] * temp
 //            defaultLogger.log("\(self.qTable)")
 //            i += 1
 //        }

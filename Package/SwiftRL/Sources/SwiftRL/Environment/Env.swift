@@ -154,13 +154,13 @@ open class Environment {
     private var oldBattery = 0.0
     
     /// Call the read() func for each ObsevrableData given
-    open func read(fromAction: Bool = false) -> [Double] {
-        var data: [Double] = []
+    open func read(fromAction: Bool = false) -> RLStateData {
+        var data: RLStateData = []
         if useSimulator {
             // data for the simulator
             var params: Dictionary<String, Double> = [:]
             // data for the sensors
-            var dataTemp: [Double] = []
+            var dataTemp: RLStateData = []
             
             // save as dictionary the observed values for the simulator
             for s in self.observableData {
@@ -234,7 +234,7 @@ open class Environment {
             print("data \(data)")
         } else {
             // data for the sensors
-            var dataTemp: [Double] = []
+            var dataTemp: RLStateData = []
             for s in self.observableData {
 //                print(s)
                 let readedData = s.read([]) 
@@ -256,7 +256,7 @@ open class Environment {
     }
     
     /// Function that execute the exec() func of the action choose
-    open func act(state: [Double], action: Int) -> Void {
+    open func act(state: RLStateData, action: RLActionData) -> Void {
         // here define the action, selected by the id number
         // Be sure to set an id to each action
         // search action based on Id
@@ -278,9 +278,9 @@ open class Environment {
     }
     
     /// Function that execute the exec() func of the reward
-    open func reward(state: [Double], action: Int, nextState: [Double]) -> Double {
+    open func reward(state: RLStateData, action: RLActionData, nextState: RLStateData) -> RLRewardData {
         
-        var totalReward: Double = 0
+        var totalReward: RLRewardData = 0
         for savedReward in self.rewards {
             totalReward += savedReward.exec(state: state, action: action, nextState: nextState)
         }

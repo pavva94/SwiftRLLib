@@ -17,7 +17,7 @@ open class ObservableData {
         self.stateSize = stateSize
     }
 
-    open func read(_ state: [Double] = []) -> [Double] {
+    open func read(_ state: RLStateData = []) -> RLStateData {
         fatalError("read() has not been implemented")
     }
     
