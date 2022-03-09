@@ -15,10 +15,10 @@ let newSensorStack = ReadNotificationSensorStack()
 
 let actionsArray: [Action] = [Send(), NotSend()]
 let rewardsArray: [Reward] = [ReadSendRatioNew()]
-var environment: Env = Env(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArray, rewards: rewardsArray, actionSize: 2)
-let params: Dictionary<ModelParameters, Any> = [
+var environment = Environment(observableData: ["locked", "battery", "clock", "lowPowerMode"], actions: actionsArray, rewards: rewardsArray)
+let params: Dictionary<ModelParameter, Any> = [
     .agentID: 9,
-    .batchSize: 16,
+    .batchSize: 128,
     .learning_rate: Double(0.00001),
     .gamma: Double(0.999),
     .secondsObserveProcess: 1,

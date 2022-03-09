@@ -19,7 +19,7 @@ open class ReadSendRatioNew: Reward {
     var dailyReward = 0.0
 
     
-    public func exec(state: [Double], action: Int, nextState: [Double]) -> Double {
+    public func exec(state: RLStateData, action: RLActionData, nextState: RLStateData) -> RLRewardData {
         var reward: Double = 0.0
         
         // ["locked", "battery", "clock", "lowPowerMode", "readNotification"]

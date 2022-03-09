@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7320E9A627C2AD2200C53AD7 /* AppSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7320E9A527C2AD2200C53AD7 /* AppSensor.swift */; };
+		739E955427D811600055FA6D /* RLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 739E955327D811600055FA6D /* RLModel.mlmodel */; };
 		73A47C8827A3E5F2002E3546 /* buffer.json in Resources */ = {isa = PBXBuildFile; fileRef = 73A47C8727A3E5F2002E3546 /* buffer.json */; };
 		73B827C3278F09B6006F0F18 /* NotificationMangementApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B827C2278F09B6006F0F18 /* NotificationMangementApp.swift */; };
 		73B827C5278F09B6006F0F18 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B827C4278F09B6006F0F18 /* ContentView.swift */; };
@@ -20,7 +21,6 @@
 		73CDD3962790733500127024 /* Detail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73CDD3942790733500127024 /* Detail.swift */; };
 		73CDD3972790733500127024 /* Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73CDD3952790733500127024 /* Row.swift */; };
 		73DF97A227C45D5B00608461 /* AppRewards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DF97A127C45D5B00608461 /* AppRewards.swift */; };
-		73EFAA7627D6730200448A6D /* RLModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 73EFAA7527D6730200448A6D /* RLModel.mlmodel */; };
 		73EFAA7827D6733F00448A6D /* SwiftRL in Frameworks */ = {isa = PBXBuildFile; productRef = 73EFAA7727D6733F00448A6D /* SwiftRL */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +43,7 @@
 
 /* Begin PBXFileReference section */
 		7320E9A527C2AD2200C53AD7 /* AppSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSensor.swift; sourceTree = "<group>"; };
+		739E955327D811600055FA6D /* RLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = RLModel.mlmodel; sourceTree = "<group>"; };
 		73A47C8727A3E5F2002E3546 /* buffer.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = buffer.json; sourceTree = "<group>"; };
 		73B827BF278F09B6006F0F18 /* NotificationMangement.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NotificationMangement.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		73B827C2278F09B6006F0F18 /* NotificationMangementApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationMangementApp.swift; sourceTree = "<group>"; };
@@ -60,7 +61,6 @@
 		73CDD3952790733500127024 /* Row.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Row.swift; path = NotificationMangement/Row.swift; sourceTree = SOURCE_ROOT; };
 		73DF97A127C45D5B00608461 /* AppRewards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRewards.swift; sourceTree = "<group>"; };
 		73EFAA7427D672C200448A6D /* SwiftRL */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftRL; path = ../../Package/SwiftRL; sourceTree = "<group>"; };
-		73EFAA7527D6730200448A6D /* RLModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = RLModel.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,13 +118,13 @@
 				73B827C2278F09B6006F0F18 /* NotificationMangementApp.swift */,
 				73B827C4278F09B6006F0F18 /* ContentView.swift */,
 				73A47C8727A3E5F2002E3546 /* buffer.json */,
-				73EFAA7527D6730200448A6D /* RLModel.mlmodel */,
 				73B827C6278F09B8006F0F18 /* Assets.xcassets */,
 				73CDD3942790733500127024 /* Detail.swift */,
 				73CDD3952790733500127024 /* Row.swift */,
 				73B827C8278F09B8006F0F18 /* Preview Content */,
 				73B827EE278F12E8006F0F18 /* AppActions.swift */,
 				7320E9A527C2AD2200C53AD7 /* AppSensor.swift */,
+				739E955327D811600055FA6D /* RLModel.mlmodel */,
 				73DF97A127C45D5B00608461 /* AppRewards.swift */,
 			);
 			path = NotificationMangement;
@@ -310,7 +310,7 @@
 				73DF97A227C45D5B00608461 /* AppRewards.swift in Sources */,
 				73CDD3962790733500127024 /* Detail.swift in Sources */,
 				73CDD3972790733500127024 /* Row.swift in Sources */,
-				73EFAA7627D6730200448A6D /* RLModel.mlmodel in Sources */,
+				739E955427D811600055FA6D /* RLModel.mlmodel in Sources */,
 				73B827EF278F12E8006F0F18 /* AppActions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
