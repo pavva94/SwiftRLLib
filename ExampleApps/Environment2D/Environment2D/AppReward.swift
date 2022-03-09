@@ -16,7 +16,7 @@ open class Reward2D: Reward {
     
     public var description: String = "Random Integer Reward"
     
-    public func exec(state: [Double], action: Int, nextState: [Double]) -> Double {
+    public func exec(state: RLStateData, action: RLActionData, nextState: RLStateData) -> RLRewardData {
         if (nextState.firstIndex(of: 1.0) == 9) {
             print("Agent arrived at the end +10")
             return +10
