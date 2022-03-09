@@ -10,7 +10,7 @@ import UIKit
 import AVKit
 
 /// Customizable Environment
-open class Env {
+open class Environment {
     /// Observable data allowed by default
     var admittedObservableData = [
         "battery",
@@ -51,11 +51,11 @@ open class Env {
     /// State size
     private var stateSize: Int
     
-    /// Initialize the Env with given ObsevrableData, Actions and Rewards
+    /// Initialize the Environment with given ObsevrableData, Actions and Rewards
     /// Passing "All" into the observableData parameter will select all ObservableData implemented
-    public init(observableData: [String], actions: [Action], rewards: [Reward], actionSize: Int) {
+    public init(observableData: [String], actions: [Action], rewards: [Reward]) {
         
-        self.actionSize = actionSize
+        self.actionSize = actions.count
         self.stateSize = 0
         self.observableData = []
         self.actions = actions
@@ -250,7 +250,7 @@ open class Env {
                     data.append(sd.customRound(.toNearestOrAwayFromZero))
                 }
             }
-            print("Env Listen: \(data)")
+            print("Environment Listen: \(data)")
         }
         return data
     }
