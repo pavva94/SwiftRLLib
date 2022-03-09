@@ -145,42 +145,42 @@ open class Agent {
     }
     
     /// Timer for the Observe process
-    var timerObserve : Timer? = nil {
+    private var timerObserve : Timer? = nil {
             willSet {
                 timerObserve?.invalidate()
             }
         }
     
     /// Timer for the Train process
-    var timerTrain : Timer? = nil {
+    private var timerTrain : Timer? = nil {
             willSet {
                 timerTrain?.invalidate()
             }
         }
     
     /// Start the Observe process with Timer
-    open func startObserve(interval: Int) {
+    private func startObserve(interval: Int) {
         stopObserve()
         guard self.timerObserve == nil else { return }
         self.timerObserve = Timer.scheduledTimer(timeInterval: TimeInterval(interval), target: self, selector: #selector(self.listen), userInfo: nil, repeats: true)
     }
 
     /// Stop the Observe process with Timer
-    open func stopObserve() {
+    private func stopObserve() {
         guard timerObserve != nil else { return }
         timerObserve?.invalidate()
         timerObserve = nil
     }
 
     /// Start the Train process with Timer
-    open func startTrain(interval: Int) {
+    private func startTrain(interval: Int) {
         stopTrain()
         guard self.timerTrain == nil else { return }
         self.timerTrain = Timer.scheduledTimer(timeInterval: TimeInterval(interval), target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
     }
 
     /// Stop the Train process with Timer
-    open func stopTrain() {
+    private func stopTrain() {
         guard timerTrain != nil else { return }
         timerTrain?.invalidate()
         timerTrain = nil
@@ -201,7 +201,7 @@ open class Agent {
     }
     
     /// Scheduler for the Observe process in Background
-    public func scheduleBackgroundObserve() {
+    private func scheduleBackgroundObserve() {
         defaultLogger.log("Background fetch activate")
         let fetchTask = BGAppRefreshTaskRequest(identifier: backgroundListenURL)
         fetchTask.earliestBeginDate = Date(timeIntervalSinceNow: TimeInterval(self.secondsObserveProcess)) // launch at least every x minutes
@@ -229,7 +229,7 @@ open class Agent {
     }
 
     /// Scheduler for the Train process in Background
-    public func scheduleBackgroundTraining() {
+    private func scheduleBackgroundTraining() {
         defaultLogger.log("backgroundmode training activation")
         
         let request = BGProcessingTaskRequest(identifier: backgroundTrainURL)
