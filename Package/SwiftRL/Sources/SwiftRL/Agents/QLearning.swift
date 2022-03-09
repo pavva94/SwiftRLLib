@@ -91,29 +91,37 @@ open class QLearning: Agent {
         while i < data.count {
             let tuple: SarsaTuple = data[i]
 //            defaultLogger.log("\(tuple)")
-            let s: Int = self.manageStates(convertToArray(from: tuple.getState())), a: Int = tuple.getAction(), r: Double = tuple.getReward()
+            let s: Int = self.manageStates(convertToArray(from: tuple.getState()))
+            let a: RLActionData = tuple.getAction()
+            let r: RLRewardData = tuple.getReward()
+            let ns: Int = self.manageStates(convertToArray(from: tuple.getNextState()), true)
 
-            var maxQtable: [Double] = []
-            for i in 0..<self.maxStateId {
-                maxQtable.append(self.qTable[i].max()!)
+//            var maxQtable: [Double] = []
+//            for i in 0..<self.maxStateId {
+//                maxQtable.append(self.qTable[i].max()!)
+//            }
+//            let temp : Double = Double(r) + gamma * maxQtable.max()! - qTable[s][a]
+            var maxQtableNextState: Double = 0.0
+            if ns != -1 {
+                maxQtableNextState = self.qTable[ns].max()!
             }
+            let temp : Double = Double(r) + gamma * maxQtableNextState - qTable[s][a]
 
-            let temp : Double = Double(r) + gamma * maxQtable.max()! - qTable[s][a]
-            qTable[s][a] = qTable[s][a] + lr * temp
+            qTable[s][a] = qTable[s][a] + learningRate[0] * temp
 //            defaultLogger.log("\(self.qTable)")
             i += 1
         }
 //        buffer.reset()
 
 
-//        let s:Int = tuple.state, a:Int = tuple.action, r:Int = tuple.reward
+//        let s:Int = tuple.state, a:RLActionData = tuple.action, r:Int = tuple.reward
 //
 //        var maxQtable: [Float] = []
 //        for i in 0...self.environment.get_state_size() {
 //            maxQtable.append(self.qTable[i].max()!)
 //        }
 //
-//        qTable[s][a] = qTable[s][a] + lr * (Float(r) + gamma * maxQtable.max()! - qTable[s][a])
+//        qTable[s][a] = qTable[s][a] + learningRate[0] * (Float(r) + gamma * maxQtable.max()! - qTable[s][a])
 //        defaultLogger.log(qTable)
         save()
     }
@@ -142,8 +150,11 @@ open class QLearning: Agent {
 //    }
     
     /// Manages the states, checking if exists or not and then return the corresponding index
-    private func manageStates(_ state: [Double]) -> Int {
-        
+    private func manageStates(_ state: RLStateData,_ checkFinal: Bool = false) -> Int {
+        if checkFinal && self.episodeEnd(state) {
+            defaultLogger.log("Q-learning final state")
+            return -1
+        }
         var strState = ""
         for s in state {
             strState += String(s)

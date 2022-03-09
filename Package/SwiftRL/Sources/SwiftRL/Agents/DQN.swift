@@ -153,7 +153,7 @@ open class DeepQNetwork: Agent {
         let state = self.environment.read()
         
         // check if state is terminal
-        if state == [] {
+        if self.episodeEnd(state) {
             do {
                 defaultLogger.log("Terminal State reached")
                 let newState = try MLMultiArray(RLStateData())
@@ -271,11 +271,10 @@ open class DeepQNetwork: Agent {
             let nextState = d.getNextState()
             var nextStateArray: RLStateData = convertToArray(from: d.getNextState())
             
-            // if use simulator do not use the state with the battery == 0; [1] notification, [0]battery
-            if self.episodeEnd(convertToArray(from: state)) {
-                print("state battery 0: end of the episode")
-                nextStateArray = []
-            }
+//            if self.episodeEnd(convertToArray(from: state)) {
+//                print("state battery 0: end of the episode")
+//                nextStateArray = []
+//            }
             
             // Create a MLFeatureValue as input for the model
             let stateValue = MLFeatureValue(multiArray: state)

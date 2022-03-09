@@ -8,6 +8,13 @@
 import Foundation
 import BackgroundTasks
 
+/// Simple function to check if the episode is ended: always false
+public func episodeEndFalse(_ state: RLStateData) -> Bool {
+    return false
+}
+
+
+
 /// Superclass for the Agents
 open class Agent {
     /// Set a typealias for the agent internal type
