@@ -11,11 +11,11 @@ import CoreML
 /// Q-Learning Agent
 open class QLearning: Agent {
     
-    open var buffer: ExperienceReplayBuffer = ExperienceReplayBuffer()
-    private typealias SarsaTuple = SarsaTupleGeneric
+//    open var buffer: ExperienceReplayBuffer = ExperienceReplayBuffer()
+//    private typealias SarsaTuple = SarsaTupleGeneric
     
-    var environment: Env
-    var policy: Policy
+//    var environment: Environment
+//    var policy: Policy
     
     /// Matrix for the Q-Value
     var qTable: [[Double]] = []
@@ -26,33 +26,29 @@ open class QLearning: Agent {
     /// Epsilon for the policy
     var epsilon: Double = 0.6
     /// Learning rate standard
-    var lr: Double = 0.0001
-    /// Gamma standard
-    var gamma: Double = 0.9
-    /// Training size standard
-    var trainingSetSize: Int = 64
+//    var learningRate: Double = 0.0001
+//    /// Gamma standard
+//    var gamma: Double = 0.9
+//    /// Training size standard
+//    var trainingSetSize: Int = 64
     
     /// File path of the saved qTable
     var path: URL = URL(fileURLWithPath: "")
     
-    required public init(env: Env, policy: Policy, parameters: Dictionary<ModelParameters, Any>) {
-        self.environment = env
-        self.policy = policy
-        super.init()
+    required public init(env: Environment, policy: Policy, parameters: Dictionary<ModelParameter, Any>) {
+        super.init(env: env, policy: policy, parameters: parameters)
         
         // General parameter
         self.modelID = parameters.keys.contains(.agentID) ? (parameters[.agentID] as? Int)! : self.modelID
         self.bufferPath = parameters.keys.contains(.bufferPath) ? (parameters[.bufferPath] as? String)! : self.bufferPath + String(self.modelID) + dataManagerFileExtension
         self.databasePath = parameters.keys.contains(.databasePath) ? (parameters[.databasePath] as? String)! : self.databasePath + String(self.modelID) + dataManagerFileExtension
-        self.trainingSetSize = parameters.keys.contains(.trainingSetSize) ? (parameters[.trainingSetSize] as? Int)! : self.trainingSetSize
-        self.buffer = ExperienceReplayBuffer(self.trainingSetSize, bufferPath: self.bufferPath, databasePath: self.databasePath)
         
         self.secondsTrainProcess = parameters.keys.contains(.secondsTrainProcess) ? (parameters[.secondsTrainProcess] as? Int)! : 2*60*60 // 2 ore
         self.secondsObserveProcess = parameters.keys.contains(.secondsObserveProcess) ? (parameters[.secondsObserveProcess] as? Int)! : 10*60 // 10 minuti
-
+        self.episodeEnd = parameters.keys.contains(.episodeEnd) ? (parameters[.episodeEnd] as? ((_ state: RLStateData) -> Bool))! : { state in return false }
         
-        self.lr = (parameters[.learning_rate] as? Double)!
-        self.gamma = (parameters[.gamma] as? Double)!
+//        self.learningRate = (parameters[.learning_rate] as? Double)!
+//        self.gamma = (parameters[.gamma] as? Double)!
         
         self.path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("QLearningOrientation_\(self.modelID).plist")
         load()

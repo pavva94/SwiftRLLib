@@ -10,8 +10,35 @@ import BackgroundTasks
 
 /// Superclass for the Agents
 open class Agent {
+    /// Set a typealias for the agent internal type
+    typealias SarsaTuple = SarsaTupleGeneric
+    
     /// Identify the Agent with an ID
     var modelID: Int = 0
+    
+    /// The environment with which the agent interact
+    var environment: Environment
+    /// The policy the agent uses
+    var policy: Policy
+    
+    /// Define the buffer
+    open var buffer: ExperienceReplayBuffer = ExperienceReplayBuffer()
+    
+    /// Training parameters
+    var learningRate: [Double] = [0.0001]
+    /// The variable for the learning rate decay
+    var learningRateDecayMode: Bool = false
+    var trainingCounter: Int = 0
+//    var secondsObserveProcess: Int
+//    var secondsTrainProcess: Int
+    /// The default number  of epochs
+    var epochs: Int = 10
+    /// The defaultgamma
+    var gamma: Double = 0.9
+    /// The default mini batch size
+    var miniBatchSize: Int = 32
+    /// The default training set size
+    var trainingSetSize: Int = 256
     
     /// Variables for saving the buffer data
     var bufferPath = defaultBufferPath
@@ -27,6 +54,41 @@ open class Agent {
     var secondsObserveProcess: Int = 0
     /// Seconds between two call of the train process
     var secondsTrainProcess: Int = 0
+    
+    /// Function to define the end of the episode
+    var episodeEnd: ((_ state: RLStateData) -> Bool) = { state in return false }
+    
+    /// Initialize every variables
+    required public init(env: Environment, policy: Policy, parameters: Dictionary<ModelParameter, Any>) {
+        self.environment = env
+        self.policy = policy
+    
+        // General parameter
+        self.modelID = parameters.keys.contains(.agentID) ? (parameters[.agentID] as? Int)! : self.modelID
+        self.bufferPath = parameters.keys.contains(.bufferPath) ? (parameters[.bufferPath] as? String)! : self.bufferPath + String(self.modelID) + dataManagerFileExtension
+        self.databasePath = parameters.keys.contains(.databasePath) ? (parameters[.databasePath] as? String)! : self.databasePath + String(self.modelID) + dataManagerFileExtension
+        self.trainingSetSize = parameters.keys.contains(.trainingSetSize) ? (parameters[.trainingSetSize] as? Int)! : self.trainingSetSize
+        self.buffer = ExperienceReplayBuffer(self.trainingSetSize, bufferPath: self.bufferPath, databasePath: self.databasePath)
+        
+        // Model parameter
+        self.gamma = parameters.keys.contains(.gamma) ? (parameters[.gamma] as? Double)! : self.gamma
+        self.epochs = parameters.keys.contains(.epochs) ? (parameters[.epochs] as? Int)! : self.epochs
+        self.trainingCounter = self.defaults.integer(forKey: "trainingCounter" + String(self.modelID))
+        self.miniBatchSize = parameters.keys.contains(.batchSize) ? (parameters[.batchSize] as? Int)! : self.miniBatchSize
+        self.secondsTrainProcess = parameters.keys.contains(.secondsTrainProcess) ? (parameters[.secondsTrainProcess] as? Int)! : 2*60*60 // 2 ore
+        self.secondsObserveProcess = parameters.keys.contains(.secondsObserveProcess) ? (parameters[.secondsObserveProcess] as? Int)! : 10*60 // 10 minuti
+        self.episodeEnd = parameters.keys.contains(.episodeEnd) ? (parameters[.episodeEnd] as? ((_ state: RLStateData) -> Bool))! : episodeEndFalse
+
+        // allows the possibility to use a variable learning rate
+        if type(of: parameters[.learning_rate]) == Double.self {
+            self.learningRate = [(parameters[.learning_rate] as? Double)!]
+            self.learningRateDecayMode = false
+        } else if type(of: parameters[.learning_rate]) == [Double].self {
+            self.learningRate = (parameters[.learning_rate] as? [Double])!
+            self.learningRateDecayMode = true
+        }
+        
+    }
     
     /// Start processes based on parameters
     open func start(_ mode: WorkMode, _ type: AgentMode) {

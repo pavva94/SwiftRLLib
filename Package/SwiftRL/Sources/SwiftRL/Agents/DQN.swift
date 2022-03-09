@@ -11,30 +11,26 @@ import MetricKit
 
 /// Deep Q-Network Agent
 open class DeepQNetwork: Agent {
-    /// Define the buffer
-    open var buffer: ExperienceReplayBuffer = ExperienceReplayBuffer()
     /// Define the SarsaTuple type
-    typealias SarsaTuple = SarsaTupleGeneric
+//    typealias SarsaTuple = SarsaTupleGeneric
     
     /// Name of model's inputs
     let inputName = modelInputName
     let outputName = modelOutputName
     
-    var environment: Env
-    var policy: Policy
-    /// Function to define the end of the episode
-    private var episodeEnd: (() -> Bool) = { return false }
+//    var environment: Environment
+//    var policy: Policy
     
-    /// Training parameters
-    var learningRate: [Double] = [0.0001]
-    var learningRateDecayMode: Bool = false
-    var trainingCounter: Int = 0
-//    var secondsObserveProcess: Int
-//    var secondsTrainProcess: Int
-    var epochs: Int = 10
-    var gamma: Double = 0.9
-    var miniBatchSize: Int = 32
-    var trainingSetSize: Int = 256
+//    /// Training parameters
+//    var learningRate: RLStateData = [0.0001]
+//    var learningRateDecayMode: Bool = false
+//    var trainingCounter: Int = 0
+////    var secondsObserveProcess: Int
+////    var secondsTrainProcess: Int
+//    var epochs: Int = 10
+//    var gamma: Double = 0.9
+//    var miniBatchSize: Int = 32
+//    var trainingSetSize: Int = 256
     
     var countTargetUpdate: Int = 0
     let epochsAlignTarget: Int = 10
@@ -62,36 +58,37 @@ open class DeepQNetwork: Agent {
     var updatedTargetModelURL: URL = URL(fileURLWithPath: "")
     
     /// Initialize every variables
-    required public init(env: Env, policy: Policy, parameters: Dictionary<ModelParameters, Any>) {
-        self.environment = env
-        self.policy = policy
-        super.init()
-    
-        // General parameter
-        self.modelID = parameters.keys.contains(.agentID) ? (parameters[.agentID] as? Int)! : self.modelID
-        self.bufferPath = parameters.keys.contains(.bufferPath) ? (parameters[.bufferPath] as? String)! : self.bufferPath + String(self.modelID) + dataManagerFileExtension
-        self.databasePath = parameters.keys.contains(.databasePath) ? (parameters[.databasePath] as? String)! : self.databasePath + String(self.modelID) + dataManagerFileExtension
-        self.trainingSetSize = parameters.keys.contains(.trainingSetSize) ? (parameters[.trainingSetSize] as? Int)! : self.trainingSetSize
-        self.buffer = ExperienceReplayBuffer(self.trainingSetSize, bufferPath: self.bufferPath, databasePath: self.databasePath)
-        
-        // Model parameter
-        self.gamma = parameters.keys.contains(.gamma) ? (parameters[.gamma] as? Double)! : self.gamma
-        self.epochs = parameters.keys.contains(.epochs) ? (parameters[.epochs] as? Int)! : self.epochs
-        self.trainingCounter = self.defaults.integer(forKey: "trainingCounter" + String(self.modelID))
-        self.miniBatchSize = parameters.keys.contains(.batchSize) ? (parameters[.batchSize] as? Int)! : self.miniBatchSize
-        self.secondsTrainProcess = parameters.keys.contains(.secondsTrainProcess) ? (parameters[.secondsTrainProcess] as? Int)! : 2*60*60 // 2 ore
-        self.secondsObserveProcess = parameters.keys.contains(.secondsObserveProcess) ? (parameters[.secondsObserveProcess] as? Int)! : 10*60 // 10 minuti
-        self.episodeEnd = parameters.keys.contains(.episodeEnd) ? (parameters[.episodeEnd] as? (() -> Bool))! : { return false }
-
-        // allows the possibility to use a variable learning rate
-        if type(of: parameters[.learning_rate]) == Double.self {
-            self.learningRate = [(parameters[.learning_rate] as? Double)!]
-            self.learningRateDecayMode = false
-        } else if type(of: parameters[.learning_rate]) == [Double].self {
-            self.learningRate = (parameters[.learning_rate] as? [Double])!
-            self.learningRateDecayMode = true
-        }
-        
+    required public init(env: Environment, policy: Policy, parameters: Dictionary<ModelParameter, Any>) {
+        super.init(env: env, policy: policy, parameters: parameters)
+//        self.environment = env
+//        self.policy = policy
+//        super.init()
+//
+//        // General parameter
+//        self.modelID = parameters.keys.contains(.agentID) ? (parameters[.agentID] as? Int)! : self.modelID
+//        self.bufferPath = parameters.keys.contains(.bufferPath) ? (parameters[.bufferPath] as? String)! : self.bufferPath + String(self.modelID) + dataManagerFileExtension
+//        self.databasePath = parameters.keys.contains(.databasePath) ? (parameters[.databasePath] as? String)! : self.databasePath + String(self.modelID) + dataManagerFileExtension
+//        self.trainingSetSize = parameters.keys.contains(.trainingSetSize) ? (parameters[.trainingSetSize] as? Int)! : self.trainingSetSize
+//        self.buffer = ExperienceReplayBuffer(self.trainingSetSize, bufferPath: self.bufferPath, databasePath: self.databasePath)
+//
+//        // Model parameter
+//        self.gamma = parameters.keys.contains(.gamma) ? (parameters[.gamma] as? Double)! : self.gamma
+//        self.epochs = parameters.keys.contains(.epochs) ? (parameters[.epochs] as? Int)! : self.epochs
+//        self.trainingCounter = self.defaults.integer(forKey: "trainingCounter" + String(self.modelID))
+//        self.miniBatchSize = parameters.keys.contains(.batchSize) ? (parameters[.batchSize] as? Int)! : self.miniBatchSize
+//        self.secondsTrainProcess = parameters.keys.contains(.secondsTrainProcess) ? (parameters[.secondsTrainProcess] as? Int)! : 2*60*60 // 2 ore
+//        self.secondsObserveProcess = parameters.keys.contains(.secondsObserveProcess) ? (parameters[.secondsObserveProcess] as? Int)! : 10*60 // 10 minuti
+//        self.episodeEnd = parameters.keys.contains(.episodeEnd) ? (parameters[.episodeEnd] as? ((_ state: RLStateData) -> Bool))! : episodeEndFalse
+//
+//        // allows the possibility to use a variable learning rate
+//        if type(of: parameters[.learning_rate]) == Double.self {
+//            self.learningRate = [(parameters[.learning_rate] as? Double)!]
+//            self.learningRateDecayMode = false
+//        } else if type(of: parameters[.learning_rate]) == RLStateData.self {
+//            self.learningRate = (parameters[.learning_rate] as? [Double])!
+//            self.learningRateDecayMode = true
+//        }
+//
         /// The permanent location of the updated Model model.
         self.updatedModelURL = appDirectory.appendingPathComponent(personalizedModelFileName + String(self.modelID) + modelFileExtension)
         /// The temporary location of the updated Model model.
