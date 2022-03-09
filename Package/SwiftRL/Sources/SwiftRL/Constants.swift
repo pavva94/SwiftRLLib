@@ -32,7 +32,7 @@ let modelInputName = "data"
 let modelOutputName = "actions_true"
 
 /// Enum of Parameters accepted by the model in Configurations
-public enum ModelParameters {
+public enum ModelParameter {
     /// The identifier of the agent
     case agentID
     /// The path of the Buffer

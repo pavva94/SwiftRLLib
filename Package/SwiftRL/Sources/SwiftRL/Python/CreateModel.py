@@ -24,7 +24,7 @@ def convert_model_to_mlmodel(model, updatable_layers, output_shape):
 
     from coremltools.models.neural_network import AdamParams
     adam_params = AdamParams(lr=0.001, batch=8, beta1=0.9, beta2=0.999, eps=1e-8)
-    adam_params.set_batch(32, [8, 16, 32, 64, 128])
+    adam_params.set_batch(32, [8, 16, 32, 64, 128, 256])
     builder.set_adam_optimizer(adam_params)
     builder.set_epochs(10, [1, 10, 50])
     builder.set_shuffle(False)
@@ -151,6 +151,7 @@ if __name__ == "__main__":
     print("Create NN")
 #    create_model("DQN", ["conv2d", "conv2d","conv2d", "flatten", "dense", "dense"], [(2, 3), (2, 3), (2, 3), 0, 16, 2], (512, 512, 1))
 #    create_model("DQN", ["dense", "dense", "dropout", "dense", "dense", "dense", "dropout", "dense", "dense", "dropout", "dense", "dense", "dense"], [64, 128, 0.3, 512, 1024, 1024, 0.3, 2048, 2048, 0.3, 512, 64, 2], (6, ))
-    create_model("DQN", ["dense", "dense", "dense", "dense", "dense"], [32, 64, 64, 32, 2], (4, ))
+#    create_model("DQN", ["dense", "dense", "dense", "dense", "dense", "dense"], [32, 64, 128, 64, 32, 2], (6, )) # notification big
+    create_model("DQN", ["dense", "dense", "dense",], [16, 32, 2], (6, )) # Notification small
 #    create_model("DQN", ["dense", "dense", "dense",], [16, 32, 2], (10, )) # 2D
     print("End")

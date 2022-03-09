@@ -17,12 +17,8 @@ open class ObservableData {
         self.stateSize = stateSize
     }
 
-    open func read(_ state: [Double] = []) -> [Double] {
+    open func read(_ state: RLStateType = []) -> RLStateType {
         fatalError("read() has not been implemented")
-    }
-    
-    open func preprocessing(value: Any) -> [Double] {
-        fatalError("preprocessing() has not been implemented")
     }
 
 }

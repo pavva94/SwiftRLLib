@@ -26,15 +26,10 @@ open class ReadNotificationSensor: ObservableData {
         
         print("readNotification \(self.readedCounter), \(self.sendedCounter)")
         if sendedCounter == 0.0 {
-            return preprocessing(value: 0.0)
+            return [0.0]
         } else {
-            return preprocessing(value: self.readedCounter.reduce(0, +)/self.sendedCounter)
+            return [self.readedCounter.reduce(0, +)/self.sendedCounter]
         }
-    }
-    
-    open override func preprocessing(value: Any) -> [Double] {
-        return [value as! Double]
-        
     }
     
     public func readReadCounter(clock: [Double]) -> Double {
@@ -102,7 +97,7 @@ open class ReadNotificationSensorStack: ObservableData {
             
     }
     
-    open override func read(_ state: [Double] = []) -> [Double] {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         if state == [] {
             return [0]
         }
@@ -120,15 +115,10 @@ open class ReadNotificationSensorStack: ObservableData {
         let clockIndex = manageReaded(clock: [hourRL, minuteRL])
         print("readNotification \(self.readedCounter[clockIndex]), \(self.sendedCounter[clockIndex])")
         if sendedCounter[clockIndex]!.reduce(0, +) == 0.0 {
-            return preprocessing(value: 0.0)
+            return [0.0]
         } else {
-            return preprocessing(value: self.readedCounter[clockIndex]!.reduce(0, +)/5) // To simplify assume that 5 for each half hour was sent, or self.sendedCounter[clockIndex]!.reduce(0, +))
+            return [self.readedCounter[clockIndex]!.reduce(0, +)/5] // To simplify assume that 5 for each half hour was sent, or self.sendedCounter[clockIndex]!.reduce(0, +))
         }
-    }
-    
-    open override func preprocessing(value: Any) -> [Double] {
-        return [value as! Double]
-        
     }
     
     public func readReadCounter(clock: [Double]) -> Double {

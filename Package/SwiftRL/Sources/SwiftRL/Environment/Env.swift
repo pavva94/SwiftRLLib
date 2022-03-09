@@ -10,7 +10,7 @@ import UIKit
 import AVKit
 
 /// Customizable Environment
-open class Env {
+open class Environment {
     /// Observable data allowed by default
     var admittedObservableData = [
         "battery",
@@ -51,11 +51,11 @@ open class Env {
     /// State size
     private var stateSize: Int
     
-    /// Initialize the Env with given ObsevrableData, Actions and Rewards
+    /// Initialize the Environment with given ObsevrableData, Actions and Rewards
     /// Passing "All" into the observableData parameter will select all ObservableData implemented
-    public init(observableData: [String], actions: [Action], rewards: [Reward], actionSize: Int) {
+    public init(observableData: [String], actions: [Action], rewards: [Reward]) {
         
-        self.actionSize = actionSize
+        self.actionSize = actions.count
         self.stateSize = 0
         self.observableData = []
         self.actions = actions
@@ -154,13 +154,13 @@ open class Env {
     private var oldBattery = 0.0
     
     /// Call the read() func for each ObsevrableData given
-    open func read(fromAction: Bool = false) -> [Double] {
-        var data: [Double] = []
+    open func read(fromAction: Bool = false) -> RLStateType {
+        var data: RLStateType = []
         if useSimulator {
             // data for the simulator
             var params: Dictionary<String, Double> = [:]
             // data for the sensors
-            var dataTemp: [Double] = []
+            var dataTemp: RLStateType = []
             
             // save as dictionary the observed values for the simulator
             for s in self.observableData {
@@ -234,7 +234,7 @@ open class Env {
             print("data \(data)")
         } else {
             // data for the sensors
-            var dataTemp: [Double] = []
+            var dataTemp: RLStateType = []
             for s in self.observableData {
 //                print(s)
                 let readedData = s.read([]) 
@@ -250,13 +250,13 @@ open class Env {
                     data.append(sd.customRound(.toNearestOrAwayFromZero))
                 }
             }
-            print("Env Listen: \(data)")
+            print("Environment Listen: \(data)")
         }
         return data
     }
     
     /// Function that execute the exec() func of the action choose
-    open func act(state: [Double], action: Int) -> Void {
+    open func act(state: RLStateType, action: RLActionType) -> Void {
         // here define the action, selected by the id number
         // Be sure to set an id to each action
         // search action based on Id
@@ -278,9 +278,9 @@ open class Env {
     }
     
     /// Function that execute the exec() func of the reward
-    open func reward(state: [Double], action: Int, nextState: [Double]) -> Double {
+    open func reward(state: RLStateType, action: RLActionType, nextState: RLStateType) -> RLRewardType {
         
-        var totalReward: Double = 0
+        var totalReward: RLRewardType = 0
         for savedReward in self.rewards {
             totalReward += savedReward.exec(state: state, action: action, nextState: nextState)
         }

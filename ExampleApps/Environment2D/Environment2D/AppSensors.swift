@@ -18,7 +18,7 @@ open class MatrixSens: ObservableData {
     let originalWorld: [Double]  = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     var world: [Double] = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     
-    open override func read(_ state: [Double] = []) -> [Double]
+    open override func read(_ state: RLStateType = []) -> RLStateType
     {
         if sensStep < maxStep {
             self.sensStep += 1
@@ -27,10 +27,6 @@ open class MatrixSens: ObservableData {
             reset()
             return []
         }
-    }
-    
-    open override func preprocessing(value: Any) -> [Double] {
-        return [value as! Double]
     }
     
     public func moveLeft() {

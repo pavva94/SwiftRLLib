@@ -29,8 +29,7 @@ struct ContentView: View {
 
             Button("Schedule Notification") {
                 BGTaskScheduler.shared.cancelAllTaskRequests()
-                qnet.scheduleBackgroundObserve()
-                qnet.scheduleBackgroundTraining()
+                qnet.start(.both, .training)
                 
             }
             

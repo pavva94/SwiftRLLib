@@ -18,13 +18,13 @@ import Combine
 //        super.init(name: "ambientLight", stateSize: 1)
 //    }
 //    
-//    open override func read(_ state: [Double] = []) -> [Double] {
+//    open override func read(_ state: RLStateType = []) -> RLStateType {
 //        let a = SRAmbientLightSample()
 //        let l = a.lux.value
 //        return [l]
 //    }
 //    
-//    open override func preprocessing(value: Any) -> [Double] {
+//    open override func preprocessing(value: Any) -> RLStateType {
 //        return [(value as! CGFloat).swd]
 //    }
 //}
@@ -37,14 +37,11 @@ open class AltitudeSensor: ObservableData {
         super.init(name: "altitude", stateSize: 1)
     }
     
-    open override func read(_ state: [Double] = []) -> [Double]
+    open override func read(_ state: RLStateType = []) -> RLStateType
     {
-        return preprocessing(value: locationManager.lastSeenLocation?.altitude ?? 0.0)
+        return [locationManager.lastSeenLocation?.altitude ?? 0.0]
     }
     
-    open override func preprocessing(value: Any) -> [Double] {
-        return [value as! Double]
-    }
 }
 
 /// Sensor for the Accelerometer
@@ -58,7 +55,7 @@ open class AccelerometerSensor: ObservableData {
     var y: Double = 0
     var z: Double = 0
     
-    open override func read(_ state: [Double] = []) -> [Double] {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         // Make sure the accelerometer hardware is available.
         if self.motion.isAccelerometerAvailable {
             if let data = self.motion.accelerometerData {
@@ -67,12 +64,9 @@ open class AccelerometerSensor: ObservableData {
                         z = data.acceleration.z
             }
         }
-        return preprocessing(value: [x, y, z])
+        return [x, y, z]
     }
     
-    open override func preprocessing(value: Any) -> [Double] {
-        return value as! [Double]
-    }
 }
 
 /// Sensor for the Battery of the device
@@ -81,14 +75,11 @@ open class BatterySensor: ObservableData {
         super.init(name: "battery", stateSize: 1)
     }
 
-    open override func read(_ state: [Double] = []) -> [Double] {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
 //        return [Double(Int.random(in: 0...100))]
-        return preprocessing(value: UIDevice.current.batteryLevel * 100)
+        return [(UIDevice.current.batteryLevel * 100).f.swd]
     }
     
-    public override func preprocessing(value: Any) -> [Double] {
-        return [(value as! Float).f.swd] // [Double(Int.random(in: 1..<100))]
-    }
 }
 
 /// Sensor for the Brightness of the device
@@ -98,16 +89,14 @@ open class BrightnessSensor: ObservableData {
         super.init(name: "brightness", stateSize: 1)
     }
     
-    open override func read(_ state: [Double] = []) -> [Double] {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
 //        if useSimulator {
 //            return [BatterySimulator.simulateBrightness()]
 //        }
-        return preprocessing(value: UIScreen.main.brightness)   
+        return [UIScreen.main.brightness.swd]
     }
     
-    open override func preprocessing(value: Any) -> [Double] {
-        return [(value as! CGFloat).swd]
-    }
+
 }
 
 /// Sensor for the Barometer of the device
@@ -119,7 +108,7 @@ open class BarometerSensor: ObservableData {
         altimeter = CMAltimeter()
     }
     
-    open override func read(_ state: [Double] = []) -> [Double] {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         if CMAltimeter.isRelativeAltitudeAvailable() {
             // 2
             altimeter.startRelativeAltitudeUpdates(to: .main, withHandler: { data, error in
@@ -132,10 +121,7 @@ open class BarometerSensor: ObservableData {
         }
         return [0]
     }
-    
-    open override func preprocessing(value: Any) -> [Double] {
-        return [(value as! CGFloat).swd]
-    }
+
 }
 
 /// Sensor for the City in which the device is
@@ -146,13 +132,10 @@ open class CitySensor: ObservableData {
         super.init(name: "city", stateSize: 1)
     }
     
-    open override func read(_ state: [Double] = []) -> [Double]
+    open override func read(_ state: RLStateType = []) -> RLStateType
     {
-        return preprocessing(value: locationManager.currentPlacemark?.administrativeArea ?? 0)
-    }
-    
-    open override func preprocessing(value: Any) -> [Double] {
-        return [value as! Double]
+        return [0.0]
+//        return [locationManager.currentPlacemark?.administrativeArea ?? 0]
     }
 }
 
@@ -163,26 +146,18 @@ open class ClockSensor: ObservableData {
         super.init(name: "clock", stateSize: 2)
     }
     
-    open override func read(_ state: [Double] = []) -> [Double] {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         let date = Foundation.Date() // save date, so all components use the same date
         let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
 
         let hour = calendar.component(.hour, from: date)
         let minute = calendar.component(.minute, from: date)
-        let second = calendar.component(.second, from: date)
-//        if useSimulator {
-//            return BatterySimulator.simulateClock()
-//        }
+//        let second = calendar.component(.second, from: date)
         
-        return preprocessing(value: [Double(hour), Double(minute), Double(second)])
+        return [Double(hour), Double(minute)] //, Double(second)]
         
     }
-    
-    open override func preprocessing(value: Any) -> [Double] {
-        // define range of 30 minute
-        let hms = value as! [Double]
-        return [hms[0], hms[1]]
-    }
+
 }
 
 
@@ -194,14 +169,12 @@ open class CountrySensor: ObservableData {
         super.init(name: "country", stateSize: 1)
     }
     
-    open override func read(_ state: [Double] = []) -> [Double]
+    open override func read(_ state: RLStateType = []) -> RLStateType
     {
-        return preprocessing(value: locationManager.currentPlacemark?.country ?? 0)
+        return [0.0]
+//        return [locationManager.currentPlacemark?.country ?? 0]
     }
     
-    open override func preprocessing(value: Any) -> [Double] {
-        return [value as! Double]
-    }
 }
 
 /// Sensor for the Date
@@ -211,19 +184,16 @@ open class DateSensor: ObservableData {
         super.init(name: "date", stateSize: 3)
     }
     
-    open override func read(_ state: [Double] = []) -> [Double] {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         let date = Foundation.Date() // save date, so all components use the same date
         let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
 
         let year = calendar.component(.year, from: date)
         let month = calendar.component(.month, from: date)
         let day = calendar.component(.day, from: date)
-        return preprocessing(value: [Double(year), Double(month), Double(day)])
+        return [Double(year), Double(month), Double(day)]
     }
-    
-    open override func preprocessing(value: Any) -> [Double] {
-        return value as! [Double]
-    }
+
 }
 
 /// Sensor for the Gyroscope of the device
@@ -237,7 +207,7 @@ open class GyroscopeSensor: ObservableData {
     var y: Double = 0
     var z: Double = 0
     
-    open override func read(_ state: [Double] = []) -> [Double] {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         // Make sure the accelerometer hardware is available.
         if self.motion.isGyroAvailable {
             if let data = self.motion.gyroData {
@@ -246,12 +216,9 @@ open class GyroscopeSensor: ObservableData {
                         z = data.rotationRate.z
             }
         }
-        return preprocessing(value: [x, y, z])
+        return [x, y, z]
     }
     
-    open override func preprocessing(value: Any) -> [Double] {
-        return value as! [Double]
-    }
 }
 
 /// Sensor for the Hour
@@ -261,16 +228,12 @@ open class HourSensor: ObservableData {
         super.init(name: "hour", stateSize: 3)
     }
     
-    open override func read(_ state: [Double] = []) -> [Double] {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         let date = Foundation.Date() // save date, so all components use the same date
         let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
 
         let hour = calendar.component(.hour, from: date)
-        return preprocessing(value: [Double(hour)])
-    }
-    
-    open override func preprocessing(value: Any) -> [Double] {
-        return value as! [Double]
+        return [Double(hour)]
     }
 }
 
@@ -288,7 +251,7 @@ open class LocationSensor: ObservableData {
         locationManager.lastSeenLocation?.coordinate
     }
 
-    open override func read(_ state: [Double] = []) -> [Double] {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         var userLatitude: Double {
             return coordinate?.latitude ?? 0
         }
@@ -296,12 +259,9 @@ open class LocationSensor: ObservableData {
         var userLongitude: Double {
             return coordinate?.longitude ?? 0
         }
-        return preprocessing(value: [userLatitude, userLongitude])
+        return [userLatitude, userLongitude]
     }
     
-    public override func preprocessing(value: Any) -> [Double] {
-        return value as! [Double]
-    }
 }
 
 /// Sensor for the Lock of the device
@@ -311,17 +271,13 @@ open class LockedSensor: ObservableData {
         super.init(name: "locked", stateSize: 1)
     }
     
-    open override func read(_ state: [Double] = []) -> [Double] {
-        return preprocessing(value: UIApplication.shared.isProtectedDataAvailable)
-    }
-    
-    open override func preprocessing(value: Any) -> [Double] {
-        if value as! Bool {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
+        let value = UIApplication.shared.isProtectedDataAvailable
+        if value {
             return [Double(0)]
         } else {
             return [Double(1)]
         }
-        
     }
 }
 
@@ -332,19 +288,16 @@ open class LowPowerModeSensor: ObservableData {
         super.init(name: "lowPowerMode", stateSize: 1)
     }
     
-    open override func read(_ state: [Double] = []) -> [Double] {
-        let lowerPowerEnabled = ProcessInfo.processInfo.isLowPowerModeEnabled
-//        return  preprocessing(value: Bool.random())
-        return preprocessing(value: lowerPowerEnabled)
-    }
-    
-    open override func preprocessing(value: Any) -> [Double] {
-        if value as! Bool {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
+        let value = ProcessInfo.processInfo.isLowPowerModeEnabled
+
+        if value {
             return [Double(1.0)]
         } else {
             return [Double(0.0)]
         }
     }
+    
 }
 
 /// Sensor for the Minute
@@ -354,17 +307,14 @@ open class MinuteSensor: ObservableData {
         super.init(name: "minute", stateSize: 3)
     }
     
-    open override func read(_ state: [Double] = []) -> [Double] {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         let date = Foundation.Date() // save date, so all components use the same date
         let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
 
         let minute = calendar.component(.minute, from: date)
-        return preprocessing(value: [Double(minute)])
+        return [Double(minute)]
     }
-    
-    open override func preprocessing(value: Any) -> [Double] {
-        return value as! [Double]
-    }
+
 }
 
 /// Sensor for the Orientation of the device
@@ -373,18 +323,16 @@ open class OrientationSensor: ObservableData {
         super.init(name: "orientation", stateSize: 1)
     }
     
-    open override func read(_ state: [Double] = []) -> [Double]
+    open override func read(_ state: RLStateType = []) -> RLStateType
     {
-        return preprocessing(value: UIDevice.current.orientation.isLandscape)
-    }
-    
-    open override func preprocessing(value: Any) -> [Double] {
-        if value as! Bool {
+        let value = UIDevice.current.orientation.isLandscape
+        if value {
             return [Double(0)]
         } else {
             return [Double(1)]
         }
     }
+
 }
 
 /// Sensor for the Seconds
@@ -394,16 +342,12 @@ open class SecondSensor: ObservableData {
         super.init(name: "second", stateSize: 3)
     }
     
-    open override func read(_ state: [Double] = []) -> [Double] {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         let date = Foundation.Date() // save date, so all components use the same date
         let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
 
         let second = calendar.component(.second, from: date)
-        return preprocessing(value: [Double(second)])
-    }
-    
-    open override func preprocessing(value: Any) -> [Double] {
-        return value as! [Double]
+        return [Double(second)]
     }
 }
 
@@ -415,14 +359,11 @@ open class SpeedSensor: ObservableData {
         super.init(name: "speed", stateSize: 1)
     }
     
-    open override func read(_ state: [Double] = []) -> [Double]
+    open override func read(_ state: RLStateType = []) -> RLStateType
     {
-        return preprocessing(value: locationManager.lastSeenLocation?.speed ?? 0.0)
+        return [locationManager.lastSeenLocation?.speed ?? 0.0]
     }
     
-    open override func preprocessing(value: Any) -> [Double] {
-        return [value as! Double]
-    }
 }
 
 /// Sensor for the Volume of the device
@@ -432,17 +373,12 @@ open class VolumeSensor: ObservableData {
         super.init(name: "volume", stateSize: 1)
     }
     
-    open override func read(_ state: [Double] = []) -> [Double] {
+    open override func read(_ state: RLStateType = []) -> RLStateType {
         do {
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
             defaultLogger.log("Error on Volume")
         }
-        return preprocessing(value: AVAudioSession.sharedInstance().outputVolume)
-    }
-    
-    open override func preprocessing(value: Any) -> [Double] {
-        return [Double(value as! Float)]
-        
+        return [Double(AVAudioSession.sharedInstance().outputVolume)]
     }
 }

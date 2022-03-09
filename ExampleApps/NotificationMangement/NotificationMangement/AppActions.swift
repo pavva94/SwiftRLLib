@@ -65,14 +65,14 @@ open class Send: Action {
             let minuteRL = state[3]
             let clock = [hourRL, minuteRL]
 
-            if [7.0, 8.0, 12.0, 13.0, 18.0, 19.0, 20.0].contains(hourRL)  {
-                if Double.random(in: 0...1) < 0.95 {
+            if [6.0, 7.0, 8.0, 12.0, 13.0, 14.0, 18.0, 19.0, 20.0].contains(hourRL)  {
+                if Double.random(in: 0...1) < 0.99 {
                     print("READED")
                     newSensorStack.addRead(clock: clock)
                 } else {
                     newSensorStack.addNotRead(clock: clock)
                 }
-            } else if Double.random(in: 0...1) < 0.15 {
+            } else if Double.random(in: 0...1) < 0.35 {
                 newSensorStack.addRead(clock: clock)
                 print("FORTUNE READ")
             } else {

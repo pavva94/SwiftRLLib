@@ -11,11 +11,11 @@ import CoreML
 /// Q-Learning Agent
 open class QLearning: Agent {
     
-    open var buffer: ExperienceReplayBuffer = ExperienceReplayBuffer()
-    private typealias SarsaTuple = SarsaTupleGeneric
+//    open var buffer: ExperienceReplayBuffer = ExperienceReplayBuffer()
+//    private typealias SarsaTuple = SarsaTupleGeneric
     
-    var environment: Env
-    var policy: Policy
+//    var environment: Environment
+//    var policy: Policy
     
     /// Matrix for the Q-Value
     var qTable: [[Double]] = []
@@ -26,40 +26,36 @@ open class QLearning: Agent {
     /// Epsilon for the policy
     var epsilon: Double = 0.6
     /// Learning rate standard
-    var lr: Double = 0.0001
-    /// Gamma standard
-    var gamma: Double = 0.9
-    /// Training size standard
-    var trainingSetSize: Int = 64
+//    var learningRate: Double = 0.0001
+//    /// Gamma standard
+//    var gamma: Double = 0.9
+//    /// Training size standard
+//    var trainingSetSize: Int = 64
     
     /// File path of the saved qTable
     var path: URL = URL(fileURLWithPath: "")
     
-    required public init(env: Env, policy: Policy, parameters: Dictionary<ModelParameters, Any>) {
-        self.environment = env
-        self.policy = policy
-        super.init()
+    required public init(env: Environment, policy: Policy, parameters: Dictionary<ModelParameter, Any>) {
+        super.init(env: env, policy: policy, parameters: parameters)
         
         // General parameter
         self.modelID = parameters.keys.contains(.agentID) ? (parameters[.agentID] as? Int)! : self.modelID
         self.bufferPath = parameters.keys.contains(.bufferPath) ? (parameters[.bufferPath] as? String)! : self.bufferPath + String(self.modelID) + dataManagerFileExtension
         self.databasePath = parameters.keys.contains(.databasePath) ? (parameters[.databasePath] as? String)! : self.databasePath + String(self.modelID) + dataManagerFileExtension
-        self.trainingSetSize = parameters.keys.contains(.trainingSetSize) ? (parameters[.trainingSetSize] as? Int)! : self.trainingSetSize
-        self.buffer = ExperienceReplayBuffer(self.trainingSetSize, bufferPath: self.bufferPath, databasePath: self.databasePath)
         
         self.secondsTrainProcess = parameters.keys.contains(.secondsTrainProcess) ? (parameters[.secondsTrainProcess] as? Int)! : 2*60*60 // 2 ore
         self.secondsObserveProcess = parameters.keys.contains(.secondsObserveProcess) ? (parameters[.secondsObserveProcess] as? Int)! : 10*60 // 10 minuti
-
+        self.episodeEnd = parameters.keys.contains(.episodeEnd) ? (parameters[.episodeEnd] as? ((_ state: RLStateType) -> Bool))! : { state in return false }
         
-        self.lr = (parameters[.learning_rate] as? Double)!
-        self.gamma = (parameters[.gamma] as? Double)!
+//        self.learningRate = (parameters[.learning_rate] as? Double)!
+//        self.gamma = (parameters[.gamma] as? Double)!
         
         self.path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("QLearningOrientation_\(self.modelID).plist")
         load()
     }
     
     /// Store data into the buffer
-    func store(state: [Double], action: Int, reward: Double, nextState: [Double]) {
+    func store(state: RLStateType, action: Int, reward: Double, nextState: RLStateType) {
         let tuple = SarsaTuple(state: convertToMLMultiArrayFloat(from: state), action: action, reward: reward, nextState: convertToMLMultiArrayFloat(from: nextState))
         buffer.addData(tuple)
     }
@@ -70,7 +66,7 @@ open class QLearning: Agent {
     }
     
     /// Epsilon greedy policy fixed
-    func epsilonGreedy(state: Int) -> Int {
+    func epsilonGreedy(state: RLActionType) -> RLActionType {
         if Double.random(in: 0..<1) < epsilon {
             // epsilon choice
             return Int.random(in: 0..<self.environment.getActionSize())
@@ -81,7 +77,7 @@ open class QLearning: Agent {
     }
     
     /// Model act
-    open func act(state: Int) -> Int {
+    open func act(state: Int) -> RLActionType {
         return epsilonGreedy(state: state)
     }
 
@@ -95,29 +91,37 @@ open class QLearning: Agent {
         while i < data.count {
             let tuple: SarsaTuple = data[i]
 //            defaultLogger.log("\(tuple)")
-            let s: Int = self.manageStates(convertToArray(from: tuple.getState())), a: Int = tuple.getAction(), r: Double = tuple.getReward()
+            let s: Int = self.manageStates(convertToArray(from: tuple.getState()))
+            let a: RLActionType = tuple.getAction()
+            let r: RLRewardType = tuple.getReward()
+            let ns: Int = self.manageStates(convertToArray(from: tuple.getNextState()), true)
 
-            var maxQtable: [Double] = []
-            for i in 0..<self.maxStateId {
-                maxQtable.append(self.qTable[i].max()!)
+//            var maxQtable: [Double] = []
+//            for i in 0..<self.maxStateId {
+//                maxQtable.append(self.qTable[i].max()!)
+//            }
+//            let temp : Double = Double(r) + gamma * maxQtable.max()! - qTable[s][a]
+            var maxQtableNextState: Double = 0.0
+            if ns != -1 {
+                maxQtableNextState = self.qTable[ns].max()!
             }
+            let temp : Double = Double(r) + gamma * maxQtableNextState - qTable[s][a]
 
-            let temp : Double = Double(r) + gamma * maxQtable.max()! - qTable[s][a]
-            qTable[s][a] = qTable[s][a] + lr * temp
+            qTable[s][a] = qTable[s][a] + learningRate[0] * temp
 //            defaultLogger.log("\(self.qTable)")
             i += 1
         }
 //        buffer.reset()
 
 
-//        let s:Int = tuple.state, a:Int = tuple.action, r:Int = tuple.reward
+//        let s:Int = tuple.state, a:RLActionType = tuple.action, r:Int = tuple.reward
 //
 //        var maxQtable: [Float] = []
 //        for i in 0...self.environment.get_state_size() {
 //            maxQtable.append(self.qTable[i].max()!)
 //        }
 //
-//        qTable[s][a] = qTable[s][a] + lr * (Float(r) + gamma * maxQtable.max()! - qTable[s][a])
+//        qTable[s][a] = qTable[s][a] + learningRate[0] * (Float(r) + gamma * maxQtable.max()! - qTable[s][a])
 //        defaultLogger.log(qTable)
         save()
     }
@@ -131,14 +135,14 @@ open class QLearning: Agent {
 //        while i < data.count {
 //            let tuple: SarsaTuple = data[i]
 ////            defaultLogger.log(tuple)
-//            let s: Int = Int(convertToArray(from: tuple.getState())[0]), a: Int = tuple.getAction(), r: Double = tuple.getReward()
+//            let s: Int = Int(convertToArray(from: tuple.getState())[0]), a: RLActionType = tuple.getAction(), r: Double = tuple.getReward()
 //
 //            var maxQtable: [Double] = []
 //            for i in 0...self.environment.getStateSize() {
 //                maxQtable.append(self.qTable[i].max()!)
 //            }
 //            let temp : Double = Double(r) + gamma * maxQtable.max()! - qTable[s][a]
-//            qTable[s][a] = qTable[s][a] + lr * temp
+//            qTable[s][a] = qTable[s][a] + learningRate[0] * temp
 //            defaultLogger.log("\(self.qTable)")
 //            i += 1
 //        }
@@ -146,8 +150,11 @@ open class QLearning: Agent {
 //    }
     
     /// Manages the states, checking if exists or not and then return the corresponding index
-    private func manageStates(_ state: [Double]) -> Int {
-        
+    private func manageStates(_ state: RLStateType,_ checkFinal: Bool = false) -> Int {
+        if checkFinal && self.episodeEnd(state) {
+            defaultLogger.log("Q-learning final state")
+            return -1
+        }
         var strState = ""
         for s in state {
             strState += String(s)

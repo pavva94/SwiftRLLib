@@ -14,11 +14,11 @@ To create a simple RL problem using this Package.
 
 Firstly we work on Swift to build the classes:
 - Create at least a class that inherited from Action, include in the exec() function what that action have to do. (What you want, literally)
-- Instanciate the Env class using a list ObservableData you want to observe, a list of your Actions and defining the action\_size. 
+- Instanciate the Environment class using a list ObservableData you want to observe, a list of your Actions and defining the action\_size. 
 - Instanciate what Agent you want (DeepQNetwork or QNetwork) and pass to it the environment.
 
 Then we need to build the Neural Network fitted for our problem:
-- Firstly check the state size of the environment using the Env instance and calling getStateSize()
+- Firstly check the state size of the environment using the Environment instance and calling getStateSize()
 - Use the python script CreateModel.py to create the MLModel necessary to use the Package. Be sure of modify the parameter of the network, deciding the layers and its dimensions and most important set the correct input\_size and output\_size (env.getStateSize and env.getActionSize)
 
 Then in xCode:

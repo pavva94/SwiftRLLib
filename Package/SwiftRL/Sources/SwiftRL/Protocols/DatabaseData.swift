@@ -10,9 +10,9 @@ import Foundation
 /// Strinct used to save the data into files
 public struct DatabaseData: Hashable, Codable, Identifiable {
     public var id: Int
-    public var state: [Double]
-    public var action: Int
-    public var reward: Double
-    public var nextState: [Double]
+    public var state: RLStateType
+    public var action: RLActionType
+    public var reward: RLRewardType
+    public var nextState: RLStateType
     
 }
